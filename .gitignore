@@ -31,6 +31,8 @@ typings/
 .env.production.local
 backend/.env
 frontend/.env
+# Allow .env.production to be committed (contains only public API URL)
+!frontend/.env.production
 
 # Build outputs
 dist/
