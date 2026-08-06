@@ -142,8 +142,8 @@ export const MapsService = {
     const res = await api.get('/maps/search-places', { params: { query, location } });
     return res.data;
   },
-  getNearby: async (lat: number, lng: number, type: string) => {
-    const res = await api.get('/maps/nearby', { params: { lat, lng, type } });
+  getNearby: async (lat: number, lng: number, type: string, destination?: string) => {
+    const res = await api.get('/maps/nearby', { params: { lat, lng, type, destination } });
     return res.data;
   },
   getDirections: async (origin: string, destination: string) => {

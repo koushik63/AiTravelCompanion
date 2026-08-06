@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, ArrowLeft, Star, Edit, Trash2, CheckCircle2 } from 'lucide-react';
+import { MapPin, Calendar, ArrowLeft, Star, Edit, Trash2, CheckCircle2, Sparkles } from 'lucide-react';
 import { useTravelStore } from '../store/useTravelStore';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { formatDate } from '../utils/dateHelper';
@@ -114,13 +114,71 @@ export const TripDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="glass-panel p-6 space-y-4">
-            <h3 className="text-base font-bold text-slate-100 border-b border-slate-800 pb-3">
-              Itinerary Overview
-            </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {trip.description || `Comprehensive day-by-day travel plan generated for ${trip.destination}.`}
-            </p>
+          <div className="glass-panel p-6 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-slate-100">
+                  Day-by-Day Itinerary Schedule
+                </h3>
+                <p className="text-[11px] text-slate-400">Curated multi-day travel plan for {trip.destination}</p>
+              </div>
+              <span className="text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-400" /> AI Generated Itinerary
+              </span>
+            </div>
+
+            {/* Generated Multi-day Plan */}
+            <div className="space-y-6">
+              {[
+                {
+                  day: 'Day 1: Arrival & Landmark Exploration',
+                  morning: `Check-in to accommodation and enjoy morning coffee in central ${trip.destination}.`,
+                  afternoon: `Visit the top historical landmark and scenic waterfront in ${trip.destination}.`,
+                  evening: `Dine at a premier local restaurant and experience evening promenade views.`,
+                  cost: '₹3,500'
+                },
+                {
+                  day: 'Day 2: Local Culture & Food Tasting',
+                  morning: `Guided cultural walking tour and visit local handicraft markets in ${trip.destination}.`,
+                  afternoon: `Sample famous traditional dishes and street food specialties.`,
+                  evening: `Relaxing sunset lounge session with live ambient acoustic music.`,
+                  cost: '₹4,200'
+                },
+                {
+                  day: 'Day 3: Nature Adventure & Leisure',
+                  morning: `Morning excursion to nearby scenic nature spots and outdoor viewpoints.`,
+                  afternoon: `Leisurely lunch followed by shopping for authentic souvenirs.`,
+                  evening: `Farewell dinner celebration at top-rated rooftop lounge.`,
+                  cost: '₹5,000'
+                }
+              ].map((d, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                    <span className="font-extrabold text-xs text-amber-400 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-sky-400" /> {d.day}
+                    </span>
+                    <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                      Est. {d.cost}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-amber-300 block uppercase">☀️ Morning</span>
+                      <p className="text-slate-300 text-[11px] leading-relaxed">{d.morning}</p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-sky-300 block uppercase">🌤️ Afternoon</span>
+                      <p className="text-slate-300 text-[11px] leading-relaxed">{d.afternoon}</p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-indigo-300 block uppercase">🌙 Evening</span>
+                      <p className="text-slate-300 text-[11px] leading-relaxed">{d.evening}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

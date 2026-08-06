@@ -20,7 +20,8 @@ export class MapsController {
       const lat = Number(req.query.lat) || 15.2993;
       const lng = Number(req.query.lng) || 74.124;
       const type = (req.query.type as string) || 'restaurant';
-      const results = await MapsService.getNearby(lat, lng, type);
+      const destination = (req.query.destination as string) || (req.query.location as string) || '';
+      const results = await MapsService.getNearby(lat, lng, type, destination);
       return res.json(results);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

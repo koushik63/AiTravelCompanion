@@ -3,17 +3,29 @@ import { Send, Sparkles, User, Bot } from 'lucide-react';
 import { AIService } from '../../services/api';
 
 export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) => {
+  const destName = tripContext?.destination || 'your destination';
+
   const [messages, setMessages] = useState<Array<{ id: string; sender: 'user' | 'ai'; text: string }>>([
     {
       id: 'm1',
       sender: 'ai',
-      text: `Hello! I am your AI Travel Companion for ${
-        tripContext?.destination || 'your destination'
-      }. Ask me anything about your itinerary, budget, packing, local dining, or safety advice!`
+      text: `Hello! I am your AI Travel Companion for ${destName}. Ask me anything about your itinerary, budget, packing, local dining, or top attractions in ${destName}!`
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  React.useEffect(() => {
+    if (tripContext?.destination) {
+      setMessages([
+        {
+          id: `m_${Date.now()}`,
+          sender: 'ai',
+          text: `Hello! I am your AI Travel Companion for ${tripContext.destination}. Ask me anything about your itinerary, budget, local food, or attractions in ${tripContext.destination}!`
+        }
+      ]);
+    }
+  }, [tripContext?.id, tripContext?.destination]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();

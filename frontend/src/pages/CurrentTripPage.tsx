@@ -13,18 +13,25 @@ import { WeatherInfo, FlightStatus, TrainStatus } from '../types';
 import { EmptyState } from '../components/ui/EmptyState';
 
 export const CurrentTripPage: React.FC = () => {
-  const { activeTrip } = useTravelStore();
+  const { trips, activeTrip } = useTravelStore();
+  const liveTrips = trips.filter((t) => !t.isArchived);
+
+  const [selectedTripId, setSelectedTripId] = useState<string>(activeTrip?.id || (liveTrips[0]?.id || ''));
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
   const [flight, setFlight] = useState<FlightStatus | null>(null);
   const [train, setTrain] = useState<TrainStatus | null>(null);
 
-  useEffect(() => {
-    if (activeTrip?.destination) {
-      WeatherService.getCurrent(activeTrip.destination).then(setWeather).catch(() => {});
-    }
-  }, [activeTrip]);
+  const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || activeTrip || liveTrips[0];
 
-  if (!activeTrip) {
+  useEffect(() => {
+    if (currentTrip?.destination) {
+      WeatherService.getCurrent(currentTrip.destination).then(setWeather).catch(() => {});
+      TransportService.getFlightStatus('6E 504').then(setFlight).catch(() => {});
+      TransportService.getTrainStatus('20901').then(setTrain).catch(() => {});
+    }
+  }, [currentTrip]);
+
+  if (!currentTrip) {
     return (
       <div className="space-y-6 pb-16">
         <div>
@@ -44,6 +51,28 @@ export const CurrentTripPage: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-16">
+      {/* Live Trip Switcher (when user has > 1 live trip) */}
+      {liveTrips.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto p-2 bg-slate-900/90 border border-sky-500/30 rounded-2xl">
+          <span className="text-xs font-bold text-sky-400 px-3 flex items-center gap-1 shrink-0">
+            <Compass className="w-4 h-4 text-amber-400" /> Active Live Trips ({liveTrips.length}):
+          </span>
+          {liveTrips.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setSelectedTripId(t.id)}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                currentTrip.id === t.id
+                  ? 'bg-gradient-to-r from-sky-500 to-emerald-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'bg-slate-950/80 text-slate-400 hover:text-slate-200 border border-slate-800'
+              }`}
+            >
+              {t.title} ({t.destination})
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Active Trip Header */}
       <div className="glass-panel p-6 sm:p-8 space-y-4 border-sky-500/40 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -51,15 +80,15 @@ export const CurrentTripPage: React.FC = () => {
             <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">
               Live Mode Active
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2">{activeTrip.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2">{currentTrip.title}</h1>
             <p className="text-xs text-slate-300 flex items-center gap-1.5 mt-1">
-              <MapPin className="w-4 h-4 text-sky-400" /> {activeTrip.destination}
+              <MapPin className="w-4 h-4 text-sky-400" /> {currentTrip.destination}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeTrip.destination)}`, '_blank')}
+              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTrip.destination)}`, '_blank')}
               className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5"
             >
               <Navigation className="w-4 h-4" /> Open Navigation
@@ -78,7 +107,7 @@ export const CurrentTripPage: React.FC = () => {
       {/* Map & Weather Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <InteractiveMap destination={activeTrip.destination} />
+          <InteractiveMap destination={currentTrip.destination} />
         </div>
         <div>
           {weather ? (
