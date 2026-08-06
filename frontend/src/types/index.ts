@@ -162,6 +162,14 @@ export interface NotificationItem {
   createdAt: string;
 }
 
+export interface HourlyForecastItem {
+  time: string;
+  temp: number;
+  condition: string;
+  pop: number;
+  icon?: string;
+}
+
 export interface WeatherInfo {
   city: string;
   temp: number;
@@ -175,7 +183,9 @@ export interface WeatherInfo {
   sunrise?: string;
   sunset?: string;
   icon?: string;
-  dailyForecast?: Array<{ day: string; tempMax: number; tempMin: number; condition: string }>;
+  advisory?: string;
+  hourlyForecast?: HourlyForecastItem[];
+  dailyForecast?: Array<{ day: string; tempMax: number; tempMin: number; condition: string; pop?: number }>;
 }
 
 export interface FlightStatus {
@@ -240,7 +250,6 @@ export interface SharedTrip {
   isPublic: boolean;
 }
 
-// AI Interfaces
 export interface AIPromptInput {
   destination: string;
   startDate: string;
