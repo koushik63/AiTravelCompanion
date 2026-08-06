@@ -110,16 +110,6 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <OAuthButton provider="google" onClick={handleGoogleAuth} isLoading={isLoading} />
-
-        <button
-          onClick={() => {
-            const demoEmail = email.trim() || 'demo@aitravel.com';
-            login(demoEmail, 'password123').then(() => navigate('/dashboard'));
-          }}
-          className="w-full glass-button-secondary text-xs py-2 flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <Sparkles className="w-4 h-4 text-amber-400" /> Quick Demo Sign In {email ? `as ${email}` : ''}
-        </button>
       </div>
 
       <div className="pt-4 border-t border-slate-800 text-center">
