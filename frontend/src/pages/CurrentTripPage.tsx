@@ -20,16 +20,18 @@ export const CurrentTripPage: React.FC = () => {
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
   const [flight, setFlight] = useState<FlightStatus | null>(null);
   const [train, setTrain] = useState<TrainStatus | null>(null);
+  const [searchFlightCode, setSearchFlightCode] = useState<string>('');
+  const [searchTrainCode, setSearchTrainCode] = useState<string>('');
 
   const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || activeTrip || liveTrips[0];
 
   useEffect(() => {
     if (currentTrip?.destination) {
       WeatherService.getCurrent(currentTrip.destination).then(setWeather).catch(() => {});
-      TransportService.getFlightStatus('6E 504').then(setFlight).catch(() => {});
-      TransportService.getTrainStatus('20901').then(setTrain).catch(() => {});
+      TransportService.getFlightStatus(searchFlightCode, currentTrip.destination).then(setFlight).catch(() => {});
+      TransportService.getTrainStatus(searchTrainCode, currentTrip.destination).then(setTrain).catch(() => {});
     }
-  }, [currentTrip]);
+  }, [currentTrip, searchFlightCode, searchTrainCode]);
 
   if (!currentTrip) {
     return (

@@ -1,12 +1,30 @@
 export class TrainService {
-  static async getTrainStatus(trainNumber: string) {
+  static async getTrainStatus(trainNumber: string, destinationParam?: string) {
     const num = (trainNumber || '').trim();
-    let trainName = 'Express Special';
+    const destCity = (destinationParam || '').trim();
+    const destLower = destCity.toLowerCase();
+
+    let trainName = `${destCity || 'Express'} Superfast Express`;
     let origin = 'New Delhi Railway Station (NDLS)';
-    let destination = 'Mumbai Central (MMCT)';
+    let destination = destCity ? `${destCity} Central Station` : 'Mumbai Central (MMCT)';
     let platform = 'PF 1';
 
-    if (num.includes('20901')) {
+    if (destLower.includes('mumbai')) {
+      trainName = 'Mumbai Rajdhani Express';
+      origin = 'New Delhi (NDLS)';
+      destination = 'Mumbai Central (MMCT)';
+      platform = 'PF 1';
+    } else if (destLower.includes('goa')) {
+      trainName = 'Konkan Kanya Express';
+      origin = 'Mumbai CST (CSMT)';
+      destination = 'Madgaon Junction (MAO), Goa';
+      platform = 'PF 3';
+    } else if (destLower.includes('bali')) {
+      trainName = 'Trans-Java Coastal Express';
+      origin = 'Surabaya Gubeng (SGU)';
+      destination = 'Denpasar Station, Bali';
+      platform = 'PF 2';
+    } else if (num.includes('20901')) {
       trainName = 'Mumbai - Gandhinagar Vande Bharat Express';
       origin = 'Mumbai Central (MMCT)';
       destination = 'Gandhinagar Capital (GNC)';

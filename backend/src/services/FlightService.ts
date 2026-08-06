@@ -2,9 +2,10 @@ import axios from 'axios';
 import { Logger } from '../utils/logger';
 
 export class FlightService {
-  static async getFlightStatus(flightNumber: string) {
+  static async getFlightStatus(flightNumber: string, destinationParam?: string) {
     const code = (flightNumber || '').trim().toUpperCase();
     const apiKey = process.env.AVIATIONSTACK_API_KEY;
+    const destCity = (destinationParam || '').trim();
 
     if (apiKey) {
       try {
@@ -31,15 +32,32 @@ export class FlightService {
       }
     }
 
-    // Dynamic flight info generator based on IATA prefix
-    let airline = 'Commercial Airline';
+    // Dynamic destination-matching flight generator
+    const destLower = destCity.toLowerCase();
+    let airline = 'IndiGo Airlines';
     let origin = 'Indira Gandhi Int Airport (DEL), New Delhi';
-    let destination = 'Chhatrapati Shivaji Maharaj Int Airport (BOM), Mumbai';
+    let destination = destCity ? `${destCity} International Airport` : 'Chhatrapati Shivaji Maharaj Int Airport (BOM), Mumbai';
 
-    if (code.startsWith('6E')) {
+    if (destLower.includes('mumbai')) {
+      airline = 'IndiGo Airlines';
+      origin = 'Indira Gandhi Int Airport (DEL), New Delhi';
+      destination = 'Chhatrapati Shivaji Maharaj Int Airport (BOM), Mumbai';
+    } else if (destLower.includes('goa')) {
       airline = 'IndiGo Airlines';
       origin = 'Indira Gandhi Int Airport (DEL), New Delhi';
       destination = 'Dabolim Airport (GOI), Goa';
+    } else if (destLower.includes('bali')) {
+      airline = 'Garuda Indonesia';
+      origin = 'Soekarno-Hatta Int Airport (CGK), Jakarta';
+      destination = 'Ngurah Rai Int Airport (DPS), Bali';
+    } else if (destLower.includes('delhi')) {
+      airline = 'Air India';
+      origin = 'Chhatrapati Shivaji Int Airport (BOM), Mumbai';
+      destination = 'Indira Gandhi Int Airport (DEL), New Delhi';
+    } else if (destLower.includes('paris')) {
+      airline = 'Air France';
+      origin = 'Indira Gandhi Int Airport (DEL), New Delhi';
+      destination = 'Charles de Gaulle Airport (CDG), Paris';
     } else if (code.startsWith('AI')) {
       airline = 'Air India';
       origin = 'Indira Gandhi Int Airport (DEL), New Delhi';
@@ -48,32 +66,16 @@ export class FlightService {
       airline = 'Vistara';
       origin = 'Kempegowda Int Airport (BLR), Bengaluru';
       destination = 'Indira Gandhi Int Airport (DEL), New Delhi';
-    } else if (code.startsWith('QP')) {
-      airline = 'Akasa Air';
-      origin = 'Chhatrapati Shivaji Int Airport (BOM), Mumbai';
-      destination = 'Cochin Int Airport (COK), Kochi';
-    } else if (code.startsWith('EK')) {
-      airline = 'Emirates';
-      origin = 'Dubai Int Airport (DXB), Dubai';
-      destination = 'Indira Gandhi Int Airport (DEL), New Delhi';
-    } else if (code.startsWith('BA')) {
-      airline = 'British Airways';
-      origin = 'London Heathrow (LHR), London';
-      destination = 'JFK Int Airport (JFK), New York';
-    } else if (code.startsWith('AA')) {
-      airline = 'American Airlines';
-      origin = 'JFK Int Airport (JFK), New York';
-      destination = 'Los Angeles Int Airport (LAX), Los Angeles';
     }
 
     return {
-      flightNumber: code || '6E 504',
+      flightNumber: code || '6E 218',
       airline,
       origin,
       destination,
       departureTime: new Date(Date.now() + 3600000).toISOString(),
       arrivalTime: new Date(Date.now() + 12600000).toISOString(),
-      terminal: 'T3',
+      terminal: 'T2',
       gate: 'Gate 14',
       status: 'On Time',
       delayMinutes: 0

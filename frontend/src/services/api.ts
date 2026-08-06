@@ -176,12 +176,12 @@ export const WeatherService = {
 };
 
 export const TransportService = {
-  getFlightStatus: async (flightNumber: string) => {
-    const res = await api.get('/transport/flight-status', { params: { flightNumber } });
+  getFlightStatus: async (flightNumber: string, destination?: string) => {
+    const res = await api.get('/transport/flight-status', { params: { flightNumber, destination } });
     return res.data;
   },
-  getTrainStatus: async (trainNumber: string) => {
-    const res = await api.get('/transport/train-status', { params: { trainNumber } });
+  getTrainStatus: async (trainNumber: string, destination?: string) => {
+    const res = await api.get('/transport/train-status', { params: { trainNumber, destination } });
     return res.data;
   },
   getTickets: async () => {

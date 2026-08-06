@@ -6,8 +6,9 @@ import { DatabaseService } from '../services/DatabaseService';
 export class TransportController {
   static async getFlightStatus(req: Request, res: Response) {
     try {
-      const flightNumber = (req.query.flightNumber as string) || 'JL 001';
-      const status = await FlightService.getFlightStatus(flightNumber);
+      const flightNumber = (req.query.flightNumber as string) || '';
+      const destination = (req.query.destination as string) || '';
+      const status = await FlightService.getFlightStatus(flightNumber, destination);
       return res.json(status);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
@@ -16,8 +17,9 @@ export class TransportController {
 
   static async getTrainStatus(req: Request, res: Response) {
     try {
-      const trainNumber = (req.query.trainNumber as string) || '12951';
-      const status = await TrainService.getTrainStatus(trainNumber);
+      const trainNumber = (req.query.trainNumber as string) || '';
+      const destination = (req.query.destination as string) || '';
+      const status = await TrainService.getTrainStatus(trainNumber, destination);
       return res.json(status);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
