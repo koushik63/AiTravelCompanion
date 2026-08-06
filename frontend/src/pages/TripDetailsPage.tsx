@@ -29,6 +29,8 @@ function getDestImage(dest: string, id: string) {
   return `https://images.unsplash.com/${FALLBACKS[idx]}?auto=format&fit=crop&q=80&w=1200`;
 }
 
+import { getTripImage } from '../utils/imageHelper';
+
 export const TripDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trips, toggleFavoriteTrip, deleteTrip } = useTravelStore();
@@ -54,7 +56,7 @@ export const TripDetailsPage: React.FC = () => {
 
       <div className="relative h-64 rounded-2xl overflow-hidden shadow-2xl">
         <img
-          src={getDestImage(trip.destination, trip.id)}
+          src={getTripImage(trip.destination, trip.id, trip.imageUrl, trip.title, trip.coverImage)}
           alt={trip.title}
           className="w-full h-full object-cover"
         />

@@ -95,6 +95,8 @@ function getDestinationImage(destination: string, tripId: string): string {
   return `https://images.unsplash.com/${fallbackPool[idx]}?auto=format&fit=crop&q=80&w=600`;
 }
 
+import { getTripImage } from '../../utils/imageHelper';
+
 interface TripCardProps {
   trip: Trip;
   onFavorite?: (id: string) => void;
@@ -115,7 +117,7 @@ export const TripCard: React.FC<TripCardProps> = ({
       <div>
         <div className="relative h-44 overflow-hidden">
           <img
-            src={getDestinationImage(trip.destination, trip.id)}
+            src={getTripImage(trip.destination, trip.id, trip.imageUrl, trip.title, trip.coverImage)}
             alt={trip.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

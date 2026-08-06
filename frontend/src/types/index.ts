@@ -112,6 +112,7 @@ export interface Trip {
   spent: number;
   currency: string;
   coverImage?: string;
+  imageUrl?: string;
   status: TripStatus;
   travelType?: TravelType;
   transportType?: TransportType;
