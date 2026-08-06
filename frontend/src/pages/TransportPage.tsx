@@ -19,6 +19,7 @@ export const TransportPage: React.FC = () => {
   const [selectedDestination, setSelectedDestination] = useState<string>(
     activeTrip?.destination || (trips[0]?.destination || 'Meghalaya')
   );
+  const [selectedOrigin, setSelectedOrigin] = useState<string>('all');
 
   const [flightNum, setFlightNum] = useState('');
   const [trainNum, setTrainNum] = useState('');
@@ -29,8 +30,8 @@ export const TransportPage: React.FC = () => {
   const [flightError, setFlightError] = useState<string | null>(null);
   const [trainError, setTrainError] = useState<string | null>(null);
 
-  const availableFlights = getAvailableFlightsForDestination(selectedDestination);
-  const availableTrains = getAvailableTrainsForDestination(selectedDestination);
+  const availableFlights = getAvailableFlightsForDestination(selectedDestination, selectedOrigin);
+  const availableTrains = getAvailableTrainsForDestination(selectedDestination, selectedOrigin);
 
   const trackSpecificFlightOption = (f: FlightOption) => {
     setFlightNum(f.flightNumber);
@@ -124,35 +125,57 @@ export const TransportPage: React.FC = () => {
   return (
     <div className="space-y-8 pb-16">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-100 flex items-center gap-2">
             <Compass className="w-6 h-6 text-sky-400" /> Air & Rail Transport Hub
           </h1>
-          <p className="text-xs text-slate-400">Search authentic flights & trains to your destination with live flight gate & platform tracking</p>
+          <p className="text-xs text-slate-400">Search authentic flights & trains by starting location and destination with live tracking</p>
         </div>
 
-        {/* Destination Filter Pill */}
-        <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 shadow-lg">
-          <MapPin className="w-4 h-4 text-sky-400" />
-          <span className="text-xs font-semibold text-slate-300">Destination:</span>
-          <select
-            value={selectedDestination}
-            onChange={(e) => setSelectedDestination(e.target.value)}
-            className="bg-slate-950 text-xs font-bold text-sky-400 focus:outline-none cursor-pointer"
-          >
-            <option value="Meghalaya">Meghalaya / Shillong (GAU/SHL)</option>
-            <option value="Goa">Goa (GOI/GOX)</option>
-            <option value="Mumbai">Mumbai (BOM/MMCT)</option>
-            <option value="Delhi">Delhi (DEL/NDLS)</option>
-            <option value="Kerala">Kerala / Kochi (COK/TVC)</option>
-            <option value="Jaipur">Jaipur (JAI/JP)</option>
-            <option value="Singapore">Singapore (SIN)</option>
-            <option value="Dubai">Dubai (DXB)</option>
-            <option value="Paris">Paris (CDG)</option>
-            <option value="Tokyo">Tokyo (HND/NRT)</option>
-            <option value="Bali">Bali (DPS)</option>
-          </select>
+        {/* Origin & Destination Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Starting Location Filter Pill */}
+          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 shadow-lg">
+            <Compass className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-semibold text-slate-300">Start Location:</span>
+            <select
+              value={selectedOrigin}
+              onChange={(e) => setSelectedOrigin(e.target.value)}
+              className="bg-slate-950 text-xs font-bold text-amber-400 focus:outline-none cursor-pointer"
+            >
+              <option value="all">All Starting Cities</option>
+              <option value="Delhi">New Delhi (DEL / NDLS / DLI)</option>
+              <option value="Mumbai">Mumbai (BOM / MMCT / CSMT)</option>
+              <option value="Kolkata">Kolkata (CCU / HWH / SDAH)</option>
+              <option value="Bengaluru">Bengaluru (BLR / SMVB)</option>
+              <option value="Chennai">Chennai (MAA / MAS)</option>
+              <option value="Hyderabad">Hyderabad (HYD / HYB)</option>
+            </select>
+          </div>
+
+          {/* Destination Filter Pill */}
+          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 shadow-lg">
+            <MapPin className="w-4 h-4 text-sky-400" />
+            <span className="text-xs font-semibold text-slate-300">Destination:</span>
+            <select
+              value={selectedDestination}
+              onChange={(e) => setSelectedDestination(e.target.value)}
+              className="bg-slate-950 text-xs font-bold text-sky-400 focus:outline-none cursor-pointer"
+            >
+              <option value="Meghalaya">Meghalaya / Shillong (GAU/SHL)</option>
+              <option value="Goa">Goa (GOI/GOX)</option>
+              <option value="Mumbai">Mumbai (BOM/MMCT)</option>
+              <option value="Delhi">Delhi (DEL/NDLS)</option>
+              <option value="Kerala">Kerala / Kochi (COK/TVC)</option>
+              <option value="Jaipur">Jaipur (JAI/JP)</option>
+              <option value="Singapore">Singapore (SIN)</option>
+              <option value="Dubai">Dubai (DXB)</option>
+              <option value="Paris">Paris (CDG)</option>
+              <option value="Tokyo">Tokyo (HND/NRT)</option>
+              <option value="Bali">Bali (DPS)</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -169,45 +192,52 @@ export const TransportPage: React.FC = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {availableFlights.map((f: FlightOption, idx: number) => (
-              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-sky-500/40 transition-all shadow-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-sm text-slate-100">{f.airline}</span>
-                    <span className="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded border border-sky-500/30">
-                      {f.flightNumber}
+          {availableFlights.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-400 bg-slate-900/60 rounded-xl border border-slate-800/80 space-y-1">
+              <p className="font-semibold text-slate-300">No direct flights operating from {selectedOrigin} to {selectedDestination}</p>
+              <p className="text-[11px] text-slate-500">Try setting "Start Location" to "All Starting Cities" or select major hubs like Mumbai or Delhi!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {availableFlights.map((f: FlightOption, idx: number) => (
+                <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-sky-500/40 transition-all shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-sm text-slate-100">{f.airline}</span>
+                      <span className="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded border border-sky-500/30">
+                        {f.flightNumber}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                      {f.estimatedFare}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    {f.estimatedFare}
-                  </span>
-                </div>
 
-                <div className="text-xs space-y-1 text-slate-300">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Route:</span>
-                    <span className="font-semibold text-slate-200">{f.origin} ➔ {f.destination}</span>
+                  <div className="text-xs space-y-1 text-slate-300">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Route:</span>
+                      <span className="font-semibold text-slate-200">{f.origin} ➔ {f.destination}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Schedule:</span>
+                      <span className="font-semibold text-slate-200">{f.departureTime} - {f.arrivalTime} ({f.daysOperating})</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Schedule:</span>
-                    <span className="font-semibold text-slate-200">{f.departureTime} - {f.arrivalTime} ({f.daysOperating})</span>
-                  </div>
-                </div>
 
-                <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400">{f.terminal} • {f.gate}</span>
-                  <button
-                    type="button"
-                    onClick={() => trackSpecificFlightOption(f)}
-                    className="glass-button text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/20 cursor-pointer hover:scale-105 active:scale-95 transition-all"
-                  >
-                    Track Live Flight <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400">{f.terminal} • {f.gate}</span>
+                    <button
+                      type="button"
+                      onClick={() => trackSpecificFlightOption(f)}
+                      className="glass-button text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/20 cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                    >
+                      Track Live Flight <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Available Trains */}
@@ -221,45 +251,52 @@ export const TransportPage: React.FC = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {availableTrains.map((t: TrainOption, idx: number) => (
-              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-amber-500/40 transition-all shadow-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-sm text-slate-100">{t.trainName}</span>
-                    <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                      #{t.trainNumber}
+          {availableTrains.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-400 bg-slate-900/60 rounded-xl border border-slate-800/80 space-y-1">
+              <p className="font-semibold text-slate-300">No direct Indian Railways express trains from {selectedOrigin} to {selectedDestination}</p>
+              <p className="text-[11px] text-slate-500">Note: International destinations (e.g. Dubai, Singapore, Paris, Tokyo) do not have Indian Railways train service.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {availableTrains.map((t: TrainOption, idx: number) => (
+                <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-amber-500/40 transition-all shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-sm text-slate-100">{t.trainName}</span>
+                      <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+                        #{t.trainNumber}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                      {t.estimatedFare}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    {t.estimatedFare}
-                  </span>
-                </div>
 
-                <div className="text-xs space-y-1 text-slate-300">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Route:</span>
-                    <span className="font-semibold text-slate-200">{t.origin} ➔ {t.destination}</span>
+                  <div className="text-xs space-y-1 text-slate-300">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Route:</span>
+                      <span className="font-semibold text-slate-200">{t.origin} ➔ {t.destination}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Schedule:</span>
+                      <span className="font-semibold text-slate-200">{t.departureTime} - {t.arrivalTime} ({t.daysOperating})</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Schedule:</span>
-                    <span className="font-semibold text-slate-200">{t.departureTime} - {t.arrivalTime} ({t.daysOperating})</span>
-                  </div>
-                </div>
 
-                <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400">{t.platform} • {t.coach}</span>
-                  <button
-                    type="button"
-                    onClick={() => trackSpecificTrainOption(t)}
-                    className="glass-button-secondary text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all"
-                  >
-                    Track Live Train <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400">{t.platform} • {t.coach}</span>
+                    <button
+                      type="button"
+                      onClick={() => trackSpecificTrainOption(t)}
+                      className="glass-button-secondary text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                    >
+                      Track Live Train <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

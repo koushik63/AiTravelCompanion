@@ -502,22 +502,48 @@ const ALL_TRAINS: TrainOption[] = [
   }
 ];
 
-export function getAvailableFlightsForDestination(destinationName?: string): FlightOption[] {
+export function getAvailableFlightsForDestination(destinationName?: string, originName?: string): FlightOption[] {
   const dest = (destinationName || '').toLowerCase().trim();
-  if (!dest) return ALL_FLIGHTS.slice(0, 4);
+  const orig = (originName || '').toLowerCase().trim();
 
-  const filtered = ALL_FLIGHTS.filter(f => f.destination.toLowerCase().includes(dest) || dest.includes('meghalaya') && f.destination.toLowerCase().includes('guwahati') || dest.includes('shillong') && f.destination.toLowerCase().includes('shillong'));
+  let filtered = ALL_FLIGHTS;
 
-  return filtered.length > 0 ? filtered : ALL_FLIGHTS.slice(0, 4);
+  if (dest && dest !== 'all') {
+    filtered = filtered.filter(f =>
+      f.destination.toLowerCase().includes(dest) ||
+      (dest.includes('meghalaya') && (f.destination.toLowerCase().includes('guwahati') || f.destination.toLowerCase().includes('shillong')))
+    );
+  }
+
+  if (orig && orig !== 'all') {
+    filtered = filtered.filter(f =>
+      f.origin.toLowerCase().includes(orig)
+    );
+  }
+
+  return filtered;
 }
 
-export function getAvailableTrainsForDestination(destinationName?: string): TrainOption[] {
+export function getAvailableTrainsForDestination(destinationName?: string, originName?: string): TrainOption[] {
   const dest = (destinationName || '').toLowerCase().trim();
-  if (!dest) return ALL_TRAINS.slice(0, 4);
+  const orig = (originName || '').toLowerCase().trim();
 
-  const filtered = ALL_TRAINS.filter(t => t.destination.toLowerCase().includes(dest) || dest.includes('meghalaya') && t.destination.toLowerCase().includes('guwahati') || dest.includes('shillong') && t.destination.toLowerCase().includes('guwahati'));
+  let filtered = ALL_TRAINS;
 
-  return filtered.length > 0 ? filtered : ALL_TRAINS.slice(0, 4);
+  if (dest && dest !== 'all') {
+    filtered = filtered.filter(t =>
+      t.destination.toLowerCase().includes(dest) ||
+      (dest.includes('meghalaya') && t.destination.toLowerCase().includes('guwahati'))
+    );
+  }
+
+  if (orig && orig !== 'all') {
+    filtered = filtered.filter(t =>
+      t.origin.toLowerCase().includes(orig)
+    );
+  }
+
+  return filtered;
 }
 
 export function findFlightByCode(flightNumber: string): FlightOption | null {
