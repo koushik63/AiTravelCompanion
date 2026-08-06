@@ -453,17 +453,31 @@ export class DatabaseService {
   }
 
   // Memories
+  static async getMemories(tripId?: string) {
+    if (tripId && tripId.trim() !== '') {
+      const filtered = store.memories.filter((m) => m.tripId === tripId);
+      if (filtered.length > 0) return filtered;
+    }
+    return store.memories;
+  }
+
   static async addMemory(memoryData: any) {
     const newMemory = {
-      id: `mem_${Date.now()}`,
-      tripId: memoryData.tripId,
+      id: `mem_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      tripId: memoryData.tripId || 'trip_3',
       imageUrl: memoryData.imageUrl,
       caption: memoryData.caption,
       aiCaption: memoryData.aiCaption || `✨ AI Memory Tag: Highlights of ${memoryData.caption || 'your journey'}`,
       location: memoryData.location || 'India',
       createdAt: new Date().toISOString()
     };
-    store.memories.push(newMemory);
+    store.memories.unshift(newMemory);
+
+    const trip = store.trips.find((t) => t.id === memoryData.tripId);
+    if (trip) {
+      if (!trip.memories) trip.memories = [];
+      trip.memories.unshift(newMemory);
+    }
     return newMemory;
   }
 

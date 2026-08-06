@@ -5,9 +5,9 @@ import { AuthRequest } from '../middleware/authMiddleware';
 export class MemoryController {
   static async getMemories(req: AuthRequest, res: Response) {
     try {
-      const tripId = (req.query.tripId as string) || 'trip_3';
-      const trip = await DatabaseService.getTripById(tripId);
-      return res.json(trip?.memories || []);
+      const tripId = (req.query.tripId as string) || '';
+      const memories = await DatabaseService.getMemories(tripId);
+      return res.json(memories || []);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -16,12 +16,12 @@ export class MemoryController {
   static async addMemory(req: AuthRequest, res: Response) {
     try {
       const { tripId, imageUrl, caption, location } = req.body;
-      if (!tripId || !imageUrl) {
-        return res.status(400).json({ error: 'tripId and imageUrl are required' });
+      if (!imageUrl) {
+        return res.status(400).json({ error: 'imageUrl is required' });
       }
 
       const memory = await DatabaseService.addMemory({
-        tripId,
+        tripId: tripId || 'trip_3',
         imageUrl,
         caption: caption || 'Unforgettable travel moment',
         location: location || 'Destination'
