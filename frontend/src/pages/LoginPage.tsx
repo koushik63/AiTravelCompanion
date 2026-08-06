@@ -15,11 +15,14 @@ export const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) {
+      setError('Please enter your email address');
+      return;
+    }
     setIsLoading(true);
     setError('');
     try {
-      const loginEmail = email.trim() || 'konkipudikoushik1@gmail.com';
-      await login(loginEmail, password || 'password123');
+      await login(email.trim(), password || 'password123');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
@@ -72,7 +75,7 @@ export const LoginPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. konkipudikoushik1@gmail.com"
+              placeholder="e.g. traveler@example.com"
               required
               className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
             />
@@ -94,7 +97,7 @@ export const LoginPage: React.FC = () => {
           <Link to="/forgot-password" className="text-sky-400 hover:underline">Forgot password?</Link>
         </div>
 
-        <button type="submit" disabled={isLoading} className="w-full glass-button flex items-center justify-center gap-2 py-3 mt-2">
+        <button type="submit" disabled={isLoading} className="w-full glass-button flex items-center justify-center gap-2 py-3 mt-2 cursor-pointer">
           <LogIn className="w-4 h-4" /> {isLoading ? 'Signing In...' : 'Sign In'}
         </button>
       </form>
@@ -110,12 +113,12 @@ export const LoginPage: React.FC = () => {
 
         <button
           onClick={() => {
-            const demoEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+            const demoEmail = email.trim() || 'demo@aitravel.com';
             login(demoEmail, 'password123').then(() => navigate('/dashboard'));
           }}
-          className="w-full glass-button-secondary text-xs py-2 flex items-center justify-center gap-2"
+          className="w-full glass-button-secondary text-xs py-2 flex items-center justify-center gap-2 cursor-pointer"
         >
-          <Sparkles className="w-4 h-4 text-amber-400" /> Quick Sign In as {email || 'konkipudikoushik1@gmail.com'}
+          <Sparkles className="w-4 h-4 text-amber-400" /> Quick Demo Sign In {email ? `as ${email}` : ''}
         </button>
       </div>
 
