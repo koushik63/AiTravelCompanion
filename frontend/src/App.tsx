@@ -42,7 +42,6 @@ import { AIAssistantPage } from './pages/AIAssistantPage';
 import { MemoriesPage } from './pages/MemoriesPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SharedTripPage } from './pages/SharedTripPage';
-import { AdminPage } from './pages/AdminPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -97,7 +96,6 @@ export const AppContent: React.FC = () => {
         <Route path="/assistant" element={<AIAssistantPage />} />
         <Route path="/memories" element={<MemoriesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/admin" element={<AdminPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

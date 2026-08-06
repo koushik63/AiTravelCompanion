@@ -42,8 +42,7 @@ export const Sidebar: React.FC = () => {
     { name: 'Favorite Trips', path: '/favorites', icon: Star },
     { name: 'Destination Search', path: '/search', icon: Search },
     { name: 'Memory Album', path: '/memories', icon: Camera },
-    { name: 'Settings & Profile', path: '/settings', icon: Settings },
-    { name: 'Admin Console', path: '/admin', icon: Shield }
+    { name: 'Settings & Profile', path: '/settings', icon: Settings }
   ];
 
   return (
