@@ -85,20 +85,6 @@ Return ONLY valid JSON matching this schema:
     }
   }
 
-  static async generatePackingList(input: any) {
-    return {
-      destination: input.destination,
-      travelStyle: input.travelStyle || 'Balanced',
-      items: [
-        { category: 'Essentials', name: 'Passport / National ID & Tickets', quantity: 1 },
-        { category: 'Clothing', name: 'Lightweight Breathable Outfits', quantity: 5 },
-        { category: 'Electronics', name: 'Universal Travel Adapter & Powerbank', quantity: 2 },
-        { category: 'Toiletries', name: 'SPF 50+ Sunscreen & Hydrating Moisturizer', quantity: 1 },
-        { category: 'Footwear', name: 'Comfortable Walking Sneakers', quantity: 1 }
-      ]
-    };
-  }
-
   static async getBudgetTips(destination: string, budget: number, currency: string = 'INR') {
     return {
       destination,
@@ -366,6 +352,69 @@ INSTRUCTIONS:
       ],
       weatherConsiderations: 'Pleasant temperatures expected (26°C - 30°C).',
       confidenceNotes: 'Generated via Gemini AI Travel Companion Engine v1.5.'
+    };
+  }
+
+  static async generatePackingList(input: { destination?: string; travelStyle?: string; durationDays?: number }) {
+    const dest = (input.destination || 'India').trim();
+    const style = (input.travelStyle || 'Leisure').trim();
+    const destLower = dest.toLowerCase();
+
+    const client = this.getClient();
+    if (client) {
+      for (const modelName of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']) {
+        try {
+          const model = client.getGenerativeModel({ model: modelName });
+          const prompt = `You are a Smart AI Packing Assistant bot. Create a comprehensive, destination-customized packing checklist for a trip to ${dest} (Style: ${style}).
+Return ONLY valid JSON matching this structure:
+{
+  "destination": "${dest}",
+  "items": [
+    { "itemName": "Passport & Photo IDs", "category": "Essentials" },
+    { "itemName": "SPF 50+ Sunscreen Lotion", "category": "Toiletries" },
+    { "itemName": "Universal Power Adapter", "category": "Electronics" },
+    { "itemName": "Breathable Cotton Apparel", "category": "Clothing" },
+    { "itemName": "Personal Prescription & First Aid", "category": "Health" }
+  ]
+}`;
+          const response = await model.generateContent(prompt);
+          const text = response.response.text();
+          const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanText);
+          if (parsed.items && Array.isArray(parsed.items)) {
+            return parsed;
+          }
+        } catch (err: any) {
+          Logger.error(`Gemini packing list error with ${modelName}`, err, 'GeminiService');
+        }
+      }
+    }
+
+    // Destination-Adaptive AI Fallback Engine
+    let clothingItems = ['Breathable Linen Shirts & Shorts', 'Comfortable Walking Sneakers', 'Sunglasses & Sun Hat'];
+    let toiletries = ['SPF 50+ Sunscreen Lotion', 'Hydrating Lip Balm & Lotion', 'Insect Repellent Spray'];
+
+    if (destLower.includes('ladakh') || destLower.includes('leh') || destLower.includes('kashmir') || destLower.includes('manali') || destLower.includes('shimla') || destLower.includes('switzerland') || destLower.includes('iceland')) {
+      clothingItems = ['Heavy Down Thermal Jacket', 'Woolen Thermals & Innerwear', 'Waterproof Trekking Boots', 'Fleece Gloves & Beanie Cap'];
+      toiletries = ['Cold-Wind Moisturizing Cream', 'SPF 50+ Sunscreen Lotion', 'Heavy Lip Balm & First Aid'];
+    } else if (destLower.includes('goa') || destLower.includes('bali') || destLower.includes('maldives') || destLower.includes('phuket') || destLower.includes('kerala')) {
+      clothingItems = ['UV-Protection Swimwear', 'Light Cotton Shirts & Linen Shorts', 'Flip-Flops & Beach Footwear'];
+      toiletries = ['Water-Resistant SPF 50+ Sunscreen', 'After-Sun Aloe Vera Gel', 'Mosquito Repellent Lotion'];
+    }
+
+    return {
+      destination: dest,
+      items: [
+        { itemName: 'Passport, Visas & Identity Cards', category: 'Essentials' },
+        { itemName: 'Hotel Vouchers & Boarding Pass', category: 'Essentials' },
+        ...clothingItems.map((item) => ({ itemName: item, category: 'Clothing' })),
+        ...toiletries.map((item) => ({ itemName: item, category: 'Toiletries' })),
+        { itemName: '20,000mAh Power Bank & Cables', category: 'Electronics' },
+        { itemName: 'Universal Travel Power Adapter', category: 'Electronics' },
+        { itemName: 'Noise-Cancelling Earphones', category: 'Electronics' },
+        { itemName: 'First Aid Kit & Travel Prescriptions', category: 'Health' },
+        { itemName: 'ORS Hydration Packets & Sanitizer', category: 'Health' }
+      ]
     };
   }
 }
