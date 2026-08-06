@@ -18,7 +18,17 @@ export class GeminiService {
   private static getCityLandmarks(destination: string, travelStyle: string = 'Leisure'): Array<{ summary: string; morning: string; afternoon: string; evening: string }> {
     const d = (destination || '').toLowerCase().trim();
 
-    // 0. Pune
+    // 0. Vizag / Visakhapatnam
+    if (d.includes('vizag') || d.includes('visakhapatnam')) {
+      return [
+        { summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park', morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach', afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach', evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner' },
+        { summary: 'Kailasagiri Hilltop Ropeway & Rushikonda Blue Flag Beach', morning: 'Ride Kailasagiri Ropeway to hilltop park viewing giant Lord Shiva & Parvati statues', afternoon: 'Water sports, speedboating & surf lessons at Rushikonda Blue Flag Beach', evening: 'Seafood grill dinner at Rushikonda Beach Resort' },
+        { summary: 'Borra Caves & Araku Valley Coffee Plantations Excursion', morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels', afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls', evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee' },
+        { summary: 'Simhachalam Temple & Yarada Beach Sunset Cliff', morning: 'Visit sacred 11th-century Simhachalam Lord Narasimha Temple atop hill', afternoon: 'Excursion to secluded Yarada Beach & Dolphin’s Nose Lighthouse lookout', evening: 'Farewell seafood thali dinner at Sea Pearl Restaurant' }
+      ];
+    }
+
+    // 1. Pune
     if (d.includes('pune')) {
       return [
         { summary: 'Shaniwar Wada Fort, Lal Mahal & Dagdusheth Ganpati Temple', morning: 'Explore historic 1730 AD Shaniwar Wada Peshwa Palace ramparts & Lal Mahal', afternoon: 'Visit revered Shreemant Dagdusheth Halwai Ganpati Temple & Tulshibaug shopping market', evening: 'Authentic Puneri Misal Pav & Mastani Mango drink tasting at Sujata Mastani' },
@@ -31,69 +41,39 @@ export class GeminiService {
       ];
     }
 
-    // 1. Hyderabad
+    // 2. Hyderabad
     if (d.includes('hyderabad') || d.includes('secunderabad')) {
       return [
         { summary: 'Charminar, Laad Bazaar Pearls & Chowmahalla Palace', morning: 'Climb 1591 AD Charminar & shop for bangles in Laad Bazaar', afternoon: 'Tour Nizams grand Chowmahalla Palace & vintage car collection', evening: 'Authentic Hyderabadi Dum Biryani dinner at Paradise or Hotel Shadab' },
         { summary: 'Golconda Fort Acoustics, Qutb Shahi Tombs & Sound Show', morning: 'Guided hike through majestic Golconda Fort acoustics & royal palaces', afternoon: 'Explore 7 domed Qutb Shahi Royal Tombs garden complex', evening: 'Sound & Light Show at Golconda Fort' },
         { summary: 'Full Day Ramoji Film City Adventure', morning: 'Explore World\'s Largest Film Studio Complex at Ramoji Film City', afternoon: 'Watch live stunt shows, Japanese Gardens & Bahubali Movie Sets', evening: 'Return to Hyderabad city & Hussain Sagar Lake Boat Ride to Buddha Statue' },
-        { summary: 'Salar Jung Museum, Birla Mandir & Tank Bund Promenade', morning: 'Explore world-class single-man collection at Salar Jung Museum & Veiled Rebecca', afternoon: 'Visit white marble Birla Mandir atop Naubat Pahad hill', evening: 'Sunset walk along Tank Bund & NTR Gardens' },
-        { summary: 'Taj Falaknuma Palace High Tea & Shilparamam Craft Village', morning: 'Guided tour of Falaknuma Palace 101-seater dining hall & gardens', afternoon: 'Shop for rural handicrafts, pottery & handlooms at Shilparamam Arts Village', evening: 'Fine dining at Jubilee Hills upscale bistro' },
-        { summary: 'Nehru Zoological Park Safari & Sudha Cars Museum', morning: 'Lion & Tiger Safari ride at Nehru Zoological Park', afternoon: 'Visit quirky Sudha Cars Museum featuring wacky handmade vehicles', evening: 'Irani Chai & Osmania Biscuits at Nimrah Cafe near Charminar' },
-        { summary: 'Ananthagiri Hills Trekking & Kotpally Reservoir Kayaking', morning: 'Day excursion to Ananthagiri Hills forest trails & Musi River origin', afternoon: 'Kayaking & water sports at Kotpally Reservoir', evening: 'Return for farewell Hyderabadi Haleem & Kurbani ka Meetha' }
+        { summary: 'Salar Jung Museum, Birla Mandir & Tank Bund Promenade', morning: 'Explore world-class single-man collection at Salar Jung Museum & Veiled Rebecca', afternoon: 'Visit white marble Birla Mandir atop Naubat Pahad hill', evening: 'Sunset walk along Tank Bund & NTR Gardens' }
       ];
     }
 
-    // 2. Assam
+    // 3. Assam
     if (d.includes('assam') || d.includes('guwahati') || d.includes('kaziranga') || d.includes('majuli')) {
       return [
         { summary: 'Guwahati Kamakhya Temple & Brahmaputra Sunset Cruise', morning: 'Visit sacred 51 Shakti Peeth Kamakhya Temple atop Nilachal Hill in Guwahati', afternoon: 'Guided walk through Assam State Museum & Umananda Peacock Island Temple', evening: 'Sunset Alfresco Cruise on Brahmaputra River with traditional Assamese dinner' },
         { summary: 'Kaziranga National Park Rhinoceros Elephant & Jeep Safari', morning: 'Early 5:30 AM Elephant Safari in Kaziranga Central Range viewing One-Horned Rhinoceros', afternoon: 'Jeep Safari through Western Range & visit Kaziranga National Orchid Park', evening: 'Traditional Assamese Thali dinner featuring Masor Tenga & local bamboo shoot dishes' },
-        { summary: 'Majuli River Island & Satra Monasteries', morning: 'Ferry ride from Jorhat to Majuli Island (World’s Largest River Island)', afternoon: 'Guided walk through Kamalabari & Auniati Satra Vaishnavite monasteries', evening: 'Traditional Mising tribal village walk & evening riverbank sunset view' },
-        { summary: 'Tezpur Heritage & Assam Organic Tea Gardens', morning: 'Explore Agnigarh Hill park overlooking Brahmaputra River & Cole Park', afternoon: 'Guided tour & tea tasting at historic Koliabor Tea Estate', evening: 'Traditional Assamese pita dessert & tea session' }
+        { summary: 'Majuli River Island & Satra Monasteries', morning: 'Ferry ride from Jorhat to Majuli Island (World’s Largest River Island)', afternoon: 'Guided walk through Kamalabari & Auniati Satra Vaishnavite monasteries', evening: 'Traditional Mising tribal village walk & evening riverbank sunset view' }
       ];
     }
 
-    // 3. Kerala
+    // 4. Kerala
     if (d.includes('kerala') || d.includes('kochi') || d.includes('munnar') || d.includes('alleppey') || d.includes('kovalam')) {
       return [
         { summary: 'Fort Kochi Heritage Walk, St. Francis Church & Chinese Nets', morning: 'Explore historic Fort Kochi, Mattancherry Dutch Palace & Jewish Synagogue', afternoon: 'View iconic Chinese Fishing Nets & fresh seafood lunch by the Arabian Sea', evening: 'Traditional Kathakali Cultural Dance Performance with elaborate face makeup' },
         { summary: 'Munnar Rolling Tea Estates & Cheeyappara Waterfalls', morning: 'Drive through misty Western Ghats stopping at Cheeyappara & Valara Waterfalls', afternoon: 'Guided walk through Tata Tea Plantations & visit Munnar Tea Museum', evening: 'Campfire dinner overlooking lush Tea Valley in Munnar hill station' },
-        { summary: 'Alleppey Deluxe Backwaters Houseboat Cruise', morning: 'Board private Deluxe Kerala Houseboat in Alleppey (Alappuzha) backwaters', afternoon: 'Cruise past quiet palm-fringed lagoons with fresh Karimeen Pollichathu fish lunch', evening: 'Sunset over Vembanad Lake & overnight peaceful houseboat stay' },
-        { summary: 'Kovalam Beach Cliff Walk & Samudra Beach Sunset', morning: 'Relaxation at Kovalam Lighthouse Beach & Samudra Beach', afternoon: 'Ayurvedic Abhyanga Herbal Oil Massage & rejuvenation session', evening: 'Sunset cliffside dining with fresh tiger prawns at Kovalam Promenade' }
+        { summary: 'Alleppey Deluxe Backwaters Houseboat Cruise', morning: 'Board private Deluxe Kerala Houseboat in Alleppey (Alappuzha) backwaters', afternoon: 'Cruise past quiet palm-fringed lagoons with fresh Karimeen Pollichathu fish lunch', evening: 'Sunset over Vembanad Lake & overnight peaceful houseboat stay' }
       ];
     }
 
-    // 4. Goa
+    // 5. Goa
     if (d.includes('goa') || d.includes('baga') || d.includes('panaji')) {
       return [
         { summary: 'North Goa Baga Beach Water Sports & Aguada Fort', morning: 'Parasailing & Jet Skiing at Baga Beach', afternoon: 'Explore 17th-century Portuguese Fort Aguada & Lighthouse', evening: 'Sunset cocktails at Vagator Cliff Lounge (Thalassa)' },
-        { summary: 'Old Goa UNESCO Cathedrals & Spice Plantation', morning: 'Tour Basilica of Bom Jesus & Se Cathedral in Old Goa', afternoon: 'Guided walk & buffet lunch at Sahakari Spice Plantation', evening: 'Mandovi River Sunset Cruise with Goan Folk Dance' },
-        { summary: 'Dudhsagar Waterfalls Jeep Trek & Fontainhas Latin Quarter', morning: '4x4 Jeep Safari through Bhagwan Mahavir Sanctuary to Dudhsagar Waterfalls', afternoon: 'Stroll colorful Portuguese heritage streets in Fontainhas Latin Quarter', evening: 'Candlelit beach shack seafood dinner at Palolem Beach' }
-      ];
-    }
-
-    // 5. Mumbai
-    if (d.includes('mumbai') || d.includes('bombay')) {
-      return [
-        { summary: 'Gateway of India & Marine Drive Sunset Promenade', morning: 'Walk Gateway of India plaza & photograph historic Taj Mahal Palace Hotel', afternoon: 'Colaba Causeway shopping & Bademiya Kebab lunch', evening: 'Sunset Promenade walk along Marine Drive (Queen’s Necklace)' },
-        { summary: 'Elephanta Caves Cruise & Crawford Market', morning: 'Ferry cruise from Gateway of India to UNESCO Elephanta Cave Temples', afternoon: 'Explore ancient 5th-century Lord Shiva rock-cut cave sculptures', evening: 'Tour UNESCO Chhatrapati Shivaji Maharaj Terminus (CSMT) & Crawford Market' }
-      ];
-    }
-
-    // 6. Cairo / Egypt
-    if (d.includes('cairo') || d.includes('egypt')) {
-      return [
-        { summary: 'Giza Plateau Pyramids, Great Sphinx & Camel Safari', morning: 'Explore Great Pyramids of Giza (Khufu, Khafre, Menkaure) & Camel Safari', afternoon: 'Photograph iconic Great Sphinx Monument & Valley Temple of Khafre', evening: 'Sunset Nile River Felucca Boat Cruise with Egyptian Koshary Dinner' },
-        { summary: 'Grand Egyptian Museum & King Tutankhamun Treasures', morning: 'Visit Grand Egyptian Museum (GEM) & King Tutankhamun Golden Treasures', afternoon: 'Tour Tahrir Square Historic Museum of Egyptian Antiquities', evening: 'Authentic Grill Dinner in Downtown Cairo' }
-      ];
-    }
-
-    // 7. Bali
-    if (d.includes('bali') || d.includes('ubud') || d.includes('indonesia')) {
-      return [
-        { summary: 'Ubud Sacred Monkey Forest & Royal Palace Walk', morning: 'Explore Sacred Monkey Forest Sanctuary with 700+ long-tailed macaques', afternoon: 'Tour Puri Saren Agung (Ubud Royal Palace) & shop at Ubud Art Market', evening: 'Balinese Legong Dance performance at Puri Saraswati Temple' },
-        { summary: 'Tegallalang Rice Terraces & Tirta Empul Temple', morning: 'Walk through terraced green hills at Tegallalang Rice Terraces & High Jungle Swings', afternoon: 'Visit Tirta Empul Holy Spring Temple for traditional ritual purification', evening: 'Dinner overlooking lush rainforest valley at Sayan Ridge' }
+        { summary: 'Old Goa UNESCO Cathedrals & Spice Plantation', morning: 'Tour Basilica of Bom Jesus & Se Cathedral in Old Goa', afternoon: 'Guided walk & buffet lunch at Sahakari Spice Plantation', evening: 'Mandovi River Sunset Cruise with Goan Folk Dance' }
       ];
     }
 
@@ -236,50 +216,28 @@ INSTRUCTIONS & CONSTRAINTS:
       }
     }
 
-    // Advanced Fallback Intelligence: Precise City Extraction & Authentic Landmark Generator
+    // Universal Dynamic City Extraction Algorithm
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
     let targetPlace = '';
 
-    // 1. Direct Token Match against Known City Names anywhere in message
-    const citiesList = [
-      'pune', 'mumbai', 'delhi', 'new delhi', 'jaipur', 'goa', 'kerala', 'hyderabad',
-      'bangalore', 'bengaluru', 'chennai', 'kolkata', 'ahmedabad', 'chandigarh', 'amritsar',
-      'shimla', 'manali', 'darjeeling', 'rishikesh', 'ladakh', 'leh', 'kashmir', 'srinagar',
-      'udaipur', 'jodhpur', 'jaisalmer', 'agra', 'varanasi', 'pondicherry', 'ooty', 'coorg',
-      'munnar', 'alleppey', 'guwahati', 'kaziranga', 'assam', 'sikkim', 'gangtok', 'shillong',
-      'bali', 'tokyo', 'kyoto', 'osaka', 'paris', 'london', 'dubai', 'singapore', 'maldives',
-      'bangkok', 'phuket', 'rome', 'venice', 'barcelona', 'amsterdam', 'switzerland', 'zurich',
-      'new york', 'los angeles', 'san francisco', 'las vegas', 'sydney', 'cairo', 'istanbul',
-      'athens', 'santorini', 'prague', 'seoul', 'kuala lumpur'
-    ];
+    // Universal Stop Words Set
+    const stopWords = new Set([
+      'day', 'days', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14',
+      'trip', 'plan', 'schedule', 'itinerary', 'tour', 'vacation', 'visit', 'in', 'at', 'to', 'for',
+      'about', 'the', 'a', 'an', 'my', 'our', 'give', 'me', 'show', 'create', 'make', 'generate',
+      'want', 'need', 'please', 'can', 'you', 'how', 'what', 'where', 'when', 'is', 'are', 'weather',
+      'temp', 'temperature', 'places', 'attractions', 'things', 'do'
+    ]);
 
-    for (const city of citiesList) {
-      if (new RegExp(`\\b${city}\\b`, 'i').test(lowMsg)) {
-        targetPlace = city.charAt(0).toUpperCase() + city.slice(1);
-        if (city === 'new york') targetPlace = 'New York';
-        else if (city === 'kuala lumpur') targetPlace = 'Kuala Lumpur';
-        else if (city === 'san francisco') targetPlace = 'San Francisco';
-        else if (city === 'los angeles') targetPlace = 'Los Angeles';
-        else if (city === 'las vegas') targetPlace = 'Las Vegas';
-        else if (city === 'new delhi') targetPlace = 'New Delhi';
-        break;
-      }
-    }
+    const tokens = lowMsg.split(/\s+/).map(t => t.replace(/[^a-z0-9]/g, '')).filter(Boolean);
+    const nonStopTokens = tokens.filter(t => !stopWords.has(t));
 
-    // 2. Pattern Matching "X trip", "X plan", "visit X", "to X", "in X"
-    if (!targetPlace) {
-      const matchTrip = message.match(/([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(?:trip|plan|schedule|itinerary|tour|vacation)\b/i);
-      const matchFor = message.match(/(?:visit|in|at|to|for|about)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
-
-      if (matchTrip && matchTrip[1] && !['the', 'a', 'an', 'my', 'our', 'days', 'day', '7', '5', '3'].includes(matchTrip[1].toLowerCase())) {
-        targetPlace = matchTrip[1].trim();
-      } else if (matchFor && matchFor[1] && !['visit', 'trip', 'plan', 'schedule', 'the'].includes(matchFor[1].toLowerCase())) {
-        targetPlace = matchFor[1].trim();
-      } else {
-        targetPlace = destContext || 'Pune';
-      }
+    if (nonStopTokens.length > 0) {
+      targetPlace = nonStopTokens.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    } else {
+      targetPlace = destContext || 'Visakhapatnam';
     }
 
     const dayTemplates = this.getCityLandmarks(targetPlace, tripContext?.travelStyle);
@@ -319,7 +277,7 @@ INSTRUCTIONS & CONSTRAINTS:
       }
     }
 
-    // 2. Itinerary / Trip Plan Request (ACCURATE TARGET PLACE & NON-REPEATING DAYS)
+    // 2. Itinerary / Trip Plan Request (UNIVERSAL EXACT TARGET PLACE & NON-REPEATING DAYS)
     let reqDays = 5;
     const numMatch = message.match(/\b(\d{1,2})\s*(?:day|days|d)\b/i);
     if (numMatch && numMatch[1]) {
@@ -365,7 +323,7 @@ INSTRUCTIONS & CONSTRAINTS:
   }
 
   private static generateFallbackItinerary(input: any) {
-    const dest = (input.destination || 'Pune').trim();
+    const dest = (input.destination || 'Visakhapatnam').trim();
     const daysCount = Number(input.durationDays) || 4;
     const style = input.travelStyle || 'Leisure';
 
