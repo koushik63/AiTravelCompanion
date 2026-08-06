@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Trip, PackingItem, Expense, Memory, NotificationItem } from '../types';
 import { TripService, ExpenseService, MemoryService, AdminService } from '../services/api';
+import { validateDestination } from '../utils/destinationValidator';
 
 interface TravelState {
   trips: Trip[];
@@ -57,11 +58,19 @@ export const useTravelStore = create<TravelState>((set, get) => ({
   },
 
   addTrip: async (tripData) => {
+    if (tripData.destination) {
+      const validation = validateDestination(tripData.destination);
+      if (!validation.isValid) {
+        set({ error: validation.errorMessage });
+        throw new Error(validation.errorMessage || 'Invalid destination');
+      }
+    }
     try {
       const newTrip = await TripService.createTrip(tripData);
       set((state) => ({ trips: [newTrip, ...state.trips] }));
     } catch (err: any) {
       set({ error: err.message });
+      throw err;
     }
   },
 

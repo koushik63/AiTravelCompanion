@@ -19,15 +19,35 @@ const KNOWN_VALID_DESTINATIONS = [
   'kyoto', 'osaka', 'seoul', 'vietnam', 'hanoi', 'ho chi minh', 'jakarta', 'nepal', 'kathmandu',
   'bhutan', 'sri lanka', 'colombo', 'male', 'fiji', 'greece', 'santorini', 'italy', 'france',
   'germany', 'berlin', 'munich', 'spain', 'japan', 'uk', 'usa', 'united states', 'canada',
-  'australia', 'indonesia', 'malaysia', 'kuala lumpur', 'turkey', 'egypt', 'brazil', 'rio de janeiro'
+  'australia', 'indonesia', 'malaysia', 'kuala lumpur', 'turkey', 'egypt', 'brazil', 'rio de janeiro',
+  'beijing', 'shanghai', 'hong kong', 'taiwan', 'taipei', 'manila', 'philippines', 'canggu',
+  'ubud', 'seminyak', 'nusa dua', 'nusa penida', 'krabi', 'koh samui', 'chiang mai', 'boracay',
+  'maldives', 'seychelles', 'mauritius', 'dubrovnik', 'croatia', 'lisbon', 'portugal', 'porto',
+  'reykjavik', 'iceland', 'oslo', 'norway', 'stockholm', 'sweden', 'copenhagen', 'denmark',
+  'helsinki', 'finland', 'dublin', 'ireland', 'edinburgh', 'scotland', 'brussels', 'belgium',
+  'vatican', 'san marino', 'monaco', 'zurich', 'geneva', 'innsbruck', 'austria', 'salzburg',
+  'verona', 'naples', 'amalfi', 'positano', 'capri', 'sicily', 'ibiza', 'majorca', 'valencia',
+  'seville', 'granada', 'mykonos', 'crete', 'rhodes', 'cyprus', 'malta', 'vladivostok', 'moscow',
+  'st petersburg', 'russia', 'alaska', 'seattle', 'boston', 'philadelphia', 'dallas', 'houston',
+  'austin', 'denver', 'phoenix', 'san diego', 'san jose', 'portland', 'honolulu', 'anchorage',
+  'cancun', 'mexico', 'mexico city', 'tulum', 'cabo', 'havana', 'cuba', 'punta cana', 'san juan',
+  'costa rica', 'panama', 'bogota', 'colombia', 'medellin', 'lima', 'peru', 'cusco', 'machu picchu',
+  'buenos aires', 'argentina', 'santiago', 'chile', 'sao paulo', 'cape town', 'south africa',
+  'johannesburg', 'nairobi', 'kenya', 'serengeti', 'tanzania', 'zanzibar', 'morocco', 'marrakech',
+  'casablanca', 'cairo', 'luxor', 'israel', 'tel aviv', 'jerusalem', 'jordan', 'petra', 'amman',
+  'doha', 'qatar', 'abu dhabi', 'muscat', 'oman', 'riyadh', 'saudi arabia', 'jeddah', 'beirut',
+  'tashkent', 'uzbekistan', 'almaty', 'kazakhstan', 'baku', 'azerbaijan', 'tbilisi', 'georgia',
+  'yerevan', 'armenia', 'goa', 'kerala', 'ladakh', 'kashmir'
 ];
 
-const GIBBERISH_PATTERNS = [
+const GIBBERISH_REGEX = [
   /asdf/i, /sdfg/i, /dfgh/i, /fghj/i, /ghjk/i, /hjkl/i,
   /qwert/i, /werty/i, /ertyu/i, /rtyui/i, /tyuio/i, /yuiop/i,
   /zxcv/i, /xcvb/i, /cvbn/i, /vbnm/i,
   /wdyu/i, /ydva/i, /wyda/i, /qaz/i, /wsx/i, /edc/i,
-  /(.)\1{3,}/, // 4+ repeating characters like aaaa, zzzz
+  /wada/i, /wdad/i, /adw/i, /dadw/i, /wad/i, /daw/i,
+  /(w[ad]|d[aw]|a[sd]|s[df]|f[gh]|g[hj]|h[jk]|j[kl]|q[we]|w[er]|e[rt]|r[ty]|t[yu]|y[ui]|u[io]|i[op]|z[xc]|x[cv]|c[vb]|v[bn]|b[nm]){2,}/i,
+  /(.)\1{2,}/, // 3+ repeating characters like aaa, zzz
   /^[^aeiouy]+$/i // No vowels at all
 ];
 
@@ -51,17 +71,9 @@ export function validateDestination(destinationName: string): DestinationValidat
 
   const clean = raw.toLowerCase().trim();
 
-  // Known valid destination check
-  if (KNOWN_VALID_DESTINATIONS.some(kd => clean.includes(kd) || kd.includes(clean))) {
-    return {
-      isValid: true,
-      normalizedName: raw
-    };
-  }
-
-  // Check for gibberish key mashes
-  for (const pattern of GIBBERISH_PATTERNS) {
-    if (pattern.test(clean) && clean.length > 3) {
+  // Explicit check against gibberish patterns first
+  for (const pattern of GIBBERISH_REGEX) {
+    if (pattern.test(clean) && clean.length >= 3) {
       return {
         isValid: false,
         errorMessage: `The place "${raw}" does not exist. Please enter a recognized city or country (e.g. Goa, Paris, Tokyo, Mumbai).`
@@ -69,9 +81,26 @@ export function validateDestination(destinationName: string): DestinationValidat
     }
   }
 
-  // Vowel ratio check for longer words
+  // Known valid destination exact token matching
+  const matchesKnown = KNOWN_VALID_DESTINATIONS.some(kd => {
+    if (clean === kd) return true;
+    if (clean.includes(kd) && kd.length >= 3) return true;
+    if (kd.includes(clean) && clean.length >= 3) return true;
+    return false;
+  });
+
+  if (matchesKnown) {
+    return {
+      isValid: true,
+      normalizedName: raw
+    };
+  }
+
+  // Vowel ratio check for arbitrary names
   const vowelCount = (clean.match(/[aeiouy]/gi) || []).length;
-  if (clean.length >= 6 && vowelCount === 0) {
+  const vowelRatio = vowelCount / clean.length;
+
+  if (vowelRatio < 0.20 || vowelCount === 0) {
     return {
       isValid: false,
       errorMessage: `The place "${raw}" does not exist. Please enter a valid geographical destination.`
