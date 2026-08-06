@@ -27,7 +27,13 @@ export const TripDetailsPage: React.FC = () => {
     );
   }
 
-  const detailedItinerary = customItinerary || getDetailedDestinationItinerary(trip.destination);
+  // Calculate exact duration in days from start date to end date
+  const start = new Date(trip.startDate);
+  const end = new Date(trip.endDate);
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const tripDurationDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1);
+
+  const detailedItinerary = customItinerary || getDetailedDestinationItinerary(trip.destination, tripDurationDays);
   const budgetProgress = (trip.spent / (trip.budget || 1)) * 100;
 
   const handleRegenerateWithAI = async () => {
@@ -37,7 +43,8 @@ export const TripDetailsPage: React.FC = () => {
         destination: trip.destination,
         travelStyle: trip.travelType || 'Leisure',
         budget: trip.budget || 50000,
-        durationDays: 3
+        durationDays: tripDurationDays,
+        forceRegenerate: true
       });
 
       if (res && res.days && Array.isArray(res.days)) {
