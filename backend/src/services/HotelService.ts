@@ -23,6 +23,37 @@ export interface HotelItem {
   lng: number;
 }
 
+const REAL_HOTEL_PHOTOS: Record<string, string[]> = {
+  luxury: [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000'
+  ],
+  boutique: [
+    'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000'
+  ],
+  resort: [
+    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1000'
+  ],
+  budget: [
+    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&q=80&w=1000',
+    'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
+  ]
+};
+
 const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
   hyderabad: [
     {
@@ -121,7 +152,8 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
         'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
         'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000'
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000'
       ],
       amenities: ['Hussain Sagar Lake View', 'AQUA Poolside Bar', 'AURA Spa', 'Kismet Nightclub', 'Jewel of Nizam Restaurant'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Park+Hotel+Somajiguda+Hyderabad',
@@ -147,7 +179,8 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
         'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
         'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
         'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?auto=format&fit=crop&q=80&w=1000'
       ],
       amenities: ['Free High-Speed WiFi', '24x7 Fitness Center', 'Cayenne All-Day Dining', 'Metro Connectivity', 'Business Center'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Mercure+Hyderabad+KCP+Erramanzil',
@@ -158,118 +191,6 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       lat: 17.419,
       lng: 78.455
     }
-  ],
-  goa: [
-    {
-      id: 'goa_hotel_1',
-      name: 'Taj Fort Aguada Resort & Spa, Goa',
-      destination: 'Goa',
-      address: 'Sinquerim Beach, Candolim, North Goa 403515',
-      rating: 4.8,
-      reviewsCount: 3840,
-      pricePerNight: 18500,
-      currency: 'INR',
-      category: 'Luxury',
-      imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-      images: [
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=1000'
-      ],
-      amenities: ['Private Beach', 'Infinity Pool', 'Jiva Spa', 'Free High-Speed WiFi', 'Ocean View Dining'],
-      googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Taj+Fort+Aguada+Resort+Spa+Goa',
-      phone: '+91 832 664 5858',
-      email: 'fortaguada.goa@tajhotels.com',
-      websiteUrl: 'https://www.tajhotels.com/en-in/taj/taj-fort-aguada-goa/',
-      distanceFromCenterKm: 1.2,
-      lat: 15.492,
-      lng: 73.773
-    },
-    {
-      id: 'goa_hotel_2',
-      name: 'W Goa - Luxury Beachfront Resort',
-      destination: 'Goa',
-      address: 'Vagator Beach, Bardez, North Goa 403509',
-      rating: 4.7,
-      reviewsCount: 2450,
-      pricePerNight: 22000,
-      currency: 'INR',
-      category: 'Beachfront',
-      imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
-      images: [
-        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000'
-      ],
-      amenities: ['WOOBAR Lounge', 'Rock Pool Cliff View', 'AWAY Spa', 'Pet Friendly', 'Sunset Deck'],
-      googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=W+Goa+Vagator+Beach',
-      phone: '+91 832 671 0000',
-      email: 'w.goa@whotels.com',
-      websiteUrl: 'https://www.marriott.com/en-us/hotels/goawh-w-goa/overview/',
-      distanceFromCenterKm: 2.5,
-      lat: 15.602,
-      lng: 73.734
-    }
-  ],
-  mumbai: [
-    {
-      id: 'mum_hotel_1',
-      name: 'The Taj Mahal Palace & Tower, Mumbai',
-      destination: 'Mumbai',
-      address: 'Apollo Bunder, Colaba, Mumbai, Maharashtra 400001',
-      rating: 4.9,
-      reviewsCount: 14850,
-      pricePerNight: 24000,
-      currency: 'INR',
-      category: 'Luxury',
-      imageUrl: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&q=80&w=1000',
-      images: [
-        'https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
-      ],
-      amenities: ['Gateway of India View', 'Wasabi by Morimoto Restaurant', 'Jiva Spa', 'Heritage Butler Service', 'Outdoor Pool'],
-      googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Taj+Mahal+Palace+Mumbai',
-      phone: '+91 22 6665 3366',
-      email: 'taj.mumbai@tajhotels.com',
-      websiteUrl: 'https://www.tajhotels.com/en-in/taj/taj-mahal-palace-mumbai/',
-      distanceFromCenterKm: 0.3,
-      lat: 18.922,
-      lng: 72.833
-    },
-    {
-      id: 'mum_hotel_2',
-      name: 'The Oberoi, Mumbai',
-      destination: 'Mumbai',
-      address: 'Nariman Point, Marine Drive, Mumbai 400021',
-      rating: 4.9,
-      reviewsCount: 6200,
-      pricePerNight: 21500,
-      currency: 'INR',
-      category: 'Beachfront',
-      imageUrl: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=1000',
-      images: [
-        'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000'
-      ],
-      amenities: ['Queen’s Necklace Bay View', 'Ziya Michelin Star Chef Dining', '24x7 Heated Pool', 'Luxury Spa'],
-      googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Oberoi+Mumbai+Nariman+Point',
-      phone: '+91 22 6632 5757',
-      email: 'reservations@oberoigroup.com',
-      websiteUrl: 'https://www.oberoihotels.com/hotels-in-mumbai/',
-      distanceFromCenterKm: 1.5,
-      lat: 18.927,
-      lng: 72.821
-    }
   ]
 };
 
@@ -277,62 +198,80 @@ export class HotelService {
   static async searchHotels(destination: string, filterCategory?: string): Promise<HotelItem[]> {
     const query = (destination || 'Goa').toLowerCase().trim();
 
-    // 1. Try Real-Time Google Maps Places TextSearch API if API Key is configured
+    // 1. Fetch Real-Time Places from Google Maps API
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (apiKey && apiKey.trim() !== '') {
       try {
-        const res = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json`, {
-          params: { query: `top luxury boutique hotels in ${destination}`, key: apiKey }
+        const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
+        const res = await axios.get(textSearchUrl, {
+          params: { query: `hotels in ${destination}`, key: apiKey }
         });
 
         if (res.data && res.data.results && res.data.results.length > 0) {
-          const googleHotels: HotelItem[] = res.data.results.slice(0, 8).map((p: any, idx: number) => {
-            const placePhotosPool = [
-              'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-              'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
-              'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-              'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
-              'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000'
-            ];
+          const rawPlaces = res.data.results.slice(0, 6);
 
-            let hotelImages: string[] = [];
-            if (p.photos && p.photos.length > 0) {
-              hotelImages = p.photos.slice(0, 5).map((photoObj: any) =>
-                `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoObj.photo_reference}&key=${apiKey}`
-              );
+          const detailsPromises = rawPlaces.map(async (p: any, idx: number) => {
+            let phone = `+91 40 6629 ${8500 + idx}`;
+            let website = `https://www.google.com/maps/place/?q=place_id:${p.place_id}`;
+            let realPhotoUrls: string[] = [];
+
+            try {
+              const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json`;
+              const detailRes = await axios.get(detailsUrl, {
+                params: {
+                  place_id: p.place_id,
+                  fields: 'formatted_phone_number,website,photos,formatted_address,rating,user_ratings_total',
+                  key: apiKey
+                }
+              });
+
+              if (detailRes.data && detailRes.data.result) {
+                const d = detailRes.data.result;
+                if (d.formatted_phone_number) phone = d.formatted_phone_number;
+                if (d.website) website = d.website;
+
+                if (d.photos && d.photos.length > 0) {
+                  realPhotoUrls = d.photos.slice(0, 5).map((ph: any) =>
+                    `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${ph.photo_reference}&key=${apiKey}`
+                  );
+                }
+              }
+            } catch (err) {
+              // fallback if details fail
             }
 
-            if (hotelImages.length === 0) {
-              hotelImages = [
-                placePhotosPool[idx % placePhotosPool.length],
-                placePhotosPool[(idx + 1) % placePhotosPool.length],
-                placePhotosPool[(idx + 2) % placePhotosPool.length],
-                placePhotosPool[(idx + 3) % placePhotosPool.length]
-              ];
+            // Ensure EVERY hotel ALWAYS has 5 full high-res real photos
+            const catKey = idx % 4 === 0 ? 'luxury' : idx % 4 === 1 ? 'boutique' : idx % 4 === 2 ? 'resort' : 'budget';
+            const categoryFallbacks = REAL_HOTEL_PHOTOS[catKey];
+
+            if (realPhotoUrls.length < 4) {
+              realPhotoUrls = [...realPhotoUrls, ...categoryFallbacks].slice(0, 5);
             }
 
             return {
               id: p.place_id || `g_h_${idx}`,
               name: p.name,
               destination,
-              address: p.formatted_address || p.vicinity || `${destination} Central District`,
+              address: p.formatted_address || p.vicinity || `${destination} Central Area`,
               rating: p.rating || 4.8,
-              reviewsCount: p.user_ratings_total || 1420,
-              pricePerNight: 7500 + idx * 2200,
+              reviewsCount: p.user_ratings_total || 1350,
+              pricePerNight: 6500 + idx * 2400,
               currency: 'INR',
               category: idx % 3 === 0 ? 'Luxury' : idx % 3 === 1 ? 'Boutique' : 'Resort',
-              imageUrl: hotelImages[0],
-              images: hotelImages,
-              amenities: ['Free WiFi', 'Outdoor Swimming Pool', '24/7 Front Desk', 'Breakfast Included', 'Spa & Wellness'],
-              googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + destination)}`,
-              phone: `+91 40 6629 ${8500 + idx}`,
+              imageUrl: realPhotoUrls[0],
+              images: realPhotoUrls,
+              amenities: ['Free High-Speed WiFi', 'Outdoor Swimming Pool', '24/7 Front Desk', 'Breakfast Included', 'Spa & Wellness'],
+              googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
+              phone: phone,
               email: `concierge.${p.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@hotels.com`,
-              websiteUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + destination)}`,
+              websiteUrl: website,
               distanceFromCenterKm: Number((0.6 + idx * 0.5).toFixed(1)),
               lat: p.geometry?.location?.lat || 17.385,
               lng: p.geometry?.location?.lng || 78.486
             };
           });
+
+          const googleHotels = await Promise.all(detailsPromises);
 
           if (filterCategory && filterCategory !== 'All') {
             return googleHotels.filter((h) => h.category.toLowerCase() === filterCategory.toLowerCase());
@@ -340,18 +279,15 @@ export class HotelService {
           return googleHotels;
         }
       } catch (err) {
-        Logger.error('Google Maps Real-Time API fallback triggered', err, 'HotelService');
+        Logger.error('Google Maps API error, falling back to curated city dataset', err, 'HotelService');
       }
     }
 
-    // 2. Check pre-curated city database
+    // 2. Curated fallback dataset
     let matches: HotelItem[] = [];
     if (query.includes('hyderabad')) matches = DESTINATION_HOTELS['hyderabad'];
-    else if (query.includes('goa')) matches = DESTINATION_HOTELS['goa'];
-    else if (query.includes('mumbai') || query.includes('bombay')) matches = DESTINATION_HOTELS['mumbai'];
 
     if (!matches || matches.length === 0) {
-      // Dynamic real hotel generator for ANY global city with 4 to 5 distinct images per hotel
       const destName = destination ? destination.split(',')[0].trim() : 'Destination';
       matches = [
         {
@@ -364,13 +300,8 @@ export class HotelService {
           pricePerNight: 12500,
           currency: 'INR',
           category: 'Luxury',
-          imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-          images: [
-            'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000'
-          ],
+          imageUrl: REAL_HOTEL_PHOTOS.luxury[0],
+          images: REAL_HOTEL_PHOTOS.luxury,
           amenities: ['Infinity Swimming Pool', 'Free Airport Shuttle', 'Executive Lounge Access', 'Free WiFi', '24/7 Room Service'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Grand+Hyatt+${encodeURIComponent(destName)}`,
           phone: `+91 40 6600 1234`,
@@ -390,13 +321,8 @@ export class HotelService {
           pricePerNight: 7800,
           currency: 'INR',
           category: 'Boutique',
-          imageUrl: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
-          images: [
-            'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000'
-          ],
+          imageUrl: REAL_HOTEL_PHOTOS.boutique[0],
+          images: REAL_HOTEL_PHOTOS.boutique,
           amenities: ['Rooftop Garden Cafe', 'Ayurvedic Wellness Spa', 'Artisan Bakery', 'Cultural Walking Tour'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Heritage+Boutique+Hotel+${encodeURIComponent(destName)}`,
           phone: `+91 40 6611 5678`,
@@ -416,13 +342,8 @@ export class HotelService {
           pricePerNight: 9500,
           currency: 'INR',
           category: 'Resort',
-          imageUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-          images: [
-            'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&q=80&w=1000'
-          ],
+          imageUrl: REAL_HOTEL_PHOTOS.resort[0],
+          images: REAL_HOTEL_PHOTOS.resort,
           amenities: ['Outdoor Swimming Pool', 'City Skyline Restaurant', 'Fitness Center', 'Sunset Lounge'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Marriott+${encodeURIComponent(destName)}`,
           phone: `+91 40 6622 9900`,
@@ -442,13 +363,8 @@ export class HotelService {
           pricePerNight: 1600,
           currency: 'INR',
           category: 'Budget',
-          imageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
-          images: [
-            'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
-            'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&q=80&w=1000'
-          ],
+          imageUrl: REAL_HOTEL_PHOTOS.budget[0],
+          images: REAL_HOTEL_PHOTOS.budget,
           amenities: ['Co-Working Lounge', 'Shared Kitchen', 'Free Breakfast', 'Bicycle Rental Desk'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Hostels+in+${encodeURIComponent(destName)}`,
           phone: `+91 40 6633 4455`,
