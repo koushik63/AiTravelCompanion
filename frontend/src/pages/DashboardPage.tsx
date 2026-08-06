@@ -19,6 +19,30 @@ export const DashboardPage: React.FC = () => {
   const totalBudget = trips.reduce((acc, t) => acc + (t.budget || 0), 0);
   const totalSpent = trips.reduce((acc, t) => acc + (t.spent || 0), 0);
 
+  // Dynamic Real-Time Journey Progress Calculation for Active Trip Banner
+  let activeProgressPercent = 14;
+  let activeProgressSublabel = 'Day 1 of 7 • 6 Days Remaining';
+
+  if (activeTrip) {
+    const now = new Date();
+    const startDate = activeTrip.startDate ? new Date(activeTrip.startDate) : now;
+    const endDate = activeTrip.endDate ? new Date(activeTrip.endDate) : new Date(now.getTime() + 7 * 86400000);
+
+    const totalDays = Math.max(1, Math.ceil(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const diffFromStartMs = now.getTime() - startDate.getTime();
+
+    let currentDay = 1;
+    if (diffFromStartMs > 0) {
+      currentDay = Math.min(totalDays, Math.floor(diffFromStartMs / (1000 * 60 * 60 * 24)) + 1);
+    } else {
+      currentDay = 1; // Trip started today
+    }
+
+    const remainingDays = Math.max(0, totalDays - currentDay);
+    activeProgressPercent = Math.min(100, Math.max(14, Math.round((currentDay / totalDays) * 100)));
+    activeProgressSublabel = `Day ${currentDay} of ${totalDays} • ${remainingDays} ${remainingDays === 1 ? 'Day' : 'Days'} Remaining`;
+  }
+
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Header */}
@@ -37,7 +61,7 @@ export const DashboardPage: React.FC = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="glass-button text-xs py-3 px-6 flex items-center gap-2 shadow-xl shadow-sky-500/20 z-10 shrink-0"
+          className="glass-button text-xs py-3 px-6 flex items-center gap-2 shadow-xl shadow-sky-500/20 z-10 shrink-0 cursor-pointer"
         >
           <Plus className="w-4 h-4" /> Create New Trip
         </button>
@@ -64,15 +88,15 @@ export const DashboardPage: React.FC = () => {
                 <MapPin className="w-3.5 h-3.5 text-sky-400" /> {activeTrip.destination}
               </p>
             </div>
-            <Link to="/current" className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5">
+            <Link to="/current" className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5 cursor-pointer">
               Open Live Mode <Compass className="w-4 h-4" />
             </Link>
           </div>
 
           <ProgressBar
-            progress={65}
+            progress={activeProgressPercent}
             label="Trip Progress"
-            sublabel="Day 4 of 7 • 3 Days Remaining"
+            sublabel={activeProgressSublabel}
             color="emerald"
           />
         </div>
