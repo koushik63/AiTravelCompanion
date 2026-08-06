@@ -130,10 +130,9 @@ User Context: ${contextStr}
 User Question: "${message}"
 
 INSTRUCTIONS & CONSTRAINTS:
-1. Answer the exact question asked by the user. If they ask about places to visit, list specific top attractions with brief descriptions. If they ask about weather, give weather details. If they ask about food, answer about food.
-2. Do NOT output a full multi-day trip itinerary unless the user explicitly asks for a day-by-day trip plan or itinerary.
-3. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
-4. Do NOT output raw JSON code blocks.`;
+1. Answer the exact question asked by the user. If they ask for a trip plan for N days, generate a complete N-day itinerary detailing every requested day (Day 1 through Day N).
+2. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
+3. Do NOT output raw JSON code blocks.`;
 
           const result = await model.generateContent(prompt);
           const text = result.response.text().trim();
@@ -144,7 +143,7 @@ INSTRUCTIONS & CONSTRAINTS:
       }
     }
 
-    // Advanced Fallback Intelligence: Precise City Matching & Intent Detection
+    // Advanced Fallback Intelligence: Precise City Matching & Dynamic N-Day Itinerary Engine
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
@@ -152,9 +151,10 @@ INSTRUCTIONS & CONSTRAINTS:
 
     // Direct Known City Matching Engine
     const knownCities = [
-      'hyderabad', 'secunderabad', 'paris', 'dubai', 'tokyo', 'london', 'new york', 'california',
+      'hyderabad', 'secunderabad', 'kerala', 'kochi', 'munnar', 'alleppey',
+      'paris', 'dubai', 'tokyo', 'london', 'new york', 'california',
       'jaipur', 'goa', 'mumbai', 'delhi', 'singapore', 'bali', 'switzerland', 'usa',
-      'rome', 'bangkok', 'phuket', 'maldives', 'kerala', 'ladakh', 'kashmir'
+      'rome', 'bangkok', 'phuket', 'maldives', 'ladakh', 'kashmir'
     ];
 
     for (const city of knownCities) {
@@ -162,6 +162,7 @@ INSTRUCTIONS & CONSTRAINTS:
         if (city === 'secunderabad') targetPlace = 'Hyderabad';
         else if (city === 'usa') targetPlace = 'USA';
         else if (city === 'new york') targetPlace = 'New York';
+        else if (city === 'kochi' || city === 'munnar' || city === 'alleppey') targetPlace = 'Kerala';
         else targetPlace = city.charAt(0).toUpperCase() + city.slice(1);
         break;
       }
@@ -169,28 +170,36 @@ INSTRUCTIONS & CONSTRAINTS:
 
     if (!targetPlace) {
       const match = message.match(/(?:visit|in|at|to|for|about)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
-      if (match && match[1] && match[1].toLowerCase() !== 'visit') {
+      if (match && match[1] && match[1].toLowerCase() !== 'visit' && match[1].toLowerCase() !== 'trip') {
         targetPlace = match[1].trim();
       } else {
-        targetPlace = destContext || 'Hyderabad';
+        targetPlace = destContext || 'Kerala';
       }
     }
 
     const placeLower = targetPlace.toLowerCase();
 
     // 0. Places to Visit & Top Attractions Query Trigger
-    if (/\b(place|places|visit|attraction|attractions|things to do|sightseeing|spot|spots|see|highlights|tourist)\b/i.test(lowMsg)) {
+    if (/\b(place|places|visit|attraction|attractions|things to do|sightseeing|spot|spots|see|highlights|tourist)\b/i.test(lowMsg) && !/\b(itinerary|plan|schedule|trip)\b/i.test(lowMsg)) {
       let attractionsList: string[] = [];
 
-      if (placeLower.includes('hyderabad')) {
+      if (placeLower.includes('kerala')) {
+        attractionsList = [
+          '1. **Alleppey Backwaters**: Overnight deluxe houseboat cruise through coconut palms.',
+          '2. **Munnar Tea Gardens & Anamudi Peak**: Rolling green hills & Eravikulam National Park.',
+          '3. **Fort Kochi & Chinese Fishing Nets**: Historic heritage streets, Santa Cruz Basilica & seafood.',
+          '4. **Thekkady Periyar Wildlife Sanctuary**: Boat safari spotting wild elephants & spice plantation walk.',
+          '5. **Kovalam & Varkala Beaches**: Red cliff views, lighthouse promenade & sunset surfing.',
+          '6. **Athirappilly Waterfalls**: The "Niagara of India" cascading through dense rainforest.'
+        ];
+      } else if (placeLower.includes('hyderabad')) {
         attractionsList = [
           '1. **Charminar & Laad Bazaar**: Iconic 16th-century monument & historic pearl bazaar.',
           '2. **Golconda Fort**: Acoustic marvel hilltop fort with Fateh Rahben cannon & light show.',
           '3. **Chowmahalla Palace**: Royal seat of the Asaf Jahi dynasty featuring grand marble halls.',
           '4. **Ramoji Film City**: World’s largest film studio complex with Bahubali sets.',
           '5. **Hussain Sagar Lake & Buddha Statue**: Sunset boat cruise to standing monolith Buddha.',
-          '6. **Qutb Shahi Tombs**: Persian & Deccan arch architecture in peaceful garden grounds.',
-          '7. **Taj Falaknuma Palace & Salar Jung Museum**: Royal high tea & famous Veiled Rebecca statue.'
+          '6. **Qutb Shahi Tombs**: Persian & Deccan arch architecture in peaceful garden grounds.'
         ];
       } else if (placeLower.includes('paris') || placeLower.includes('france')) {
         attractionsList = [
@@ -198,8 +207,7 @@ INSTRUCTIONS & CONSTRAINTS:
           '2. **Louvre Museum**: World’s largest art museum housing Mona Lisa & Venus de Milo.',
           '3. **Arc de Triomphe & Champs-Élysées**: Triumphal arch rooftop terrace & luxury avenue.',
           '4. **Sacré-Cœur Basilica in Montmartre**: Hilltop basilica with cobblestone artist plazas.',
-          '5. **Seine River Sunset Cruise**: Glass-canopy dinner cruise along historic bridges.',
-          '6. **Palace of Versailles**: Royal palace Hall of Mirrors & fountain gardens.'
+          '5. **Seine River Sunset Cruise**: Glass-canopy dinner cruise along historic bridges.'
         ];
       } else if (placeLower.includes('dubai') || placeLower.includes('uae')) {
         attractionsList = [
@@ -209,29 +217,12 @@ INSTRUCTIONS & CONSTRAINTS:
           '4. **Dubai Mall & Fountain Show**: World’s largest mall with dancing water fountain.',
           '5. **Palm Jumeirah & Atlantis Aquaventure**: Palm island monorail & world-class waterpark.'
         ];
-      } else if (placeLower.includes('tokyo') || placeLower.includes('japan')) {
-        attractionsList = [
-          '1. **Shibuya Scramble Crossing & Shibuya Sky**: World’s busiest pedestrian crossing & sky deck.',
-          '2. **Senso-ji Temple in Asakusa**: 7th-century Buddhist temple & Nakamise souvenir street.',
-          '3. **teamLab Planets**: Interactive digital art & mirrored water installations.',
-          '4. **Meiji Shrine & Harajuku**: Shinto shrine forest & Takeshita Street pop culture fashion.',
-          '5. **Tsukiji Outer Market**: Fresh sushi breakfast & Japanese street food tasting.'
-        ];
-      } else if (placeLower.includes('california') || placeLower.includes('san francisco') || placeLower.includes('los angeles')) {
-        attractionsList = [
-          '1. **San Francisco Golden Gate Bridge & Pier 39**: Walk iconic bridge & view sea lions.',
-          '2. **Alcatraz Island Prison**: Cellhouse audio tour across San Francisco Bay.',
-          '3. **Yosemite National Park**: El Capitan granite cliffs & Vernal Fall hikes.',
-          '4. **Hollywood Walk of Fame & Santa Monica Pier**: Star walk, Rodeo Drive & Pacific beach.',
-          '5. **Highway 1 Big Sur**: Pacific Coast Highway clifftop drive & Bixby Bridge.'
-        ];
       } else {
         attractionsList = [
           `1. **Historic Central Plaza & Monuments in ${targetPlace}**: Explore landmark architecture.`,
           `2. **Premier City Art & History Museum**: View local cultural heritage artifacts.`,
           `3. **Panoramic Sunset Observation Deck**: Sky deck for city skyline photography.`,
-          `4. **Artisan Craft Market & Bazaars**: Vibrant markets for regional souvenirs.`,
-          `5. **Scenic Waterfront Promenade**: Relaxing sunset boat cruise & park walk.`
+          `4. **Artisan Craft Market & Bazaars**: Vibrant markets for regional souvenirs.`
         ];
       }
 
@@ -270,16 +261,14 @@ INSTRUCTIONS & CONSTRAINTS:
     // 2. Food & Culinary Query
     if (/\b(food|eat|eating|dish|dishes|restaurant|restaurants|cuisine|lunch|dinner|breakfast)\b/i.test(lowMsg)) {
       let specialty = `authentic local street food & regional specialties in ${targetPlace}`;
-      if (placeLower.includes('paris') || placeLower.includes('france')) {
+      if (placeLower.includes('kerala')) {
+        specialty = `Kerala Karimeen Pollichathu, Malabar Parotta with Chicken Curry, Appam with Stew & Banana Fritters`;
+      } else if (placeLower.includes('paris') || placeLower.includes('france')) {
         specialty = `French Croissants, Duck Confit, Macarons & Escargot at traditional Parisian Bistros in Le Marais`;
       } else if (placeLower.includes('dubai') || placeLower.includes('uae')) {
         specialty = `Authentic Chicken Shawarma, Al Harees, Camel Milk Gelato & Arabian Seafood in Old Dubai Souks`;
-      } else if (placeLower.includes('tokyo') || placeLower.includes('japan')) {
-        specialty = `Shinjuku Tonkotsu Ramen, Fresh Tsukiji Sushi, Wagyu Beef Skewers & Harajuku Sweet Crepes`;
       } else if (placeLower.includes('hyderabad')) {
         specialty = `Hyderabadi Dum Biryani, Haleem, Double Ka Meetha & Irani Chai at Paradise / Shadab`;
-      } else if (placeLower.includes('california') || placeLower.includes('usa')) {
-        specialty = `San Francisco Clam Chowder in Sourdough Bowls, In-N-Out Burgers & Napa Valley Wines`;
       }
 
       return {
@@ -294,10 +283,9 @@ INSTRUCTIONS & CONSTRAINTS:
     // 3. Transport & Getting Around
     if (/\b(transport|bus|buses|train|trains|metro|subway|taxi|taxis|cab|cabs|flight|flights|airport)\b/i.test(lowMsg)) {
       let transitInfo = `Metro subway lines, city buses, and licensed rideshare vehicles`;
-      if (placeLower.includes('paris')) transitInfo = `RER & Paris Métro (Lines 1 & 4), Vélib bike rentals, and Seine Riverboats`;
+      if (placeLower.includes('kerala')) transitInfo = `KSRTC Swift Volvo buses, Kochi Metro, auto-rickshaws, and traditional wooden ferry boats`;
+      else if (placeLower.includes('paris')) transitInfo = `RER & Paris Métro (Lines 1 & 4), Vélib bike rentals, and Seine Riverboats`;
       else if (placeLower.includes('dubai')) transitInfo = `Driverless Dubai Metro (Red Line), Abra water taxis (1 AED), and Careem cabs`;
-      else if (placeLower.includes('tokyo')) transitInfo = `JR Yamanote Loop Line, Tokyo Metro, Suica/Pasmo IC cards, and Shinkansen bullet trains`;
-      else if (placeLower.includes('hyderabad')) transitInfo = `Hyderabad Metro (Red & Blue Lines), TSRTC city buses, Uber/Ola, and auto-rickshaws`;
 
       return {
         reply: `🚕 **Transport & Transit Guide for ${targetPlace}:**\n\n` +
@@ -327,18 +315,77 @@ INSTRUCTIONS & CONSTRAINTS:
       };
     }
 
-    // 6. Explicit Request for Itinerary
-    if (/\b(itinerary|plan|schedule|days|day 1)\b/i.test(lowMsg)) {
+    // 6. Explicit Request for Itinerary / Trip Plan (Dynamic N-Day Generator)
+    if (/\b(itinerary|plan|schedule|trip|days|day)\b/i.test(lowMsg)) {
+      // Parse requested number of days from user query
+      let reqDays = 5;
+      const numMatch = message.match(/\b(\d{1,2})\s*(?:day|days|d)\b/i);
+      if (numMatch && numMatch[1]) {
+        reqDays = Math.min(14, Math.max(1, parseInt(numMatch[1], 10)));
+      } else if (tripContext?.durationDays) {
+        reqDays = Number(tripContext.durationDays) || 5;
+      }
+
+      let allDayTemplates: Array<{ summary: string; morning: string; afternoon: string; evening: string }> = [];
+
+      if (placeLower.includes('kerala')) {
+        allDayTemplates = [
+          { summary: 'Fort Kochi Heritage & Chinese Fishing Nets', morning: 'Walk through historic Fort Kochi, Mattancherry Palace & Jewish Synagogue', afternoon: 'Seafood Thali Lunch & view iconic Chinese Fishing Nets', evening: 'Traditional Kathakali Cultural Dance Performance' },
+          { summary: 'Scenic Drive to Munnar Tea Gardens & Waterfalls', morning: 'Travel from Kochi to Munnar stopping at Cheeyappara & Valara Waterfalls', afternoon: 'Guided walk through rolling Tata Tea Plantations & Tea Museum', evening: 'Cozy campfire dinner in Munnar hill station' },
+          { summary: 'Munnar Eravikulam Wildlife & Top Station Viewpoint', morning: 'Safari trek in Eravikulam National Park spotting Nilgiri Tahr', afternoon: 'Visit Rose Garden & Echo Point panoramic valley lookout', evening: 'Shop for fresh cardamom, cinnamon & local green tea' },
+          { summary: 'Thekkady Periyar Spice Plantations & Wildlife Safari', morning: 'Drive to Thekkady & Periyar Lake Boat Wildlife Safari', afternoon: 'Guided Organic Spice Plantation Walk tasting cardamom & pepper', evening: 'Kalaripayattu Martial Arts Live Demonstration' },
+          { summary: 'Alleppey Backwaters Deluxe Houseboat Cruise', morning: 'Board private Deluxe Kerala Houseboat in Alleppey backwaters', afternoon: 'Cruising past quiet coconut lagoons with Karimeen fish lunch', evening: 'Sunset over Vembanad Lake & overnight houseboat stay' },
+          { summary: 'Kumarakom Bird Sanctuary & Floating Lake Village', morning: 'Morning bird watching excursion at Kumarakom Bird Sanctuary', afternoon: 'Canoe rowing tour through narrow backwater canals', evening: 'Fresh tender coconut drinks & evening riverside relaxation' },
+          { summary: 'Kovalam Beach Cliff Promenade & Lighthouse Sunset', morning: 'Drive to Kovalam Beach & climb historic Kovalam Lighthouse', afternoon: 'Ayurvedic Wellness Rejuvenation Massage & Beach Lunch', evening: 'Farewell sunset dinner at Kovalam Cliffside Bistro' }
+        ];
+      } else if (placeLower.includes('paris') || placeLower.includes('france')) {
+        allDayTemplates = [
+          { summary: 'Eiffel Tower Summit & Seine River Cruise', morning: 'Priority elevator to Eiffel Tower Summit for 360° Paris view', afternoon: 'Stroll Champ de Mars & lunch at French Bistro', evening: 'Glass-canopy Seine River Sunset Dinner Cruise' },
+          { summary: 'Louvre Museum & Champs-Élysées Promenade', morning: 'Guided Mona Lisa & Venus de Milo tour at Louvre Museum', afternoon: 'Walk through Tuileries Garden to Place de la Concorde', evening: 'Climb Arc de Triomphe rooftop terrace for illuminated avenue views' },
+          { summary: 'Montmartre Artists Quarter & Sacré-Cœur', morning: 'Explore Montmartre cobblestone streets & Place du Tertre artists', afternoon: 'Visit Sacré-Cœur Basilica & panoramic city staircase', evening: 'Cabaret performance & French wine tasting' },
+          { summary: 'Palace of Versailles Grand Royal Tour', morning: 'RER train to Versailles & explore Hall of Mirrors & Royal Apartments', afternoon: 'Stroll Grand Canal & Musical Fountain Gardens', evening: 'Return to Paris for Latin Quarter dining' },
+          { summary: 'Musée d’Orsay & Notre-Dame Quarter', morning: 'View Impressionist masterpieces by Monet & Van Gogh at Musée d’Orsay', afternoon: 'Cross Pont Neuf to Île de la Cité & view Notre-Dame Cathedral', evening: 'Le Marais neighborhood boutique shopping & falafel dinner' }
+        ];
+      } else if (placeLower.includes('dubai') || placeLower.includes('uae')) {
+        allDayTemplates = [
+          { summary: 'Burj Khalifa Sky Deck & Dubai Fountain', morning: 'Ascend Burj Khalifa 148th Floor Sky Deck', afternoon: 'Explore Dubai Mall Aquarium & Underwater Zoo', evening: 'Watch Dubai Fountain Light Show & dinner at Souk Al Bahar' },
+          { summary: 'Old Dubai Heritage Souks & Abra River Ride', morning: 'Walk through Al Fahidi Historic District & Dubai Museum', afternoon: 'Take 1-AED Abra water taxi across Dubai Creek to Gold & Spice Souks', evening: 'Authentic Arabian BBQ dinner in Old Dubai' },
+          { summary: 'Red Dune 4x4 Desert Safari Excursion', morning: 'Leisure morning at Dubai Marina Beach Promenade', afternoon: '4x4 Land Cruiser Desert Dune Bashing & Sandboarding', evening: 'Camel riding, henna painting & Bedouin Camp BBQ dinner show' },
+          { summary: 'Palm Jumeirah & Atlantis Aquaventure', morning: 'Ride Palm Monorail to Atlantis The Palm', afternoon: 'Full day waterpark fun at Atlantis Aquaventure & Lost Chambers', evening: 'Cocktails at Palm Jumeirah Rooftop Lounge' },
+          { summary: 'Museum of the Future & Dubai Frame', morning: 'Interactive tour of Museum of the Future', afternoon: 'Walk Dubai Frame 150-meter glass skybridge', evening: 'Global Village cultural pavilions & food stalls' }
+        ];
+      } else if (placeLower.includes('hyderabad')) {
+        allDayTemplates = [
+          { summary: 'Charminar, Laad Bazaar & Chowmahalla Palace', morning: 'Ascend 16th-century Charminar & shop for pearls at Laad Bazaar', afternoon: 'Tour royal marble courtyards at Chowmahalla Palace', evening: 'Taste authentic Hyderabadi Dum Biryani at Hotel Shadab' },
+          { summary: 'Golconda Fort & Qutb Shahi Tombs', morning: 'Trek up acoustic marvel Golconda Fort to Fateh Rahben cannon', afternoon: 'Explore Persian arch architecture at Qutb Shahi Tombs', evening: 'Golconda Fort Sound & Light Show' },
+          { summary: 'Full Day Ramoji Film City Adventure', morning: 'Guided tour of Bahubali film sets & stunt shows at Ramoji Film City', afternoon: 'Explore Eureka amusement zone & bird park', evening: 'Return to city for evening leisure' },
+          { summary: 'Hussain Sagar Lake & Salar Jung Museum', morning: 'View world-famous Veiled Rebecca statue at Salar Jung Museum', afternoon: 'Sunset boat ride across Hussain Sagar to Monolith Buddha', evening: 'Stroll NTR Gardens & Lumbini Park laser show' },
+          { summary: 'Taj Falaknuma Palace & Shilparamam Craft Village', morning: 'High tea & heritage tour at Taj Falaknuma Palace', afternoon: 'Shop for regional handicrafts at Shilparamam Arts Village', evening: 'Rooftop dinner overlooking Hitec City skyline' }
+        ];
+      } else {
+        allDayTemplates = [
+          { summary: `Arrival, Heritage Plazas & City View in ${targetPlace}`, morning: `Check-in & guided walk through central historic plaza in ${targetPlace}`, afternoon: `Sample regional specialties at top rated city bistro`, evening: `Sunset observation deck views overlooking ${targetPlace}` },
+          { summary: `Premier Museums & Artisan Bazaars in ${targetPlace}`, morning: `Visit top history & art museum in ${targetPlace}`, afternoon: `Shop for local handicrafts & souvenirs in craft markets`, evening: `Gourmet food tasting walk in culinary quarter` },
+          { summary: `Scenic Nature Excursion & Waterfront Cruise in ${targetPlace}`, morning: `Excursion to nearby hill viewpoint or nature park`, afternoon: `Relaxing waterfront boat cruise & farm-to-table lunch`, evening: `Rooftop lounge dinner & live music` },
+          { summary: `Cultural Center & Heritage Exploration in ${targetPlace}`, morning: `Explore historic fort, castle or royal palace in ${targetPlace}`, afternoon: `Stroll botanical gardens & local art galleries`, evening: `Traditional cultural dance or music performance` },
+          { summary: `Day Excursion & Local Leisure in ${targetPlace}`, morning: `Visit nearby scenic landmark or beach promenade`, afternoon: `Leisure afternoon shopping & cafe hopping`, evening: `Farewell gourmet dinner at top-rated restaurant` }
+        ];
+      }
+
+      // Build array of exactly reqDays
+      const generatedDays = Array.from({ length: reqDays }).map((_, idx) => {
+        const template = allDayTemplates[idx % allDayTemplates.length];
+        const dayNum = idx + 1;
+        return `📍 **Day ${dayNum}: ${template.summary}**\n` +
+          `• **Morning:** ${template.morning}.\n` +
+          `• **Afternoon:** ${template.afternoon}.\n` +
+          `• **Evening:** ${template.evening}.`;
+      });
+
       return {
-        reply: `🗺️ **Custom Highlight Itinerary for ${targetPlace}:**\n\n` +
-          `📍 **Day 1: Landmark Exploration & City Skyline**\n` +
-          `• Morning: Guided tour of central historic monuments in ${targetPlace}.\n` +
-          `• Afternoon: Visit premier regional museums & waterfront gardens.\n` +
-          `• Evening: Sunset observation deck views followed by local dinner.\n\n` +
-          `📍 **Day 2: Heritage Bazaars & Culinary Walk**\n` +
-          `• Morning: Stroll colorful craft markets and historic old town.\n` +
-          `• Afternoon: Food tasting tour trying top regional specialties.\n` +
-          `• Evening: Rooftop lounge session with panoramic views.`
+        reply: `🗺️ **Custom ${reqDays}-Day Travel Itinerary for ${targetPlace}:**\n\n` +
+          generatedDays.join('\n\n') +
+          `\n\n💡 **Traveler Tip:** You can customize any day or request specific hotel and flight recommendations for ${targetPlace}!`
       };
     }
 
