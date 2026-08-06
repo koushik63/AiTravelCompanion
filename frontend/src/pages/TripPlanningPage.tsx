@@ -10,6 +10,7 @@ import { ItineraryTimeline } from '../components/ai/ItineraryTimeline';
 import { AIStatusIndicator } from '../components/ai/AIStatusIndicator';
 import { AIItineraryResponse, AIPromptInput } from '../types';
 import { formatCurrency } from '../utils/currencyHelper';
+import { validateDestination } from '../utils/destinationValidator';
 
 export const TripPlanningPage: React.FC = () => {
   const [input, setInput] = useState<AIPromptInput | null>(null);
@@ -23,6 +24,12 @@ export const TripPlanningPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGenerate = async (promptInput: AIPromptInput) => {
+    const validation = validateDestination(promptInput.destination);
+    if (!validation.isValid) {
+      addToast({ type: 'error', message: validation.errorMessage || `The place "${promptInput.destination}" does not exist.` });
+      return;
+    }
+
     setInput(promptInput);
     setIsLoading(true);
     setProgress(15);

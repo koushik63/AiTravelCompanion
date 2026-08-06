@@ -3,6 +3,8 @@ import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { Trip } from '../../types';
+import { validateDestination } from '../../utils/destinationValidator';
+import { AlertCircle } from 'lucide-react';
 
 interface TripModalProps {
   isOpen: boolean;
@@ -26,9 +28,18 @@ export const TripModal: React.FC<TripModalProps> = ({
   const [currency, setCurrency] = useState(initialData?.currency || 'INR');
   const [travelType, setTravelType] = useState(initialData?.travelType || 'Leisure');
   const [transportType, setTransportType] = useState(initialData?.transportType || 'Flight');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+
+    const validation = validateDestination(destination);
+    if (!validation.isValid) {
+      setErrorMsg(validation.errorMessage || `The place "${destination}" does not exist. Please enter a valid destination.`);
+      return;
+    }
+
     onSubmit({
       title: title || `Journey to ${destination}`,
       destination,
@@ -47,6 +58,12 @@ export const TripModal: React.FC<TripModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={initialData ? 'Edit Trip' : 'Create New Trip'}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {errorMsg && (
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
         <Input label="Trip Title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Summer Beach Vacation" />
         <div className="grid grid-cols-2 gap-3">
           <Input label="Destination" value={destination} onChange={(e) => setDestination(e.target.value)} required placeholder="Goa" />

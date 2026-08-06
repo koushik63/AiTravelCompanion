@@ -5,6 +5,7 @@ import { HistoryService } from '../services/HistoryService';
 import { DashboardService } from '../services/DashboardService';
 import { StatisticsService } from '../services/StatisticsService';
 import { AuthRequest } from '../middleware/authMiddleware';
+import { validateDestination } from '../utils/destinationValidator';
 
 export class TripController {
   static async getTrips(req: AuthRequest, res: Response) {
@@ -29,6 +30,10 @@ export class TripController {
 
   static async createTrip(req: AuthRequest, res: Response) {
     try {
+      const validation = validateDestination(req.body.destination);
+      if (!validation.isValid) {
+        return res.status(400).json({ error: validation.errorMessage });
+      }
       const trip = await DatabaseService.createTrip({ ...req.body, userId: req.user?.id || 'usr_demo_1' });
       return res.status(201).json(trip);
     } catch (err: any) {

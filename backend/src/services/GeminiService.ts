@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Logger } from '../utils/logger';
 import { AICacheService } from './AICacheService';
 import { AILoggingService } from './AILoggingService';
+import { validateDestination } from '../utils/destinationValidator';
 
 export class GeminiService {
   private static getClient() {
@@ -13,6 +14,11 @@ export class GeminiService {
   }
 
   static async generateItinerary(input: any) {
+    const validation = validateDestination(input.destination);
+    if (!validation.isValid) {
+      throw new Error(validation.errorMessage || `The place '${input.destination}' does not exist.`);
+    }
+
     const cacheKey = `itinerary_${input.destination}_${input.durationDays || 3}_${input.travelStyle || 'Balanced'}`;
     const cached = AICacheService.get(cacheKey);
     if (cached && !input.forceRegenerate) {
