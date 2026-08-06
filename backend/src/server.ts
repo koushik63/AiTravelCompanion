@@ -28,7 +28,21 @@ const PORT = process.env.PORT || 5000;
 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:5174'] : true,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    const allowed = [
+      'https://ai-travel-companion-pi.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:5174',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+    // Also allow any *.vercel.app preview deployments
+    if (allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS: Origin ${origin} not allowed`));
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
