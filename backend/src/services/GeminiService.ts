@@ -129,7 +129,7 @@ User Context: ${contextStr}
 User Question: "${message}"
 
 INSTRUCTIONS & CONSTRAINTS:
-1. Answer the exact question asked by the user. If they ask about food, answer about food. If they ask about safety, transport, visa, weather, or costs, answer that directly.
+1. Answer the exact question asked by the user. If they ask about weather, answer about weather. If they ask about food, answer about food. If they ask about safety, transport, visa, or costs, answer that directly.
 2. Do NOT output a full multi-day trip itinerary unless the user explicitly asks for a trip plan or itinerary.
 3. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
 4. Do NOT output raw JSON code blocks.`;
@@ -143,7 +143,7 @@ INSTRUCTIONS & CONSTRAINTS:
       }
     }
 
-    // Advanced Fallback Intelligence: Answer directly based on user input intent
+    // Advanced Fallback Intelligence: Strict word-boundary intent detection
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
@@ -153,8 +153,18 @@ INSTRUCTIONS & CONSTRAINTS:
       targetPlace = placeMatch[1].trim();
     }
 
-    // 1. Food & Culinary Query
-    if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('dish') || lowMsg.includes('restaurant') || lowMsg.includes('cuisine') || lowMsg.includes('lunch') || lowMsg.includes('dinner')) {
+    // 1. Weather, Climate & Best Time to Visit (Check first to avoid "wEATher" matching "eat")
+    if (/\b(weather|rain|raining|temp|temperature|climate|forecast|sunny|cloudy|snow)\b/i.test(lowMsg)) {
+      return {
+        reply: `☀️ **Weather & Climate Forecast for ${targetPlace}:**\n\n` +
+          `• **Current Conditions:** Pleasant, comfortable temperatures with clear to partly cloudy skies.\n` +
+          `• **Recommended Apparel:** Wear breathable cotton outfits, comfortable walking footwear, and carry a light jacket or umbrella.\n` +
+          `• **Sightseeing Tip:** Morning and late afternoon hours provide the best outdoor weather conditions.`
+      };
+    }
+
+    // 2. Food & Culinary Query (Strict word boundaries)
+    if (/\b(food|eat|eating|dish|dishes|restaurant|restaurants|cuisine|lunch|dinner|breakfast)\b/i.test(lowMsg)) {
       return {
         reply: `🍽️ **Must-Try Local Food & Dining Advice for ${targetPlace}:**\n\n` +
           `• **Signature Dishes:** Sample authentic regional specialties and local street food in famous culinary districts of ${targetPlace}.\n` +
@@ -164,8 +174,8 @@ INSTRUCTIONS & CONSTRAINTS:
       };
     }
 
-    // 2. Transport & Getting Around
-    if (lowMsg.includes('transport') || lowMsg.includes('bus') || lowMsg.includes('train') || lowMsg.includes('metro') || lowMsg.includes('subway') || lowMsg.includes('taxi') || lowMsg.includes('cab') || lowMsg.includes('flight') || lowMsg.includes('airport')) {
+    // 3. Transport & Getting Around (Strict word boundaries)
+    if (/\b(transport|bus|buses|train|trains|metro|subway|taxi|taxis|cab|cabs|flight|flights|airport)\b/i.test(lowMsg)) {
       return {
         reply: `🚕 **Transport & Navigation Guide for ${targetPlace}:**\n\n` +
           `• **Public Transit:** Metro subway systems and local buses offer fast, budget-friendly transit across the city.\n` +
@@ -175,8 +185,8 @@ INSTRUCTIONS & CONSTRAINTS:
       };
     }
 
-    // 3. Budget, Currency & Costs
-    if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money') || lowMsg.includes('currency') || lowMsg.includes('price') || lowMsg.includes('cheap') || lowMsg.includes('expensive')) {
+    // 4. Budget, Currency & Costs (Strict word boundaries)
+    if (/\b(budget|cost|costs|money|currency|price|prices|cheap|expensive)\b/i.test(lowMsg)) {
       return {
         reply: `💰 **Budget & Money Tips for ${targetPlace}:**\n\n` +
           `• **Daily Allocation:** Budget travelers: ~$40–$70/day; Mid-range travelers: ~$120–$200/day.\n` +
@@ -186,18 +196,8 @@ INSTRUCTIONS & CONSTRAINTS:
       };
     }
 
-    // 4. Weather, Climate & Best Time to Visit
-    if (lowMsg.includes('weather') || lowMsg.includes('rain') || lowMsg.includes('temperature') || lowMsg.includes('climate') || lowMsg.includes('season') || lowMsg.includes('when to visit')) {
-      return {
-        reply: `☀️ **Weather & Season Forecast for ${targetPlace}:**\n\n` +
-          `• **Current Climate:** Generally pleasant temperatures with sunny skies; pack comfortable breathable layers.\n` +
-          `• **Packing Essentials:** Bring lightweight cotton clothes, comfortable walking shoes, and a light jacket or umbrella.\n` +
-          `• **Peak Season:** Early morning and late afternoon are optimal for outdoor sightseeing.`
-      };
-    }
-
-    // 5. Safety, Emergency & Visas
-    if (lowMsg.includes('safe') || lowMsg.includes('safety') || lowMsg.includes('visa') || lowMsg.includes('passport') || lowMsg.includes('emergency') || lowMsg.includes('police') || lowMsg.includes('hospital')) {
+    // 5. Safety, Emergency & Visas (Strict word boundaries)
+    if (/\b(safe|safety|visa|passport|emergency|police|hospital)\b/i.test(lowMsg)) {
       return {
         reply: `🛡️ **Safety & Practical Travel Advice for ${targetPlace}:**\n\n` +
           `• **General Safety:** ${targetPlace} is generally welcoming and safe for tourists. Keep your belongings secure in busy areas.\n` +
@@ -206,8 +206,8 @@ INSTRUCTIONS & CONSTRAINTS:
       };
     }
 
-    // 6. Explicit Request for Itinerary / Trip Plan
-    if (lowMsg.includes('itinerary') || lowMsg.includes('plan') || lowMsg.includes('schedule') || lowMsg.includes('days') || lowMsg.includes('day 1')) {
+    // 6. Explicit Request for Itinerary / Trip Plan (Strict word boundaries)
+    if (/\b(itinerary|plan|schedule|days|day 1)\b/i.test(lowMsg)) {
       return {
         reply: `🗺️ **Custom Travel Itinerary for ${targetPlace}:**\n\n` +
           `📍 **Day 1: Arrival & Historic City Center**\n` +
