@@ -60,23 +60,21 @@ const DESTINATION_PHOTOS: Record<string, string> = {
 };
 
 const FALLBACK_POOL = [
-  'photo-1566073771259-6a8506099945',
   'photo-1582719508461-905c673771fd',
+  'photo-1566073771259-6a8506099945',
   'photo-1500530855697-b586d89ba3ee',
   'photo-1488085061387-422e29b40080',
   'photo-1469474968028-56623f02e42e',
-  'photo-1519046904884-53103b34b206',
-  'photo-1503220317375-aaad61436b1b',
-  'photo-1551918120-9739cb430c6d'
+  'photo-1519046904884-53103b34b206'
 ];
 
 /**
- * Resolves a unique destination-appropriate image URL for a given trip object or destination text.
+ * Resolves a real-time, destination-appropriate image URL for a given trip object or destination text.
  */
 export function getTripImage(destination?: string, tripId?: string, imageUrl?: string, title?: string, coverImage?: string): string {
   const destStr = (destination || '').toLowerCase().trim();
 
-  // Search keyword map first to guarantee destination match
+  // Search keyword map FIRST to guarantee real destination matching
   for (const [key, photoId] of Object.entries(DESTINATION_PHOTOS)) {
     if (destStr.includes(key)) {
       return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
@@ -84,7 +82,14 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
   }
 
   const customImg = imageUrl || coverImage;
-  if (customImg && customImg.trim().length > 10 && !customImg.includes('photo-1476514525535-07fb3b4ae5f1')) {
+  // Use custom image ONLY if it's a real user-uploaded base64/blob image or non-generic photo
+  if (
+    customImg &&
+    customImg.trim().length > 10 &&
+    !customImg.includes('photo-1476514525535-07fb3b4ae5f1') &&
+    !customImg.includes('photo-1566073771259-6a8506099945') &&
+    !customImg.includes('photo-1540555700478-4be289fbecef')
+  ) {
     return customImg;
   }
 

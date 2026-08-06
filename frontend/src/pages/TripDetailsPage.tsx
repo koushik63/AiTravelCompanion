@@ -86,7 +86,7 @@ export const TripDetailsPage: React.FC = () => {
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <button
             onClick={() => toggleFavoriteTrip(trip.id)}
-            className={`p-2.5 rounded-xl backdrop-blur-md transition-colors ${
+            className={`p-2.5 rounded-xl backdrop-blur-md transition-colors cursor-pointer ${
               trip.isFavorite ? 'bg-amber-500 text-white' : 'bg-slate-900/60 text-slate-300'
             }`}
           >
@@ -109,7 +109,7 @@ export const TripDetailsPage: React.FC = () => {
               Journey Specifications
             </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
               <div>
                 <span className="text-slate-500 font-semibold block uppercase text-[10px]">Start Date</span>
                 <span className="font-bold text-slate-200">{formatDate(trip.startDate)}</span>
@@ -126,10 +126,6 @@ export const TripDetailsPage: React.FC = () => {
                 <span className="text-slate-500 font-semibold block uppercase text-[10px]">Transport</span>
                 <span className="font-bold text-slate-200">{trip.transportType || 'Flight'}</span>
               </div>
-              <div>
-                <span className="text-slate-500 font-semibold block uppercase text-[10px]">Accommodation</span>
-                <span className="font-bold text-slate-200">{trip.accommodation || 'Resort Stay'}</span>
-              </div>
             </div>
           </div>
 
@@ -145,7 +141,7 @@ export const TripDetailsPage: React.FC = () => {
               <button
                 onClick={handleRegenerateWithAI}
                 disabled={isGeneratingAI}
-                className="glass-button text-xs py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/15 disabled:opacity-50"
+                className="glass-button text-xs py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/15 disabled:opacity-50 cursor-pointer"
               >
                 {isGeneratingAI ? (
                   <>
