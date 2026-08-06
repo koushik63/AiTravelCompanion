@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Building2, Search, Filter, MapPin, Sparkles } from 'lucide-react';
 import { HotelService } from '../../services/api';
 import { HotelCard, HotelData } from './HotelCard';
+import { HotelContactModal } from './HotelContactModal';
 
 interface HotelSectionProps {
   destination: string;
@@ -13,6 +14,7 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>(destination || '');
   const [activeLocation, setActiveLocation] = useState<string>(destination || 'Goa');
+  const [selectedHotelContact, setSelectedHotelContact] = useState<HotelData | null>(null);
 
   const categories = ['All', 'Luxury', 'Beachfront', 'Boutique', 'Budget'];
 
@@ -48,7 +50,7 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
             <Building2 className="w-5 h-5 text-amber-400" /> Google Maps Nearby Hotels & Stays
           </h3>
           <p className="text-xs text-slate-400">
-            Verified Google place details, accommodation images, nightly prices, and direct booking links for{' '}
+            Verified Google place details, real-time accommodation images, nightly prices, and instant contact info for{' '}
             <span className="text-sky-300 font-semibold">{activeLocation}</span>
           </p>
         </div>
@@ -106,10 +108,21 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hotels.map((hotel) => (
-            <HotelCard key={hotel.id} hotel={hotel} />
+            <HotelCard
+              key={hotel.id}
+              hotel={hotel}
+              onGetContact={(selected) => setSelectedHotelContact(selected)}
+            />
           ))}
         </div>
       )}
+
+      {/* Hotel Contact Info Modal */}
+      <HotelContactModal
+        isOpen={Boolean(selectedHotelContact)}
+        onClose={() => setSelectedHotelContact(null)}
+        hotel={selectedHotelContact}
+      />
     </div>
   );
 };
