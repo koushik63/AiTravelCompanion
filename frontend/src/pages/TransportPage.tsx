@@ -31,52 +31,52 @@ export const TransportPage: React.FC = () => {
   const availableFlights = getAvailableFlightsForDestination(selectedDestination);
   const availableTrains = getAvailableTrainsForDestination(selectedDestination);
 
-  const handleSearchFlight = (e?: React.FormEvent, customNum?: string) => {
-    if (e) e.preventDefault();
-    const query = customNum || flightNum;
-    if (!query.trim()) return;
+  const trackSpecificFlight = (code: string) => {
+    setFlightNum(code);
     setFlightError(null);
     setIsFlightLoading(true);
-    TransportService.getFlightStatus(query)
+    TransportService.getFlightStatus(code)
       .then((res) => {
         if ((res as any).error) {
-          setFlightError((res as any).error);
-          setFlight(null);
+          setFlight({ flightNumber: code, status: 'FLIGHT NOT FOUND', error: (res as any).error } as any);
         } else {
           setFlight(res);
         }
       })
-      .catch((err) => setFlightError(err.message))
-      .finally(() => setIsFlightLoading(false));
-  };
-
-  const handleSearchTrain = (e?: React.FormEvent, customNum?: string) => {
-    if (e) e.preventDefault();
-    const query = customNum || trainNum;
-    if (!query.trim()) return;
-    setTrainError(null);
-    setIsTrainLoading(true);
-    TransportService.getTrainStatus(query)
-      .then((res) => {
-        if ((res as any).error) {
-          setTrainError((res as any).error);
-          setTrain(null);
-        } else {
-          setTrain(res);
-        }
+      .catch((err) => {
+        setFlight({ flightNumber: code, status: 'FLIGHT NOT FOUND', error: err.message } as any);
       })
-      .catch((err) => setTrainError(err.message))
-      .finally(() => setIsTrainLoading(false));
-  };
-
-  const trackSpecificFlight = (code: string) => {
-    setFlightNum(code);
-    handleSearchFlight(undefined, code);
+      .finally(() => setIsFlightLoading(false));
   };
 
   const trackSpecificTrain = (num: string) => {
     setTrainNum(num);
-    handleSearchTrain(undefined, num);
+    setTrainError(null);
+    setIsTrainLoading(true);
+    TransportService.getTrainStatus(num)
+      .then((res) => {
+        if ((res as any).error) {
+          setTrain({ trainNumber: num, status: 'TRAIN NOT FOUND', error: (res as any).error } as any);
+        } else {
+          setTrain(res);
+        }
+      })
+      .catch((err) => {
+        setTrain({ trainNumber: num, status: 'TRAIN NOT FOUND', error: err.message } as any);
+      })
+      .finally(() => setIsTrainLoading(false));
+  };
+
+  const handleSearchFlight = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!flightNum.trim()) return;
+    trackSpecificFlight(flightNum.trim());
+  };
+
+  const handleSearchTrain = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!trainNum.trim()) return;
+    trackSpecificTrain(trainNum.trim());
   };
 
   return (
