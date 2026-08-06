@@ -65,12 +65,15 @@ function getDestinationImageUrl(destination: string, tripId: string): string {
   if (lower.includes('hyderabad') || lower.includes('secunderabad')) {
     return 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
   }
+  if (lower.includes('america') || lower.includes('usa') || lower.includes('united states') || lower === 'us') {
+    return 'https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200';
+  }
   for (const [keyword, photoId] of Object.entries(DESTINATION_IMAGE_MAP)) {
     if (lower.includes(keyword)) {
       return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
     }
   }
-  return 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
+  return 'https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&q=80&w=1200';
 }
 
 
