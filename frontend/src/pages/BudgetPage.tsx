@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wallet, Plus, Trash2, PieChart, Sparkles, Filter, Edit3, CheckCircle2 } from 'lucide-react';
+import { Wallet, Plus, Trash2, PieChart, Sparkles, Filter, Edit3, CheckCircle2, MinusCircle, PlusCircle, RefreshCw } from 'lucide-react';
 import { ExpenseService } from '../services/api';
 import { useTravelStore } from '../store/useTravelStore';
 import { useUIStore } from '../store/useUIStore';
@@ -21,8 +21,9 @@ export const BudgetPage: React.FC = () => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
 
-  // Edit Budget State
-  const [newBudgetInput, setNewBudgetInput] = useState('');
+  // Edit Budget Mode & State
+  const [budgetMode, setBudgetMode] = useState<'ADD' | 'REDUCE' | 'SET'>('ADD');
+  const [budgetInputValue, setBudgetInputValue] = useState('');
 
   const tripId = activeTrip?.id || 'trip_1';
   const totalBudget = activeTrip?.budget || 50000;
@@ -64,20 +65,37 @@ export const BudgetPage: React.FC = () => {
     }
   };
 
+  // Calculate dynamic new budget based on mode
+  const val = Number(budgetInputValue) || 0;
+  let finalCalculatedBudget = totalBudget;
+  if (budgetMode === 'ADD') {
+    finalCalculatedBudget = totalBudget + val;
+  } else if (budgetMode === 'REDUCE') {
+    finalCalculatedBudget = Math.max(0, totalBudget - val);
+  } else if (budgetMode === 'SET') {
+    finalCalculatedBudget = val > 0 ? val : totalBudget;
+  }
+
   const handleSaveBudget = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = Number(newBudgetInput);
-    if (isNaN(parsed) || parsed <= 0) {
-      addToast({ type: 'error', message: 'Please enter a valid positive budget amount' });
+    if (finalCalculatedBudget <= 0) {
+      addToast({ type: 'error', message: 'Calculated budget must be a positive amount' });
       return;
     }
 
     try {
       if (activeTrip?.id) {
-        await updateTrip(activeTrip.id, { budget: parsed });
+        await updateTrip(activeTrip.id, { budget: finalCalculatedBudget });
       }
       setShowEditBudgetModal(false);
-      addToast({ type: 'success', message: `Total budget updated to ${formatCurrency(parsed, currency)}!` });
+
+      if (budgetMode === 'ADD') {
+        addToast({ type: 'success', message: `Added ${formatCurrency(val, currency)} to budget! New total: ${formatCurrency(finalCalculatedBudget, currency)}` });
+      } else if (budgetMode === 'REDUCE') {
+        addToast({ type: 'info', message: `Reduced ${formatCurrency(val, currency)} from budget! New total: ${formatCurrency(finalCalculatedBudget, currency)}` });
+      } else {
+        addToast({ type: 'success', message: `Total budget set to ${formatCurrency(finalCalculatedBudget, currency)}!` });
+      }
     } catch (err: any) {
       addToast({ type: 'error', message: 'Failed to update budget' });
     }
@@ -85,6 +103,7 @@ export const BudgetPage: React.FC = () => {
 
   const totalSpent = expenses.reduce((acc, curr) => acc + Number(curr.amount), 0);
   const remainingBudget = Math.max(0, totalBudget - totalSpent);
+  const newCalculatedRemaining = Math.max(0, finalCalculatedBudget - totalSpent);
 
   const filteredExpenses = categoryFilter === 'ALL'
     ? expenses
@@ -101,7 +120,9 @@ export const BudgetPage: React.FC = () => {
     percentage: totalSpent > 0 ? Math.round((categoriesMap[cat] / totalSpent) * 100) : 0
   }));
 
-  const budgetPresets = [25000, 50000, 75000, 100000, 150000];
+  const addPresets = [1000, 5000, 10000, 25000, 50000];
+  const reducePresets = [1000, 5000, 10000, 20000, 50000];
+  const setPresets = [25000, 50000, 75000, 100000, 150000];
 
   return (
     <div className="space-y-8 pb-16">
@@ -116,7 +137,8 @@ export const BudgetPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
-              setNewBudgetInput(String(totalBudget));
+              setBudgetMode('ADD');
+              setBudgetInputValue('5000');
               setShowEditBudgetModal(true);
             }}
             className="glass-button-secondary text-xs py-2.5 px-4 flex items-center gap-1.5 hover:border-sky-500/50 transition-colors"
@@ -141,7 +163,8 @@ export const BudgetPage: React.FC = () => {
           actionButton={
             <button
               onClick={() => {
-                setNewBudgetInput(String(totalBudget));
+                setBudgetMode('ADD');
+                setBudgetInputValue('5000');
                 setShowEditBudgetModal(true);
               }}
               className="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 transition-colors flex items-center gap-1 text-[11px] font-semibold"
@@ -229,13 +252,13 @@ export const BudgetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Budget Modal */}
+      {/* Edit Budget Modal (Add, Reduce, Set Total) */}
       {showEditBudgetModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <form onSubmit={handleSaveBudget} className="glass-panel p-6 max-w-md w-full space-y-5 animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-extrabold text-slate-100 text-lg flex items-center gap-2">
-                <Edit3 className="w-5 h-5 text-sky-400" /> Edit Total Allocated Budget
+                <Edit3 className="w-5 h-5 text-sky-400" /> Manage Allocated Budget
               </h3>
               <button
                 type="button"
@@ -246,52 +269,159 @@ export const BudgetPage: React.FC = () => {
               </button>
             </div>
 
+            {/* Mode Selector Tabs */}
+            <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setBudgetMode('ADD');
+                  setBudgetInputValue('5000');
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  budgetMode === 'ADD'
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ Add Funds</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setBudgetMode('REDUCE');
+                  setBudgetInputValue('5000');
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  budgetMode === 'REDUCE'
+                    ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30 shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <MinusCircle className="w-3.5 h-3.5" />
+                <span>- Reduce</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setBudgetMode('SET');
+                  setBudgetInputValue(String(totalBudget));
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  budgetMode === 'SET'
+                    ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30 shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Set Total</span>
+              </button>
+            </div>
+
+            {/* Input Label & Field */}
             <div>
               <label className="text-xs font-semibold text-slate-300 block mb-1.5">
-                New Allocated Budget ({currency})
+                {budgetMode === 'ADD' && `Amount to ADD to current budget (${currency})`}
+                {budgetMode === 'REDUCE' && `Amount to REDUCE from current budget (${currency})`}
+                {budgetMode === 'SET' && `Set NEW Total Allocated Budget (${currency})`}
               </label>
               <input
                 type="number"
-                value={newBudgetInput}
-                onChange={(e) => setNewBudgetInput(e.target.value)}
+                value={budgetInputValue}
+                onChange={(e) => setBudgetInputValue(e.target.value)}
                 required
-                min="1000"
-                placeholder="e.g. 75000"
+                min="1"
+                placeholder={budgetMode === 'SET' ? 'e.g. 75000' : 'e.g. 5000'}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-slate-100 focus:outline-none focus:border-sky-500 transition-colors"
               />
             </div>
 
-            {/* Quick Presets */}
+            {/* Quick Adjustment Presets */}
             <div>
-              <span className="text-[11px] font-semibold text-slate-400 block mb-2">Quick Presets:</span>
+              <span className="text-[11px] font-semibold text-slate-400 block mb-2">Quick Adjustment Options:</span>
               <div className="flex flex-wrap gap-2">
-                {budgetPresets.map((preset) => (
-                  <button
-                    key={preset}
-                    type="button"
-                    onClick={() => setNewBudgetInput(String(preset))}
-                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
-                      Number(newBudgetInput) === preset
-                        ? 'bg-sky-500/20 border-sky-500 text-sky-300'
-                        : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
-                    }`}
-                  >
-                    {formatCurrency(preset, currency)}
-                  </button>
-                ))}
+                {budgetMode === 'ADD' &&
+                  addPresets.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setBudgetInputValue(String(preset))}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                        Number(budgetInputValue) === preset
+                          ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                      }`}
+                    >
+                      +{formatCurrency(preset, currency)}
+                    </button>
+                  ))}
+
+                {budgetMode === 'REDUCE' &&
+                  reducePresets.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setBudgetInputValue(String(preset))}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                        Number(budgetInputValue) === preset
+                          ? 'bg-rose-500/20 border-rose-500 text-rose-300'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                      }`}
+                    >
+                      -{formatCurrency(preset, currency)}
+                    </button>
+                  ))}
+
+                {budgetMode === 'SET' &&
+                  setPresets.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setBudgetInputValue(String(preset))}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                        Number(budgetInputValue) === preset
+                          ? 'bg-sky-500/20 border-sky-500 text-sky-300'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                      }`}
+                    >
+                      {formatCurrency(preset, currency)}
+                    </button>
+                  ))}
               </div>
             </div>
 
-            {/* Real-Time Preview */}
+            {/* Real-Time Live Math Preview */}
             <div className="p-4 bg-slate-950/80 border border-slate-800/80 rounded-xl space-y-2 text-xs">
               <div className="flex justify-between text-slate-400">
-                <span>Total Spent:</span>
-                <span className="font-semibold text-slate-200">{formatCurrency(totalSpent, currency)}</span>
+                <span>Current Budget:</span>
+                <span className="font-semibold text-slate-200">{formatCurrency(totalBudget, currency)}</span>
               </div>
+
+              {budgetMode === 'ADD' && (
+                <div className="flex justify-between text-emerald-400 font-semibold">
+                  <span>Adding Funds:</span>
+                  <span>+{formatCurrency(val, currency)}</span>
+                </div>
+              )}
+
+              {budgetMode === 'REDUCE' && (
+                <div className="flex justify-between text-rose-400 font-semibold">
+                  <span>Reducing Funds:</span>
+                  <span>-{formatCurrency(val, currency)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-slate-300 border-t border-slate-800/60 pt-2 font-bold">
+                <span>New Total Budget:</span>
+                <span className="text-sky-400">{formatCurrency(finalCalculatedBudget, currency)}</span>
+              </div>
+
               <div className="flex justify-between text-slate-400 border-t border-slate-800/60 pt-2">
                 <span>New Remaining Funds:</span>
-                <span className={`font-bold ${Number(newBudgetInput) - totalSpent >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {formatCurrency(Math.max(0, Number(newBudgetInput) - totalSpent), currency)}
+                <span className={`font-bold ${newCalculatedRemaining >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {formatCurrency(newCalculatedRemaining, currency)}
                 </span>
               </div>
             </div>
@@ -306,9 +436,18 @@ export const BudgetPage: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="glass-button text-xs py-2.5 px-6 flex items-center gap-1.5 shadow-lg shadow-sky-500/20"
+                className={`glass-button text-xs py-2.5 px-6 flex items-center gap-1.5 shadow-lg ${
+                  budgetMode === 'ADD'
+                    ? 'shadow-emerald-500/20'
+                    : budgetMode === 'REDUCE'
+                    ? 'shadow-rose-500/20'
+                    : 'shadow-sky-500/20'
+                }`}
               >
-                <CheckCircle2 className="w-4 h-4" /> Save New Budget
+                <CheckCircle2 className="w-4 h-4" />
+                {budgetMode === 'ADD' && `Add ${formatCurrency(val, currency)}`}
+                {budgetMode === 'REDUCE' && `Reduce ${formatCurrency(val, currency)}`}
+                {budgetMode === 'SET' && `Save Total Budget`}
               </button>
             </div>
           </form>
