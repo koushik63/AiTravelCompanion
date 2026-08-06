@@ -148,13 +148,31 @@ const REGISTERED_TRAINS: Record<string, TrainStatusResult> = {
 
 export class TrainService {
   static async getTrainStatus(trainNumber: string, destinationParam?: string): Promise<TrainStatusResult> {
-    const num = (trainNumber || '').trim();
+    const num = (trainNumber || '').trim().replace(/\s+/g, '');
     const destCity = (destinationParam || '').trim().toLowerCase();
 
-    if (num && REGISTERED_TRAINS[num]) {
-      return REGISTERED_TRAINS[num];
+    // 1. IF AN EXPLICIT TRAIN NUMBER WAS SEARCHED:
+    if (num) {
+      if (REGISTERED_TRAINS[num]) {
+        return REGISTERED_TRAINS[num];
+      }
+      return {
+        trainNumber: num,
+        trainName: `Train #${num}`,
+        origin: 'N/A',
+        destination: 'N/A',
+        departureTime: new Date().toISOString(),
+        arrivalTime: new Date().toISOString(),
+        platform: 'N/A',
+        coach: 'N/A',
+        seat: 'N/A',
+        status: 'TRAIN NOT FOUND',
+        delayMinutes: 0,
+        error: `Train number "${num}" is not registered in live IRCTC databases. Please select an available train from the directory.`
+      };
     }
 
+    // 2. ONLY IF NO TRAIN NUMBER WAS SEARCHED: USE DESTINATION FALLBACK
     if (destCity) {
       if (destCity.includes('meghalaya') || destCity.includes('shillong') || destCity.includes('guwahati')) {
         return REGISTERED_TRAINS['15657'];
@@ -165,23 +183,6 @@ export class TrainService {
       if (destCity.includes('mumbai')) {
         return REGISTERED_TRAINS['12952'];
       }
-    }
-
-    if (num) {
-      return {
-        trainNumber: num,
-        trainName: 'Unknown Express',
-        origin: 'N/A',
-        destination: 'N/A',
-        departureTime: new Date().toISOString(),
-        arrivalTime: new Date().toISOString(),
-        platform: 'N/A',
-        coach: 'N/A',
-        seat: 'N/A',
-        status: 'TRAIN NOT FOUND',
-        delayMinutes: 0,
-        error: `Train number "${num}" was not found in Indian Railways live database. Please select from available trains.`
-      };
     }
 
     return REGISTERED_TRAINS['15657'];

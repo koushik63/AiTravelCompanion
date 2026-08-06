@@ -167,11 +167,27 @@ export class FlightService {
     const code = (flightNumber || '').trim().replace(/\s+/g, '').toUpperCase();
     const destCity = (destinationParam || '').trim().toLowerCase();
 
-    if (code && REGISTERED_FLIGHTS[code]) {
-      return REGISTERED_FLIGHTS[code];
+    // 1. IF AN EXPLICIT FLIGHT CODE WAS SEARCHED:
+    if (code) {
+      if (REGISTERED_FLIGHTS[code]) {
+        return REGISTERED_FLIGHTS[code];
+      }
+      return {
+        flightNumber: flightNumber.toUpperCase(),
+        airline: 'Commercial Airline',
+        origin: 'N/A',
+        destination: 'N/A',
+        departureTime: new Date().toISOString(),
+        arrivalTime: new Date().toISOString(),
+        terminal: 'N/A',
+        gate: 'N/A',
+        status: 'FLIGHT NOT FOUND',
+        delayMinutes: 0,
+        error: `Flight code "${flightNumber}" is not registered in live flight tracking databases. Please select an available flight from the directory.`
+      };
     }
 
-    // Destination Fallback matching
+    // 2. ONLY IF NO FLIGHT CODE WAS SEARCHED: USE DESTINATION FALLBACK
     if (destCity) {
       if (destCity.includes('meghalaya') || destCity.includes('shillong') || destCity.includes('guwahati')) {
         return REGISTERED_FLIGHTS['6E214'];
@@ -188,22 +204,6 @@ export class FlightService {
       if (destCity.includes('dubai')) {
         return REGISTERED_FLIGHTS['EK500'];
       }
-    }
-
-    if (code) {
-      return {
-        flightNumber: flightNumber.toUpperCase(),
-        airline: 'Unknown Airline',
-        origin: 'N/A',
-        destination: 'N/A',
-        departureTime: new Date().toISOString(),
-        arrivalTime: new Date().toISOString(),
-        terminal: 'N/A',
-        gate: 'N/A',
-        status: 'FLIGHT NOT FOUND',
-        delayMinutes: 0,
-        error: `Flight "${flightNumber}" is not found in live tracking systems. Please select an available flight from the directory.`
-      };
     }
 
     return REGISTERED_FLIGHTS['6E214'];
