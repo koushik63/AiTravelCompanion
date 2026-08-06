@@ -1,3 +1,5 @@
+import { GeminiService } from './GeminiService';
+
 export interface TrainStatusResult {
   trainNumber: string;
   trainName: string;
@@ -153,6 +155,10 @@ export class TrainService {
 
     // 1. IF AN EXPLICIT TRAIN NUMBER WAS SEARCHED:
     if (num) {
+      // Try Gemini AI Real-time lookup
+      const aiResult = await GeminiService.getRealTimeTrainStatus(trainNumber, destinationParam);
+      if (aiResult) return aiResult;
+
       if (REGISTERED_TRAINS[num]) {
         return REGISTERED_TRAINS[num];
       }

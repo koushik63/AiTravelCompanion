@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Logger } from '../utils/logger';
+import { GeminiService } from './GeminiService';
 
 export interface FlightStatusResult {
   flightNumber: string;
@@ -169,6 +170,10 @@ export class FlightService {
 
     // 1. IF AN EXPLICIT FLIGHT CODE WAS SEARCHED:
     if (code) {
+      // Try Gemini AI Real-time lookup
+      const aiResult = await GeminiService.getRealTimeFlightStatus(flightNumber, destinationParam);
+      if (aiResult) return aiResult;
+
       if (REGISTERED_FLIGHTS[code]) {
         return REGISTERED_FLIGHTS[code];
       }

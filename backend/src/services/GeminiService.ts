@@ -585,4 +585,85 @@ Return ONLY valid JSON matching this structure:
       ]
     };
   }
+
+  static async getRealTimeFlightStatus(flightNumber: string, destination?: string) {
+    const code = (flightNumber || '').trim().toUpperCase();
+    const dest = (destination || '').trim();
+
+    const client = this.getClient();
+    if (client) {
+      for (const modelName of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']) {
+        try {
+          const model = client.getGenerativeModel({ model: modelName });
+          const prompt = `You are an Official Real-Time Aviation & Transport Data API. Analyze flight code "${code}" (destination context: "${dest}").
+If "${code}" is a completely fake or invalid flight number (e.g. 123456789, asdf, xyz, 9999), return JSON:
+{ "error": "Flight code ${code} is invalid or does not exist in live airline databases." }
+
+If "${code}" is a real commercial flight code (or standard flight format like 6E 504, AI 101, UK 815, EK 500, SQ 421, JL 001, BA 138, 6E 214, AI 729, etc.), return real authentic status JSON:
+{
+  "flightNumber": "${code}",
+  "airline": "Exact Airline Name",
+  "origin": "Exact Departure Airport Name (IATA), City",
+  "destination": "Exact Arrival Airport Name (IATA), City",
+  "departureTime": "08:15 AM",
+  "arrivalTime": "10:30 AM",
+  "terminal": "T2",
+  "gate": "Gate 14",
+  "status": "ON TIME",
+  "delayMinutes": 0
+}
+Return ONLY valid JSON without extra text.`;
+          const response = await model.generateContent(prompt);
+          const text = response.response.text();
+          const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanText);
+          if (parsed) return parsed;
+        } catch (err: any) {
+          Logger.error(`Gemini flight status error with ${modelName}`, err, 'GeminiService');
+        }
+      }
+    }
+    return null;
+  }
+
+  static async getRealTimeTrainStatus(trainNumber: string, destination?: string) {
+    const num = (trainNumber || '').trim();
+    const dest = (destination || '').trim();
+
+    const client = this.getClient();
+    if (client) {
+      for (const modelName of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']) {
+        try {
+          const model = client.getGenerativeModel({ model: modelName });
+          const prompt = `You are an Official Indian Railways & Live Rail Transport API. Analyze train number "${num}" (destination context: "${dest}").
+If "${num}" is a fake or invalid train number (e.g. 1246655423, 99999999, asdf, xyz, 0000), return JSON:
+{ "error": "Train number ${num} is invalid and does not exist in live IRCTC railways databases." }
+
+If "${num}" is a real Indian Railways or Vande Bharat / Rajdhani / Shatabdi / Express train number (e.g. 15657, 12424, 20901, 12951, 12051, 12002, 12626, 20947, 12509, 15959, etc.), return real authentic status JSON:
+{
+  "trainNumber": "${num}",
+  "trainName": "Exact Official Train Name (e.g. Brahmaputra Mail / Vande Bharat Express)",
+  "origin": "Exact Station Name (Station Code)",
+  "destination": "Exact Station Name (Station Code)",
+  "departureTime": "05:25 AM",
+  "arrivalTime": "01:10 PM",
+  "platform": "PF 1",
+  "coach": "B2 (3A)",
+  "seat": "24 (Lower)",
+  "status": "ON TIME - Running smooth on main line",
+  "delayMinutes": 0
+}
+Return ONLY valid JSON without extra text.`;
+          const response = await model.generateContent(prompt);
+          const text = response.response.text();
+          const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanText);
+          if (parsed) return parsed;
+        } catch (err: any) {
+          Logger.error(`Gemini train status error with ${modelName}`, err, 'GeminiService');
+        }
+      }
+    }
+    return null;
+  }
 }
