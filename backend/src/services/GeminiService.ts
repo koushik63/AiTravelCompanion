@@ -130,8 +130,8 @@ User Context: ${contextStr}
 User Question: "${message}"
 
 INSTRUCTIONS & CONSTRAINTS:
-1. Answer the exact question asked by the user. If they ask about weather, give exact forecast details. If they ask about food, answer about food. If they ask about safety, transport, visa, or costs, answer that directly for the target city.
-2. Do NOT output a full multi-day trip itinerary unless the user explicitly asks for a trip plan or itinerary.
+1. Answer the exact question asked by the user. If they ask about places to visit, list specific top attractions with brief descriptions. If they ask about weather, give weather details. If they ask about food, answer about food.
+2. Do NOT output a full multi-day trip itinerary unless the user explicitly asks for a day-by-day trip plan or itinerary.
 3. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
 4. Do NOT output raw JSON code blocks.`;
 
@@ -144,17 +144,103 @@ INSTRUCTIONS & CONSTRAINTS:
       }
     }
 
-    // Advanced Fallback Intelligence: Real Live Weather & City Knowledge Engine
+    // Advanced Fallback Intelligence: Precise City Matching & Intent Detection
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
-    let targetPlace = destContext || 'Paris';
-    const placeMatch = message.match(/(?:in|at|to|for|about|visiting)\s+([A-Za-z\s]+)/i);
-    if (placeMatch && placeMatch[1]) {
-      targetPlace = placeMatch[1].trim();
+    let targetPlace = '';
+
+    // Direct Known City Matching Engine
+    const knownCities = [
+      'hyderabad', 'secunderabad', 'paris', 'dubai', 'tokyo', 'london', 'new york', 'california',
+      'jaipur', 'goa', 'mumbai', 'delhi', 'singapore', 'bali', 'switzerland', 'usa',
+      'rome', 'bangkok', 'phuket', 'maldives', 'kerala', 'ladakh', 'kashmir'
+    ];
+
+    for (const city of knownCities) {
+      if (new RegExp(`\\b${city}\\b`, 'i').test(lowMsg)) {
+        if (city === 'secunderabad') targetPlace = 'Hyderabad';
+        else if (city === 'usa') targetPlace = 'USA';
+        else if (city === 'new york') targetPlace = 'New York';
+        else targetPlace = city.charAt(0).toUpperCase() + city.slice(1);
+        break;
+      }
+    }
+
+    if (!targetPlace) {
+      const match = message.match(/(?:visit|in|at|to|for|about)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
+      if (match && match[1] && match[1].toLowerCase() !== 'visit') {
+        targetPlace = match[1].trim();
+      } else {
+        targetPlace = destContext || 'Hyderabad';
+      }
     }
 
     const placeLower = targetPlace.toLowerCase();
+
+    // 0. Places to Visit & Top Attractions Query Trigger
+    if (/\b(place|places|visit|attraction|attractions|things to do|sightseeing|spot|spots|see|highlights|tourist)\b/i.test(lowMsg)) {
+      let attractionsList: string[] = [];
+
+      if (placeLower.includes('hyderabad')) {
+        attractionsList = [
+          '1. **Charminar & Laad Bazaar**: Iconic 16th-century monument & historic pearl bazaar.',
+          '2. **Golconda Fort**: Acoustic marvel hilltop fort with Fateh Rahben cannon & light show.',
+          '3. **Chowmahalla Palace**: Royal seat of the Asaf Jahi dynasty featuring grand marble halls.',
+          '4. **Ramoji Film City**: World’s largest film studio complex with Bahubali sets.',
+          '5. **Hussain Sagar Lake & Buddha Statue**: Sunset boat cruise to standing monolith Buddha.',
+          '6. **Qutb Shahi Tombs**: Persian & Deccan arch architecture in peaceful garden grounds.',
+          '7. **Taj Falaknuma Palace & Salar Jung Museum**: Royal high tea & famous Veiled Rebecca statue.'
+        ];
+      } else if (placeLower.includes('paris') || placeLower.includes('france')) {
+        attractionsList = [
+          '1. **Eiffel Tower Summit**: Iconic iron tower with 360° views over Champ de Mars & Seine.',
+          '2. **Louvre Museum**: World’s largest art museum housing Mona Lisa & Venus de Milo.',
+          '3. **Arc de Triomphe & Champs-Élysées**: Triumphal arch rooftop terrace & luxury avenue.',
+          '4. **Sacré-Cœur Basilica in Montmartre**: Hilltop basilica with cobblestone artist plazas.',
+          '5. **Seine River Sunset Cruise**: Glass-canopy dinner cruise along historic bridges.',
+          '6. **Palace of Versailles**: Royal palace Hall of Mirrors & fountain gardens.'
+        ];
+      } else if (placeLower.includes('dubai') || placeLower.includes('uae')) {
+        attractionsList = [
+          '1. **Burj Khalifa 148th Floor Sky Deck**: World’s tallest building observation deck.',
+          '2. **Museum of the Future**: Futuristic AI exhibits & Dubai Frame glass skywalk.',
+          '3. **Red Dune Desert Safari**: 4x4 dune bashing, camel riding, and Bedouin BBQ dinner.',
+          '4. **Dubai Mall & Fountain Show**: World’s largest mall with dancing water fountain.',
+          '5. **Palm Jumeirah & Atlantis Aquaventure**: Palm island monorail & world-class waterpark.'
+        ];
+      } else if (placeLower.includes('tokyo') || placeLower.includes('japan')) {
+        attractionsList = [
+          '1. **Shibuya Scramble Crossing & Shibuya Sky**: World’s busiest pedestrian crossing & sky deck.',
+          '2. **Senso-ji Temple in Asakusa**: 7th-century Buddhist temple & Nakamise souvenir street.',
+          '3. **teamLab Planets**: Interactive digital art & mirrored water installations.',
+          '4. **Meiji Shrine & Harajuku**: Shinto shrine forest & Takeshita Street pop culture fashion.',
+          '5. **Tsukiji Outer Market**: Fresh sushi breakfast & Japanese street food tasting.'
+        ];
+      } else if (placeLower.includes('california') || placeLower.includes('san francisco') || placeLower.includes('los angeles')) {
+        attractionsList = [
+          '1. **San Francisco Golden Gate Bridge & Pier 39**: Walk iconic bridge & view sea lions.',
+          '2. **Alcatraz Island Prison**: Cellhouse audio tour across San Francisco Bay.',
+          '3. **Yosemite National Park**: El Capitan granite cliffs & Vernal Fall hikes.',
+          '4. **Hollywood Walk of Fame & Santa Monica Pier**: Star walk, Rodeo Drive & Pacific beach.',
+          '5. **Highway 1 Big Sur**: Pacific Coast Highway clifftop drive & Bixby Bridge.'
+        ];
+      } else {
+        attractionsList = [
+          `1. **Historic Central Plaza & Monuments in ${targetPlace}**: Explore landmark architecture.`,
+          `2. **Premier City Art & History Museum**: View local cultural heritage artifacts.`,
+          `3. **Panoramic Sunset Observation Deck**: Sky deck for city skyline photography.`,
+          `4. **Artisan Craft Market & Bazaars**: Vibrant markets for regional souvenirs.`,
+          `5. **Scenic Waterfront Promenade**: Relaxing sunset boat cruise & park walk.`
+        ];
+      }
+
+      return {
+        reply: `📍 **Top Places to Visit & Attractions in ${targetPlace}:**\n\n` +
+          attractionsList.join('\n') +
+          `\n\n💡 **Traveler Tip:** Visit popular landmarks early in the morning (08:30 AM – 10:30 AM) to avoid peak crowds and get the best lighting for photos!`
+      };
+    }
 
     // 1. Live Real Weather Report Trigger
     if (/\b(weather|rain|raining|temp|temperature|climate|forecast|sunny|cloudy|snow)\b/i.test(lowMsg)) {
@@ -211,6 +297,7 @@ INSTRUCTIONS & CONSTRAINTS:
       if (placeLower.includes('paris')) transitInfo = `RER & Paris Métro (Lines 1 & 4), Vélib bike rentals, and Seine Riverboats`;
       else if (placeLower.includes('dubai')) transitInfo = `Driverless Dubai Metro (Red Line), Abra water taxis (1 AED), and Careem cabs`;
       else if (placeLower.includes('tokyo')) transitInfo = `JR Yamanote Loop Line, Tokyo Metro, Suica/Pasmo IC cards, and Shinkansen bullet trains`;
+      else if (placeLower.includes('hyderabad')) transitInfo = `Hyderabad Metro (Red & Blue Lines), TSRTC city buses, Uber/Ola, and auto-rickshaws`;
 
       return {
         reply: `🚕 **Transport & Transit Guide for ${targetPlace}:**\n\n` +
