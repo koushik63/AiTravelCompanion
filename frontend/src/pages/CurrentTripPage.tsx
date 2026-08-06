@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Compass, Navigation, Clock } from 'lucide-react';
+import { MapPin, Compass, Navigation, Clock, Sparkles, RefreshCw } from 'lucide-react';
 import { useTravelStore } from '../store/useTravelStore';
-import { WeatherService } from '../services/api';
+import { WeatherService, AIService } from '../services/api';
 import { InteractiveMap } from '../components/live/InteractiveMap';
 import { WeatherCard } from '../components/live/WeatherCard';
 import { EmergencyWidget } from '../components/live/EmergencyWidget';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { WeatherInfo } from '../types';
-
 import { EmptyState } from '../components/ui/EmptyState';
-import { getDetailedDestinationItinerary } from '../utils/itineraryHelper';
+import { getDetailedDestinationItinerary, DayItinerary } from '../utils/itineraryHelper';
 
 export const CurrentTripPage: React.FC = () => {
   const { trips, activeTrip } = useTravelStore();
@@ -17,12 +16,15 @@ export const CurrentTripPage: React.FC = () => {
 
   const [selectedTripId, setSelectedTripId] = useState<string>(activeTrip?.id || (liveTrips[0]?.id || ''));
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
+  const [customItinerary, setCustomItinerary] = useState<DayItinerary[] | null>(null);
+  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
 
   const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || activeTrip || liveTrips[0];
 
   useEffect(() => {
     if (currentTrip?.destination) {
       WeatherService.getCurrent(currentTrip.destination).then(setWeather).catch(() => {});
+      setCustomItinerary(null);
     }
   }, [currentTrip]);
 
@@ -56,16 +58,46 @@ export const CurrentTripPage: React.FC = () => {
   if (diffFromStartMs > 0) {
     currentDay = Math.min(totalDays, Math.floor(diffFromStartMs / (1000 * 60 * 60 * 24)) + 1);
   } else {
-    currentDay = 1; // Trip started today or is starting
+    currentDay = 1;
   }
 
   const remainingDays = Math.max(0, totalDays - currentDay);
   const progressPercent = Math.min(100, Math.max(14, Math.round((currentDay / totalDays) * 100)));
   const progressSublabel = `Day ${currentDay} of ${totalDays} • ${remainingDays} ${remainingDays === 1 ? 'Day' : 'Days'} Remaining`;
 
+  const handleRegenerateAI = async () => {
+    setIsGeneratingAI(true);
+    try {
+      const res = await AIService.generateItinerary({
+        destination: currentTrip.destination,
+        travelStyle: currentTrip.travelType || 'Leisure',
+        budget: currentTrip.budget || 50000,
+        durationDays: totalDays,
+        forceRegenerate: true
+      });
+
+      if (res && res.days && Array.isArray(res.days)) {
+        const aiDays: DayItinerary[] = res.days.map((d: any) => ({
+          day: `Day ${d.dayNumber}: ${d.summary || 'Custom AI Schedule'}`,
+          morning: d.morning && d.morning[0] ? d.morning[0].title : `Explore morning highlights in ${currentTrip.destination}`,
+          afternoon: d.afternoon && d.afternoon[0] ? d.afternoon[0].title : `Visit central attraction in ${currentTrip.destination}`,
+          evening: d.evening && d.evening[0] ? d.evening[0].title : `Dine at famous local restaurant in ${currentTrip.destination}`,
+          cost: `₹${Math.round((d.morning?.[0]?.cost || 800) + (d.afternoon?.[0]?.cost || 1200) + (d.evening?.[0]?.cost || 1500))}`
+        }));
+        setCustomItinerary(aiDays);
+      }
+    } catch (err) {
+      console.error('Failed to regenerate AI itinerary', err);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const displayedItinerary = customItinerary || getDetailedDestinationItinerary(currentTrip.destination, totalDays, currentTrip.currency, currentTrip.budget);
+
   return (
     <div className="space-y-8 pb-16">
-      {/* Live Trip Switcher (when user has > 1 live trip) */}
+      {/* Live Trip Switcher */}
       {liveTrips.length > 1 && (
         <div className="flex items-center gap-2 overflow-x-auto p-2 bg-slate-900/90 border border-sky-500/30 rounded-2xl">
           <span className="text-xs font-bold text-sky-400 px-3 flex items-center gap-1 shrink-0">
@@ -75,7 +107,7 @@ export const CurrentTripPage: React.FC = () => {
             <button
               key={t.id}
               onClick={() => setSelectedTripId(t.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 currentTrip.id === t.id
                   ? 'bg-gradient-to-r from-sky-500 to-emerald-500 text-white shadow-lg shadow-sky-500/25'
                   : 'bg-slate-950/80 text-slate-400 hover:text-slate-200 border border-slate-800'
@@ -118,7 +150,7 @@ export const CurrentTripPage: React.FC = () => {
         />
       </div>
 
-      {/* Map & Weather Row - Perfectly Aligned & Spacious */}
+      {/* Map & Weather Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <div className="lg:col-span-2 h-full">
           <InteractiveMap destination={currentTrip.destination} height="h-full min-h-[480px]" />
@@ -134,21 +166,34 @@ export const CurrentTripPage: React.FC = () => {
 
       {/* Live Itinerary Schedule */}
       <div className="glass-panel p-6 space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
           <div>
             <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
               <Clock className="w-5 h-5 text-amber-400" /> Active Live Itinerary Schedule
             </h2>
             <p className="text-xs text-slate-400">Detailed day-by-day checkpoints for {currentTrip.destination}</p>
           </div>
-          <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">
-            Verified Live Plan
-          </span>
+
+          <button
+            onClick={handleRegenerateAI}
+            disabled={isGeneratingAI}
+            className="glass-button text-xs py-2 px-4 flex items-center gap-1.5 shadow-lg shadow-sky-500/15 disabled:opacity-50 cursor-pointer"
+          >
+            {isGeneratingAI ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" /> Regenerating AI Schedule...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Regenerate AI Itinerary
+              </>
+            )}
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {getDetailedDestinationItinerary(currentTrip.destination, totalDays, currentTrip.currency, currentTrip.budget).map((d, idx) => (
-            <div key={idx} className="p-4.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3.5 shadow-lg">
+          {displayedItinerary.map((d, idx) => (
+            <div key={idx} className="p-4.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3.5 shadow-lg hover:border-sky-500/30 transition-all">
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
                 <span className="font-extrabold text-xs text-amber-400">{d.day}</span>
                 <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">

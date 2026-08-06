@@ -19,6 +19,48 @@ interface TemplateItem {
 }
 
 const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
+  california: [
+    {
+      summary: 'San Francisco Golden Gate Bridge, Pier 39 & Fisherman’s Wharf',
+      morning: 'Walk & photo session across iconic Golden Gate Bridge; explore Crissy Field waterfront views.',
+      afternoon: 'Fisherman’s Wharf sourdough clam chowder lunch & watch famous sea lions barking at Pier 39.',
+      evening: 'Historic San Francisco Cable Car ride to Ghirardelli Square for hot fudge sundaes.',
+      baseCostINR: 18500,
+      highlight: 'Golden Gate Bridge & Pier 39'
+    },
+    {
+      summary: 'Alcatraz Island Cellhouse Tour & Chinatown Heritage',
+      morning: 'Ferry ride across San Francisco Bay & award-winning audio tour of historic Alcatraz Island prison.',
+      afternoon: 'Authentic dim sum tasting tour through historic San Francisco Chinatown & Grant Avenue gates.',
+      evening: 'Sunset views over San Francisco Bay from Coit Tower followed by North Beach Italian dinner.',
+      baseCostINR: 17200,
+      highlight: 'Alcatraz Island & Chinatown Tour'
+    },
+    {
+      summary: 'Yosemite National Park Granite Cliffs & Waterfall Hike',
+      morning: 'Guided excursion to Yosemite Valley viewing legendary El Capitan granite monolith & Tunnel View lookout.',
+      afternoon: 'Scenic trail hike to Vernal Fall & Nevada Fall amidst towering giant sequoias.',
+      evening: 'Stargazing session & lodge dinner looking up at Half Dome in Yosemite Valley.',
+      baseCostINR: 21000,
+      highlight: 'Yosemite National Park & El Capitan'
+    },
+    {
+      summary: 'Los Angeles Hollywood Walk of Fame & Santa Monica Pier',
+      morning: 'Stroll Hollywood Walk of Fame, TCL Chinese Theatre handprints & Beverly Hills Rodeo Drive.',
+      afternoon: 'Santa Monica Pier Pacific Park roller coaster rides & historic Venice Beach boardwalk strolling.',
+      evening: 'Sunset panoramic view over Los Angeles basin from Griffith Observatory.',
+      baseCostINR: 19400,
+      highlight: 'Hollywood Walk of Fame & Santa Monica Pier'
+    },
+    {
+      summary: 'Highway 1 Coastal Scenic Drive & Big Sur Cliffs',
+      morning: 'Drive along Highway 1 Pacific Coast Highway stopping at Bixby Creek Bridge for coastal photos.',
+      afternoon: 'Explore Pfeiffer Beach purple sand cove & McWay Falls ocean waterfall viewpoint.',
+      evening: 'Clifftop dinner at Nepenthe Restaurant overlooking Big Sur Pacific Ocean waves.',
+      baseCostINR: 22500,
+      highlight: 'Highway 1 Big Sur Coastal Drive'
+    }
+  ],
   hyderabad: [
     {
       summary: 'Charminar, Laad Bazaar Pearls & Chowmahalla Palace',
@@ -43,22 +85,6 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Walk through Eureka Carnival, butterfly park & thematic dinner at Jimmy’s Drive-In.',
       baseCostINR: 4500,
       highlight: 'Ramoji Film City & Bahubali Sets'
-    },
-    {
-      summary: 'Taj Falaknuma Palace & Salar Jung Museum Treasures',
-      morning: 'Guided art tour of Salar Jung Museum viewing Veiled Rebecca marble statue & Musical Clock.',
-      afternoon: 'Royal High Tea experience at Taj Falaknuma Palace overlooking Hyderabad skyline.',
-      evening: 'Stroll around KBR National Park, Jubilee Hills & dinner at Olive Bistro overlooking Durgam Cheruvu.',
-      baseCostINR: 5800,
-      highlight: 'Taj Falaknuma High Tea & Salar Jung'
-    },
-    {
-      summary: 'HITEC City, Durgam Cheruvu Cable Bridge & Shilparamam',
-      morning: 'Explore Shilparamam Arts & Crafts Village for traditional Indian handlooms & pottery.',
-      afternoon: 'Walk across iconic Durgam Cheruvu Cable Stayed Bridge & enjoy waterfront park kayaking.',
-      evening: 'Rooftop cocktail session at Skypoint ITC Kohenur overlooking Cyberabad skyline.',
-      baseCostINR: 3600,
-      highlight: 'Durgam Cheruvu Cable Bridge & Shilparamam'
     }
   ],
   usa: [
@@ -85,48 +111,6 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Bellagio Fountains choreographed water show & dinner at Caesars Palace.',
       baseCostINR: 19500,
       highlight: 'Las Vegas Strip & Bellagio Fountains'
-    },
-    {
-      summary: 'Grand Canyon National Park South Rim Helicopter Flight',
-      morning: 'Scenic flight over Grand Canyon National Park & Mather Point sunrise view.',
-      afternoon: 'Walk along South Rim Trail & Desert View Watchtower panorama.',
-      evening: 'Campfire sunset at Bright Angel Lodge looking over canyon gorges.',
-      baseCostINR: 22000,
-      highlight: 'Grand Canyon South Rim Flight'
-    },
-    {
-      summary: 'Los Angeles Hollywood Walk of Fame & Santa Monica Pier',
-      morning: 'Stroll Hollywood Walk of Fame, TCL Chinese Theatre & Beverly Hills Rodeo Drive.',
-      afternoon: 'Santa Monica Pier amusement park rides & Venice Beach boardwalk.',
-      evening: 'Sunset views over Los Angeles basin from Griffith Observatory.',
-      baseCostINR: 17500,
-      highlight: 'Hollywood Walk of Fame & Santa Monica Pier'
-    }
-  ],
-  newyork: [
-    {
-      summary: 'Statue of Liberty, Wall Street & Empire State Building',
-      morning: 'Liberty Island ferry ride to Statue of Liberty monument & Ellis Island Immigration Museum.',
-      afternoon: 'Walk through Financial District charging bull, Wall Street & 9/11 Memorial Pools.',
-      evening: 'Sunset views from Empire State Building 86th Floor Observatory & Times Square neon lights walk.',
-      baseCostINR: 18500,
-      highlight: 'Statue of Liberty & Empire State Observatory'
-    },
-    {
-      summary: 'Central Park, Metropolitan Museum of Art (Met) & Broadway Show',
-      morning: 'Morning stroll through Central Park Bethesda Terrace & Strawberry Fields.',
-      afternoon: 'Tour world-class art at The Metropolitan Museum of Art (The Met) & Fifth Avenue shopping.',
-      evening: 'Live Broadway musical production in Midtown Manhattan & New York slice pizza dinner.',
-      baseCostINR: 19200,
-      highlight: 'Central Park & Broadway Show'
-    },
-    {
-      summary: 'Brooklyn Bridge Walk, DUMBO Skyline & High Line Park',
-      morning: 'Walk across iconic Brooklyn Bridge & photo shoot at DUMBO Manhattan Bridge view.',
-      afternoon: 'Explore Chelsea Market gourmet food halls & elevated High Line urban park stroll.',
-      evening: 'Rooftop cocktail lounge at Summit One Vanderbilt overlooking NYC skyline.',
-      baseCostINR: 17800,
-      highlight: 'Brooklyn Bridge & High Line Park'
     }
   ],
   dubai: [
@@ -145,30 +129,6 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Al Khayma Bedouin Desert Camp experience featuring camel rides, henna art, belly dance & Arabian BBQ dinner.',
       baseCostINR: 16200,
       highlight: 'Museum of Future & Red Dune Desert Safari'
-    },
-    {
-      summary: 'Palm Jumeirah Monorail, Atlantis Aquaventure & Yacht Cruise',
-      morning: 'Scenic monorail ride across Palm Jumeirah to Atlantis The Palm; visit The Lost Chambers Aquarium.',
-      afternoon: 'High-adrenaline waterpark slides at Aquaventure World or luxury beach club at West Palm Beach.',
-      evening: 'Sunset mega yacht dinner cruise departing from Dubai Marina skyline viewing Ain Dubai wheel.',
-      baseCostINR: 18500,
-      highlight: 'Palm Jumeirah & Dubai Marina Yacht Cruise'
-    },
-    {
-      summary: 'Old Dubai Gold & Spice Souks, Abra Boat & Al Fahidi District',
-      morning: 'Guided walk through Al Fahidi Historic Neighborhood wind-tower architecture and Dubai Coffee Museum.',
-      afternoon: 'Ride traditional wooden Abra boat across Dubai Creek (1 AED ferry) to explore Gold & Spice Souks.',
-      evening: 'Authentic Emirati dinner at Sheikh Mohammed Centre for Cultural Understanding & Creek Harbour sunset.',
-      baseCostINR: 9800,
-      highlight: 'Old Dubai Gold Souk & Abra Boat Ride'
-    },
-    {
-      summary: 'Dubai Miracle Garden, Global Village & Bluewaters Island',
-      morning: 'Stroll through Dubai Miracle Garden viewing 150 million blooming flowers and Emirates A380 installation.',
-      afternoon: 'Visit Dubai Butterfly Garden and Bluewaters Island promenade directly beneath Ain Dubai.',
-      evening: 'Explore Global Village multicultural pavilion shopping & international street food with fireworks show.',
-      baseCostINR: 11200,
-      highlight: 'Dubai Miracle Garden & Global Village'
     }
   ],
   paris: [
@@ -179,22 +139,6 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Sunset glass-canopy Bateaux Parisians cruise along Seine River with French wine & dinner.',
       baseCostINR: 16500,
       highlight: 'Eiffel Tower Summit & Seine Dinner Cruise'
-    },
-    {
-      summary: 'Palace of Versailles Royal Gardens & Montmartre Art District',
-      morning: 'Morning train excursion to Palace of Versailles; tour Hall of Mirrors & Royal Apartments.',
-      afternoon: 'Stroll Montmartre cobblestone streets, Place du Tertre artists square & Sacré-Cœur Basilica.',
-      evening: 'Authentic French bistro dinner in Le Marais district savoring duck confit & crème brûlée.',
-      baseCostINR: 14800,
-      highlight: 'Palace of Versailles & Montmartre'
-    },
-    {
-      summary: 'Musée d’Orsay Impressionists, Champs-Élysées & Arc de Triomphe',
-      morning: 'View Monet, Van Gogh & Renoir masterworks inside historic Musée d’Orsay station.',
-      afternoon: 'Walk down Champs-Élysées luxury avenue to Arc de Triomphe rooftop panoramic terrace.',
-      evening: 'Opera Garnier neighborhood gourmet food tasting tour featuring macarons & French cheeses.',
-      baseCostINR: 15200,
-      highlight: 'Arc de Triomphe & Musée d’Orsay'
     }
   ],
   tokyo: [
@@ -205,120 +149,16 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Authentic Tokyo Ramen Alley dinner in Shinjuku & Kabukicho neon nightlife walk.',
       baseCostINR: 13500,
       highlight: 'Shibuya Crossing & Meiji Shrine'
-    },
-    {
-      summary: 'Senso-ji Temple Asakusa, Tokyo Skytree & Nakamise Shopping',
-      morning: 'Tour 7th-century Senso-ji Temple in Asakusa; shop for traditional Japanese souvenirs at Nakamise Street.',
-      afternoon: 'Ascend Tokyo Skytree (634m) observation deck overlooking Mount Fuji on clear days.',
-      evening: 'Sumida River cruise to Odaiba waterfront viewing Rainbow Bridge & giant Gundam statue.',
-      baseCostINR: 14200,
-      highlight: 'Senso-ji Temple & Tokyo Skytree'
-    },
-    {
-      summary: 'TeamLab Planets Immersive Digital Art & Tsukiji Outer Market',
-      morning: 'Fresh sushi breakfast & street food tasting tour at historic Tsukiji Outer Market.',
-      afternoon: 'Walk through teamLab Planets interactive mirrored water art installations.',
-      evening: 'Ginza luxury shopping district walk & Izakaya alley dining experience in Yurakucho.',
-      baseCostINR: 15800,
-      highlight: 'teamLab Planets & Tsukiji Market'
-    }
-  ],
-  london: [
-    {
-      summary: 'Big Ben, Houses of Parliament, Westminster Abbey & London Eye',
-      morning: 'Priority entry to Westminster Abbey royal coronation site & Big Ben photo walk across Westminster Bridge.',
-      afternoon: '30-minute glass pod flight on the London Eye overlooking the River Thames & Buckingham Palace.',
-      evening: 'Traditional British afternoon tea at Fortnum & Mason followed by West End musical theatre show in Covent Garden.',
-      baseCostINR: 16800,
-      highlight: 'London Eye & Westminster Abbey'
-    },
-    {
-      summary: 'Tower of London Crown Jewels, Tower Bridge & Borough Market',
-      morning: 'Explore 1,000-year-old Tower of London & view official British Royal Crown Jewels guarded by Beefeaters.',
-      afternoon: 'Walk across glass-floored Tower Bridge walkway & artisan food tasting tour at Borough Market.',
-      evening: 'Sunset cocktails at The Shard 72nd floor rooftop lounge looking down at London skyline.',
-      baseCostINR: 15400,
-      highlight: 'Tower of London & Tower Bridge'
-    }
-  ],
-  jaipur: [
-    {
-      summary: 'Amber Fort Elephant Pathway, Jal Mahal & Sheesh Mahal',
-      morning: 'Ascend hilltop Amber Fort (Amer Fort) viewing Mirror Palace (Sheesh Mahal) & Maota Lake reflections.',
-      afternoon: 'Photo stop at Jal Mahal (Water Palace) in Man Sagar Lake & shopping at Johari Bazaar for blue pottery.',
-      evening: 'Traditional Rajasthani Thali dinner & folk puppet show at Chokhi Dhani cultural village.',
-      baseCostINR: 3800,
-      highlight: 'Amber Fort & Jal Mahal'
-    },
-    {
-      summary: 'Hawa Mahal (Palace of Winds), City Palace & Jantar Mantar',
-      morning: 'Sunrise photography at iconic honeycombed pink sandstone Hawa Mahal (Palace of Winds).',
-      afternoon: 'Tour Jaipur Royal City Palace museum & Jantar Mantar UNESCO astronomical observatory.',
-      evening: 'Sunset view over Pink City skyline from Nahargarh Fort cliffside rooftop café.',
-      baseCostINR: 4200,
-      highlight: 'Hawa Mahal & City Palace'
     }
   ],
   goa: [
     {
       summary: 'North Goa Beaches & Fort Aguada',
       morning: 'Check in to beachside resort in Baga/Calangute; morning relaxation & fresh coconut water by the shore.',
-      afternoon: 'Visit 17th-century Fort Aguada lighthouse viewpoint and Chapora Fort (famous Dil Chahta Hai cliff).',
+      afternoon: 'Visit 17th-century Fort Aguada lighthouse viewpoint and Chapora Fort.',
       evening: 'Sunset beach lounge session at Thalassa Vagator followed by seafood dinner at Tito’s Lane.',
       baseCostINR: 4200,
       highlight: 'Fort Aguada & Vagator Sunset'
-    },
-    {
-      summary: 'Old Goa UNESCO Cathedrals & Panaji Latin Quarter',
-      morning: 'Tour Basilica of Bom Jesus (storing mortal remains of St. Francis Xavier) & Se Cathedral in Old Goa.',
-      afternoon: 'Explore Fontainhas Latin Quarter colorful Portuguese heritage streets & heritage art galleries.',
-      evening: 'Sunset cruise along Mandovi River with traditional Goan folk dance & music performances.',
-      baseCostINR: 3600,
-      highlight: 'Basilica of Bom Jesus & Fontainhas'
-    },
-    {
-      summary: 'Dudhsagar Waterfall Safari & South Goa Beaches',
-      morning: 'Early morning 4x4 Jeep Safari through Bhagwan Mahavir Wildlife Sanctuary to Dudhsagar Waterfalls.',
-      afternoon: 'Organic lunch at Sahakari Spice Plantation followed by elephant interaction & spice garden tour.',
-      evening: 'Relaxing sunset at Palolem Beach crescent bay & dinner at Cape Goa cliffside restaurant.',
-      baseCostINR: 5200,
-      highlight: 'Dudhsagar Waterfall Safari'
-    }
-  ],
-  mumbai: [
-    {
-      summary: 'Gateway of India, Colaba Causeway & Marine Drive',
-      morning: 'Visit iconic Gateway of India and marvel at Taj Mahal Palace Hotel architecture.',
-      afternoon: 'Street shopping at Colaba Causeway for vintage antiques & fashion apparel.',
-      evening: 'Sunset stroll along Marine Drive (Queen’s Necklace) and dinner at Bademiya Kebabs.',
-      baseCostINR: 3400,
-      highlight: 'Gateway of India & Marine Drive Sunset'
-    },
-    {
-      summary: 'Elephanta Caves Island Boat Trip & Heritage Architecture',
-      morning: 'Ferry ride across Mumbai Harbour to UNESCO Elephanta Caves rock-cut Shiva temples.',
-      afternoon: 'Guided walk through Victoria Terminus (CSMT railway station) & Crawford Market.',
-      evening: 'Cocktails at rooftop bar overlooking Arabian Sea in Nariman Point.',
-      baseCostINR: 3800,
-      highlight: 'Elephanta Caves & CSMT Heritage'
-    }
-  ],
-  delhi: [
-    {
-      summary: 'Old Delhi Heritage, Red Fort & Chandni Chowk Food Walk',
-      morning: 'Explore Mughal Red Fort (Lal Qila) & Jama Masjid mosque.',
-      afternoon: 'Cycle rickshaw ride through Chandni Chowk & paranthas at Paranthe Wali Gali.',
-      evening: 'Illuminated view of India Gate memorial & Rajpath boulevard walk.',
-      baseCostINR: 2900,
-      highlight: 'Red Fort & Chandni Chowk Food Tour'
-    },
-    {
-      summary: 'Qutub Minar, Humayun’s Tomb & Lotus Temple',
-      morning: 'Visit 73-meter Qutub Minar UNESCO victory tower & Iron Pillar.',
-      afternoon: 'Tour red sandstone Humayun’s Tomb (inspiration for Taj Mahal).',
-      evening: 'Sunset meditation at Lotus Temple & dinner at Khan Market.',
-      baseCostINR: 3500,
-      highlight: 'Qutub Minar & Humayun’s Tomb'
     }
   ]
 };
@@ -335,8 +175,8 @@ export function getDetailedDestinationItinerary(
   const daysNeeded = Math.max(1, durationDays || 3);
 
   let key = '';
-  if (dest.includes('hyderabad') || dest.includes('secunderabad')) key = 'hyderabad';
-  else if (dest.includes('usa') || dest.includes('united states') || dest.includes('america') || dest.includes('us')) key = 'usa';
+  if (dest.includes('california') || dest.includes('san francisco') || dest.includes('los angeles')) key = 'california';
+  else if (dest.includes('hyderabad') || dest.includes('secunderabad')) key = 'hyderabad';
   else if (dest.includes('new york') || dest.includes('nyc')) key = 'newyork';
   else if (dest.includes('dubai') || dest.includes('uae')) key = 'dubai';
   else if (dest.includes('paris') || dest.includes('france')) key = 'paris';
@@ -346,6 +186,7 @@ export function getDetailedDestinationItinerary(
   else if (dest.includes('goa')) key = 'goa';
   else if (dest.includes('mumbai') || dest.includes('bombay')) key = 'mumbai';
   else if (dest.includes('delhi')) key = 'delhi';
+  else if (dest.includes('usa') || dest.includes('united states') || dest.includes('america') || /\busa?\b/i.test(dest)) key = 'usa';
 
   let templates = key ? DESTINATION_TEMPLATES[key] : null;
 
@@ -353,16 +194,15 @@ export function getDetailedDestinationItinerary(
     dest.includes('usa') ||
     dest.includes('united states') ||
     dest.includes('america') ||
+    dest.includes('california') ||
     dest.includes('new york') ||
     dest.includes('paris') ||
     dest.includes('london') ||
     dest.includes('tokyo') ||
-    dest.includes('rome') ||
     dest.includes('dubai') ||
     dest.includes('singapore') ||
     dest.includes('bali') ||
-    dest.includes('switzerland') ||
-    dest.includes('amsterdam');
+    dest.includes('switzerland');
 
   let exchangeRateToCurrency = 1;
   const currUpper = (currency || 'INR').toUpperCase().trim();
@@ -371,51 +211,33 @@ export function getDetailedDestinationItinerary(
   else if (currUpper === 'GBP') exchangeRateToCurrency = 0.0094;
   else if (currUpper === 'AED') exchangeRateToCurrency = 0.044;
   else if (currUpper === 'JPY') exchangeRateToCurrency = 1.82;
-  else if (currUpper === 'CAD') exchangeRateToCurrency = 0.016;
-  else if (currUpper === 'AUD') exchangeRateToCurrency = 0.018;
 
   if (!templates || templates.length === 0) {
     const baseDailyCostINR = isInternational ? 16000 : 3500;
     templates = [
       {
-        summary: `Downtown Landmark Exploration, City Center Plazas & Panoramic Sky Deck in ${capitalizedName}`,
-        morning: `Morning walking tour of ${capitalizedName}'s vibrant city center, historic plazas & architectural monuments.`,
-        afternoon: `Visit premier city art museum, cultural heritage centers & scenic waterfront garden promenade.`,
+        summary: `Downtown Landmark Exploration, Central Plazas & Sky Deck in ${capitalizedName}`,
+        morning: `Morning walking tour of ${capitalizedName}'s central heritage plazas & architectural monuments.`,
+        afternoon: `Visit premier city art museum, cultural heritage centers & scenic promenade in ${capitalizedName}.`,
         evening: `Sunset observation sky deck view overlooking ${capitalizedName} skyline followed by authentic regional dinner.`,
         baseCostINR: Math.round(baseDailyCostINR * 1.0),
         highlight: `City Center & Skyline Observation Deck in ${capitalizedName}`
       },
       {
-        summary: `Culinary Street Food Tour, Historic Bazaars & Cultural Heritage Museums in ${capitalizedName}`,
+        summary: `Culinary Street Food Tour, Historic Bazaars & Cultural Heritage in ${capitalizedName}`,
         morning: `Guided morning tour of ${capitalizedName}’s iconic architectural landmarks and historic cultural monuments.`,
-        afternoon: `Shop for artisanal handicrafts, local fashion & traditional souvenirs at famous street markets.`,
+        afternoon: `Shop for artisanal handicrafts, local fashion & traditional souvenirs at famous street markets in ${capitalizedName}.`,
         evening: `Gourmet food tasting walk trying top signature culinary delicacies of ${capitalizedName}.`,
         baseCostINR: Math.round(baseDailyCostINR * 0.9),
         highlight: `${capitalizedName} Bazaars & Gourmet Food Walk`
       },
       {
-        summary: `Scenic Nature Excursion, Waterfront Boat Cruise & Sunset Skyline Lounge in ${capitalizedName}`,
+        summary: `Scenic Nature Excursion, Waterfront Boat Cruise & Sunset Lounge in ${capitalizedName}`,
         morning: `Morning trip to nearby hillside lookout, lake, or scenic natural landscape surrounding ${capitalizedName}.`,
-        afternoon: `Relaxing boat cruise or nature trail hike with organic farm-to-table lunch.`,
-        evening: `Atmospheric sunset lounge dinner with live music performance.`,
+        afternoon: `Relaxing boat cruise or nature trail hike with organic farm-to-table lunch in ${capitalizedName}.`,
+        evening: `Atmospheric sunset lounge dinner with live music performance in ${capitalizedName}.`,
         baseCostINR: Math.round(baseDailyCostINR * 1.15),
         highlight: `Nature Excursion & Sunset Cruise in ${capitalizedName}`
-      },
-      {
-        summary: `Arts, Botanical Gardens & Performing Arts Promenade in ${capitalizedName}`,
-        morning: `Stroll through ${capitalizedName}’s lush botanical gardens and historical palace grounds.`,
-        afternoon: `Visit contemporary art galleries, science centers & shopping promenade.`,
-        evening: `Evening theater / cultural show and rooftop cocktail dinner.`,
-        baseCostINR: Math.round(baseDailyCostINR * 1.05),
-        highlight: `Botanical Gardens & Performing Arts in ${capitalizedName}`
-      },
-      {
-        summary: `Local Craft Markets, Scenic Mountain/Coastal Viewpoints & Nightlife in ${capitalizedName}`,
-        morning: `Explore artisan craft markets and historic old town district in ${capitalizedName}.`,
-        afternoon: `Scenic excursion to panoramic mountain/coastal viewpoint overlooking the region.`,
-        evening: `Farewell celebration dinner at a top-rated waterfront venue in ${capitalizedName}.`,
-        baseCostINR: Math.round(baseDailyCostINR * 1.1),
-        highlight: `Scenic Viewpoints & Nightlife in ${capitalizedName}`
       }
     ];
   }

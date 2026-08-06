@@ -319,22 +319,25 @@ INSTRUCTIONS:
       ];
     }
 
+    const seedOffset = Math.floor(Math.random() * 5);
+
     const days = Array.from({ length: daysCount }).map((_, i) => {
-      const template = dayTemplates[i % dayTemplates.length];
+      const template = dayTemplates[(i + seedOffset) % dayTemplates.length];
+      const variance = Math.floor(Math.random() * 300) - 150;
       return {
         dayNumber: i + 1,
         date: new Date(Date.now() + i * 86400000).toISOString().split('T')[0],
         summary: template.summary,
         morning: [
-          { id: `m_${i}`, time: '09:00 AM', title: template.morning.title, category: template.morning.category, cost: template.morning.cost, isCompleted: false }
+          { id: `m_${i}_${Date.now()}`, time: '09:00 AM', title: template.morning.title, category: template.morning.category, cost: Math.max(200, template.morning.cost + variance), isCompleted: false }
         ],
         afternoon: [
-          { id: `a_${i}`, time: '01:00 PM', title: template.afternoon.title, category: template.afternoon.category, cost: template.afternoon.cost, isCompleted: false }
+          { id: `a_${i}_${Date.now()}`, time: '01:00 PM', title: template.afternoon.title, category: template.afternoon.category, cost: Math.max(300, template.afternoon.cost + variance), isCompleted: false }
         ],
         evening: [
-          { id: `e_${i}`, time: '06:30 PM', title: template.evening.title, category: template.evening.category, cost: template.evening.cost, isCompleted: false }
+          { id: `e_${i}_${Date.now()}`, time: '06:30 PM', title: template.evening.title, category: template.evening.category, cost: Math.max(400, template.evening.cost + variance), isCompleted: false }
         ],
-        dailyEstimatedCost: template.morning.cost + template.afternoon.cost + template.evening.cost
+        dailyEstimatedCost: Math.max(900, template.morning.cost + template.afternoon.cost + template.evening.cost + variance * 3)
       };
     });
 
