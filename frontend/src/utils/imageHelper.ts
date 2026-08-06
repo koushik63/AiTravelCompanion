@@ -1,10 +1,10 @@
 // Centralized Destination Image Provider for AiTravelCompanion
-const CHARMINAR_HYDERABAD_REAL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/1200px-Charminar_Hyderabad_1.jpg';
+const HYDERABAD_CHARMINAR_PHOTO = 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
 
 const REALTIME_DESTINATION_IMAGES: Record<string, string> = {
   // Major Indian Cities & Destinations
-  hyderabad: CHARMINAR_HYDERABAD_REAL, // Verified authentic 16th century Charminar monument photo
-  secunderabad: CHARMINAR_HYDERABAD_REAL,
+  hyderabad: HYDERABAD_CHARMINAR_PHOTO,
+  secunderabad: HYDERABAD_CHARMINAR_PHOTO,
   goa: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1200',
   mumbai: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&q=80&w=1200',
   delhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1200',
@@ -34,9 +34,9 @@ const REALTIME_DESTINATION_IMAGES: Record<string, string> = {
 export function getTripImage(destination?: string, tripId?: string, imageUrl?: string, title?: string, coverImage?: string): string {
   const destStr = (destination || '').toLowerCase().trim();
 
-  // Explicit check for Hyderabad -> Guaranteed real Charminar monument photo
+  // Explicit check for Hyderabad -> Guaranteed real destination photo
   if (destStr.includes('hyderabad') || destStr.includes('secunderabad')) {
-    return CHARMINAR_HYDERABAD_REAL;
+    return HYDERABAD_CHARMINAR_PHOTO;
   }
 
   // Keyword match against verified direct destination photos
@@ -47,10 +47,11 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
   }
 
   const customImg = imageUrl || coverImage;
-  // Ignore wrong newspaper/code/resort photos if present
+  // Ignore wrong newspaper/code/resort photos or wikimedia blocked links if present
   if (
     customImg &&
     customImg.trim().length > 10 &&
+    !customImg.includes('wikimedia.org') &&
     !customImg.includes('photo-1605379399642-870262d3d051') &&
     !customImg.includes('photo-1572445271230-a78b5944a659') &&
     !customImg.includes('photo-1476514525535-07fb3b4ae5f1') &&
@@ -60,5 +61,5 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
     return customImg;
   }
 
-  return CHARMINAR_HYDERABAD_REAL;
+  return HYDERABAD_CHARMINAR_PHOTO;
 }

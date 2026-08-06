@@ -32,6 +32,9 @@ export const TripCard: React.FC<TripCardProps> = ({
           <img
             src={getTripImage(trip.destination, trip.id, trip.imageUrl, trip.title, trip.coverImage)}
             alt={trip.title}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
+            }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
