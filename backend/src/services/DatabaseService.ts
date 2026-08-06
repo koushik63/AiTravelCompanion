@@ -13,8 +13,8 @@ import {
 
 // Destination keyword → Unsplash photo ID for destination-specific trip cover images
 const DESTINATION_IMAGE_MAP: Record<string, string> = {
-  hyderabad: 'photo-1605379399642-870262d3d051',
-  secunderabad: 'photo-1605379399642-870262d3d051',
+  hyderabad: 'photo-1572445271230-a78b5944a659',
+  secunderabad: 'photo-1572445271230-a78b5944a659',
   goa: 'photo-1512343879784-a960bf40e7f2',
   ladakh: 'photo-1506905925346-21bda4d32df4',
   ladhak: 'photo-1506905925346-21bda4d32df4',
