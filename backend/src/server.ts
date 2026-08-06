@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import path from 'path';
 
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 import { globalErrorHandler, notFoundHandler } from './middleware/errorMiddleware';
 import { apiRateLimiter } from './middleware/rateLimiter';
 
@@ -21,8 +23,6 @@ import adminRoutes from './routes/adminRoutes';
 import sharingRoutes from './routes/sharingRoutes';
 import exportRoutes from './routes/exportRoutes';
 
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -35,16 +35,21 @@ app.use(apiRateLimiter);
 
 // Health check
 app.get('/api/health', (req, res) => {
+  const geminiActive = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '');
+  const mapsActive = Boolean(process.env.GOOGLE_MAPS_API_KEY && process.env.GOOGLE_MAPS_API_KEY.trim() !== '');
+  const weatherActive = Boolean(process.env.OPENWEATHER_API_KEY && process.env.OPENWEATHER_API_KEY.trim() !== '');
+  const supabaseActive = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_URL.trim() !== '');
+
   res.json({
     status: 'online',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
-    demoModeActive: true,
+    demoModeActive: !(geminiActive && mapsActive && weatherActive),
     services: {
-      supabase: process.env.SUPABASE_URL ? 'configured' : 'demo-auth-active',
-      gemini: process.env.GEMINI_API_KEY ? 'configured' : 'fallback-active',
-      googleMaps: process.env.GOOGLE_MAPS_API_KEY ? 'configured' : 'fallback-active',
-      openWeather: process.env.OPENWEATHER_API_KEY ? 'configured' : 'fallback-active'
+      supabase: supabaseActive ? 'configured' : 'demo-auth-active',
+      gemini: geminiActive ? 'configured' : 'fallback-active',
+      googleMaps: mapsActive ? 'configured' : 'fallback-active',
+      openWeather: weatherActive ? 'configured' : 'fallback-active'
     }
   });
 });
