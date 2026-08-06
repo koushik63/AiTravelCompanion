@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Compass, Navigation, Phone, CheckCircle2, Clock } from 'lucide-react';
+import { MapPin, Compass, Navigation, Clock } from 'lucide-react';
 import { useTravelStore } from '../store/useTravelStore';
-import { WeatherService, TransportService } from '../services/api';
+import { WeatherService } from '../services/api';
 import { InteractiveMap } from '../components/live/InteractiveMap';
 import { WeatherCard } from '../components/live/WeatherCard';
-import { FlightCard } from '../components/live/FlightCard';
-import { TrainCard } from '../components/live/TrainCard';
 import { EmergencyWidget } from '../components/live/EmergencyWidget';
 import { ProgressBar } from '../components/ui/ProgressBar';
-import { WeatherInfo, FlightStatus, TrainStatus } from '../types';
+import { WeatherInfo } from '../types';
 
 import { EmptyState } from '../components/ui/EmptyState';
 import { getDetailedDestinationItinerary } from '../utils/itineraryHelper';
@@ -19,20 +17,14 @@ export const CurrentTripPage: React.FC = () => {
 
   const [selectedTripId, setSelectedTripId] = useState<string>(activeTrip?.id || (liveTrips[0]?.id || ''));
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
-  const [flight, setFlight] = useState<FlightStatus | null>(null);
-  const [train, setTrain] = useState<TrainStatus | null>(null);
-  const [searchFlightCode, setSearchFlightCode] = useState<string>('');
-  const [searchTrainCode, setSearchTrainCode] = useState<string>('');
 
   const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || activeTrip || liveTrips[0];
 
   useEffect(() => {
     if (currentTrip?.destination) {
       WeatherService.getCurrent(currentTrip.destination).then(setWeather).catch(() => {});
-      TransportService.getFlightStatus(searchFlightCode, currentTrip.destination).then(setFlight).catch(() => {});
-      TransportService.getTrainStatus(searchTrainCode, currentTrip.destination).then(setTrain).catch(() => {});
     }
-  }, [currentTrip, searchFlightCode, searchTrainCode]);
+  }, [currentTrip]);
 
   if (!currentTrip) {
     return (
@@ -92,7 +84,7 @@ export const CurrentTripPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTrip.destination)}`, '_blank')}
-              className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5"
+              className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5 cursor-pointer"
             >
               <Navigation className="w-4 h-4" /> Open Navigation
             </button>
@@ -118,18 +110,6 @@ export const CurrentTripPage: React.FC = () => {
           ) : (
             <div className="glass-panel p-8 text-center text-xs text-slate-400">Loading Live Climate...</div>
           )}
-        </div>
-      </div>
-
-      {/* Transport Tracker Row */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <Compass className="w-5 h-5 text-sky-400" /> Transport Tracker (Live Air & Rail)
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {flight && <FlightCard flight={flight} />}
-          {train && <TrainCard train={train} />}
         </div>
       </div>
 

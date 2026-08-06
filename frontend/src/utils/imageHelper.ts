@@ -7,7 +7,7 @@ const DESTINATION_PHOTOS: Record<string, string> = {
   newdelhi: 'photo-1597074866923-dc0589150358',
   bangalore: 'photo-1596176530529-78163a4f7af2',
   bengaluru: 'photo-1596176530529-78163a4f7af2',
-  hyderabad: 'photo-1605379399642-870262d3d051',
+  hyderabad: 'photo-1582719508461-905c673771fd',
   chennai: 'photo-1582510003544-4d00b7f74220',
   kolkata: 'photo-1558431382-27e303142255',
   pune: 'photo-1571679654681-ba01b9e1e117',
@@ -60,33 +60,32 @@ const DESTINATION_PHOTOS: Record<string, string> = {
 };
 
 const FALLBACK_POOL = [
-  'photo-1476514525535-07fb3b4ae5f1',
+  'photo-1566073771259-6a8506099945',
+  'photo-1582719508461-905c673771fd',
   'photo-1500530855697-b586d89ba3ee',
   'photo-1488085061387-422e29b40080',
   'photo-1469474968028-56623f02e42e',
   'photo-1519046904884-53103b34b206',
   'photo-1503220317375-aaad61436b1b',
-  'photo-1551918120-9739cb430c6d',
-  'photo-1682685797406-97f364419b4a'
+  'photo-1551918120-9739cb430c6d'
 ];
 
 /**
  * Resolves a unique destination-appropriate image URL for a given trip object or destination text.
  */
 export function getTripImage(destination?: string, tripId?: string, imageUrl?: string, title?: string, coverImage?: string): string {
-  const customImg = imageUrl || coverImage;
-  // If explicitly provided custom imageUrl or coverImage, use it directly
-  if (customImg && customImg.trim().length > 10) {
-    return customImg;
-  }
-
   const destStr = (destination || '').toLowerCase().trim();
 
-  // Search keyword map
+  // Search keyword map first to guarantee destination match
   for (const [key, photoId] of Object.entries(DESTINATION_PHOTOS)) {
     if (destStr.includes(key)) {
-      return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=800`;
+      return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
     }
+  }
+
+  const customImg = imageUrl || coverImage;
+  if (customImg && customImg.trim().length > 10 && !customImg.includes('photo-1476514525535-07fb3b4ae5f1')) {
+    return customImg;
   }
 
   // Hashed deterministic fallback using destination + title + tripId
@@ -94,5 +93,5 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
   const charSum = seedString.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
   const photoIndex = Math.abs(charSum) % FALLBACK_POOL.length;
 
-  return `https://images.unsplash.com/${FALLBACK_POOL[photoIndex]}?auto=format&fit=crop&q=80&w=800`;
+  return `https://images.unsplash.com/${FALLBACK_POOL[photoIndex]}?auto=format&fit=crop&q=80&w=1200`;
 }
