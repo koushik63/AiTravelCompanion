@@ -44,6 +44,25 @@ export const CurrentTripPage: React.FC = () => {
     );
   }
 
+  // Dynamic Real-Time Journey Progress Calculation based on actual trip dates
+  const now = new Date();
+  const startDate = currentTrip.startDate ? new Date(currentTrip.startDate) : now;
+  const endDate = currentTrip.endDate ? new Date(currentTrip.endDate) : new Date(now.getTime() + 7 * 86400000);
+
+  const totalDays = Math.max(1, Math.ceil(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+
+  const diffFromStartMs = now.getTime() - startDate.getTime();
+  let currentDay = 1;
+  if (diffFromStartMs > 0) {
+    currentDay = Math.min(totalDays, Math.floor(diffFromStartMs / (1000 * 60 * 60 * 24)) + 1);
+  } else {
+    currentDay = 1; // Trip started today or is starting
+  }
+
+  const remainingDays = Math.max(0, totalDays - currentDay);
+  const progressPercent = Math.min(100, Math.max(14, Math.round((currentDay / totalDays) * 100)));
+  const progressSublabel = `Day ${currentDay} of ${totalDays} • ${remainingDays} ${remainingDays === 1 ? 'Day' : 'Days'} Remaining`;
+
   return (
     <div className="space-y-8 pb-16">
       {/* Live Trip Switcher (when user has > 1 live trip) */}
@@ -92,9 +111,9 @@ export const CurrentTripPage: React.FC = () => {
         </div>
 
         <ProgressBar
-          progress={55}
+          progress={progressPercent}
           label="Journey Timeline Progress"
-          sublabel="Day 4 of 7 • 3 Days Remaining"
+          sublabel={progressSublabel}
           color="emerald"
         />
       </div>
@@ -128,7 +147,7 @@ export const CurrentTripPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {getDetailedDestinationItinerary(currentTrip.destination, 3, currentTrip.currency, currentTrip.budget).map((d, idx) => (
+          {getDetailedDestinationItinerary(currentTrip.destination, totalDays, currentTrip.currency, currentTrip.budget).map((d, idx) => (
             <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
                 <span className="font-extrabold text-xs text-amber-400">{d.day}</span>
