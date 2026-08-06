@@ -12,6 +12,7 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>(destination || '');
+  const [activeLocation, setActiveLocation] = useState<string>(destination || 'Goa');
 
   const categories = ['All', 'Luxury', 'Beachfront', 'Boutique', 'Budget'];
 
@@ -21,6 +22,7 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
 
   const fetchHotels = async (dest: string, cat: string) => {
     setLoading(true);
+    setActiveLocation(dest);
     try {
       const data = await HotelService.searchHotels(dest, cat);
       setHotels(data || []);
@@ -45,7 +47,10 @@ export const HotelSection: React.FC<HotelSectionProps> = ({ destination }) => {
           <h3 className="font-extrabold text-slate-100 text-lg flex items-center gap-2">
             <Building2 className="w-5 h-5 text-amber-400" /> Google Maps Nearby Hotels & Stays
           </h3>
-          <p className="text-xs text-slate-400">Verified Google place details, accommodation images, nightly prices, and direct booking links for {destination}</p>
+          <p className="text-xs text-slate-400">
+            Verified Google place details, accommodation images, nightly prices, and direct booking links for{' '}
+            <span className="text-sky-300 font-semibold">{activeLocation}</span>
+          </p>
         </div>
 
         {/* Search Bar */}
