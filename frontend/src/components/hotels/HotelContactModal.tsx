@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Phone, Mail, Globe, MapPin, Copy, Check, Star, MessageSquare, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
+import { X, Phone, Mail, Globe, MapPin, Copy, Check, Star, MessageSquare, ExternalLink, ShieldCheck, Clock, ChevronLeft, ChevronRight, Images } from 'lucide-react';
 import { HotelData } from './HotelCard';
 
 interface HotelContactModalProps {
@@ -14,8 +14,11 @@ export const HotelContactModal: React.FC<HotelContactModalProps> = ({
   hotel
 }) => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [activeImgIdx, setActiveImgIdx] = useState<number>(0);
 
   if (!isOpen || !hotel) return null;
+
+  const photoList = hotel.images && hotel.images.length > 0 ? hotel.images : [hotel.imageUrl];
 
   const handleCopy = (text: string, fieldName: string) => {
     navigator.clipboard.writeText(text);
@@ -39,29 +42,75 @@ export const HotelContactModal: React.FC<HotelContactModalProps> = ({
         className="glass-panel max-w-lg w-full overflow-hidden space-y-0 border-sky-500/30 shadow-2xl"
       >
         {/* Header Image Bar */}
-        <div className="relative h-44 bg-slate-950">
-          <img src={hotel.imageUrl} alt={hotel.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-black/30" />
+        <div className="relative h-56 bg-slate-950 group">
+          <img src={photoList[activeImgIdx]} alt={hotel.name} className="w-full h-full object-cover transition-all duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-black/40" />
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/80 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+            className="absolute top-3 right-3 z-20 p-2 rounded-full bg-slate-950/80 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="absolute bottom-3 left-4 right-4">
+          {/* Photos Counter */}
+          <div className="absolute top-3 left-3 z-20">
+            <span className="bg-slate-950/80 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-lg text-xs font-bold text-sky-300 flex items-center gap-1">
+              <Images className="w-3.5 h-3.5 text-sky-400" /> Photo {activeImgIdx + 1} of {photoList.length}
+            </span>
+          </div>
+
+          {/* Navigation Arrows */}
+          {photoList.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() => setActiveImgIdx((prev) => (prev - 1 + photoList.length) % photoList.length)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-950/70 text-white hover:bg-slate-950 border border-slate-700 cursor-pointer z-20"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveImgIdx((prev) => (prev + 1) % photoList.length)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-950/70 text-white hover:bg-slate-950 border border-slate-700 cursor-pointer z-20"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </>
+          )}
+
+          {/* Rating & Price Badge */}
+          <div className="absolute bottom-3 left-4 right-4 z-20">
             <div className="flex items-center justify-between text-xs text-white">
-              <span className="font-bold text-amber-400 bg-slate-950/80 px-2.5 py-1 rounded-lg border border-slate-800 flex items-center gap-1">
+              <span className="font-bold text-amber-400 bg-slate-950/90 px-2.5 py-1 rounded-lg border border-slate-800 flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> {hotel.rating} ({hotel.reviewsCount} Google reviews)
               </span>
-              <span className="text-[10px] text-emerald-400 bg-slate-950/80 px-2.5 py-1 rounded-lg border border-slate-800 font-extrabold">
+              <span className="text-[10px] text-emerald-400 bg-slate-950/90 px-2.5 py-1 rounded-lg border border-slate-800 font-extrabold">
                 ₹{hotel.pricePerNight.toLocaleString()} / night
               </span>
             </div>
           </div>
         </div>
+
+        {/* Thumbnail Strip */}
+        {photoList.length > 1 && (
+          <div className="flex items-center gap-1.5 p-2 bg-slate-950 border-b border-slate-800 overflow-x-auto custom-scrollbar">
+            {photoList.map((img, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveImgIdx(idx)}
+                className={`h-12 w-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                  activeImgIdx === idx ? 'border-sky-400 scale-105 shadow-md shadow-sky-500/20' : 'border-slate-800 opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Modal Body */}
         <div className="p-6 space-y-5 bg-slate-900/95">

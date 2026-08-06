@@ -12,6 +12,7 @@ export interface HotelItem {
   currency: string;
   category: 'Luxury' | 'Boutique' | 'Beachfront' | 'Budget' | 'Resort';
   imageUrl: string;
+  images: string[];
   amenities: string[];
   googleMapsUrl: string;
   phone: string;
@@ -35,6 +36,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Luxury',
       imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Royal Nizam Butler Service', 'Celeste Fine Dining', 'Jiva Spa', 'Heritage Horse Carriage Entrance', '101-Seater Dining Table'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Taj+Falaknuma+Palace+Hyderabad',
       phone: '+91 40 6629 8585',
@@ -55,6 +63,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Luxury',
       imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Skypoint Rooftop Lounge', 'Durgam Cheruvu Lake View', 'Kaya Kalp Spa', 'Outdoor Pool', 'Dum Pukht Begum Restaurant'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=ITC+Kohenur+HITEC+City+Hyderabad',
       phone: '+91 40 6766 0101',
@@ -75,6 +90,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Boutique',
       imageUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Atrium Art Architecture', 'The Spa', 'Tre-Forni Italian Restaurant', 'Heated Outdoor Pool', 'Executive Lounge'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Park+Hyatt+Banjara+Hills+Hyderabad',
       phone: '+91 40 4949 1234',
@@ -95,6 +117,12 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Boutique',
       imageUrl: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Hussain Sagar Lake View', 'AQUA Poolside Bar', 'AURA Spa', 'Kismet Nightclub', 'Jewel of Nizam Restaurant'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Park+Hotel+Somajiguda+Hyderabad',
       phone: '+91 40 2345 6789',
@@ -115,6 +143,12 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Budget',
       imageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Free High-Speed WiFi', '24x7 Fitness Center', 'Cayenne All-Day Dining', 'Metro Connectivity', 'Business Center'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Mercure+Hyderabad+KCP+Erramanzil',
       phone: '+91 40 6788 8888',
@@ -137,6 +171,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Luxury',
       imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Private Beach', 'Infinity Pool', 'Jiva Spa', 'Free High-Speed WiFi', 'Ocean View Dining'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Taj+Fort+Aguada+Resort+Spa+Goa',
       phone: '+91 832 664 5858',
@@ -157,6 +198,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Beachfront',
       imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['WOOBAR Lounge', 'Rock Pool Cliff View', 'AWAY Spa', 'Pet Friendly', 'Sunset Deck'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=W+Goa+Vagator+Beach',
       phone: '+91 832 671 0000',
@@ -165,26 +213,6 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       distanceFromCenterKm: 2.5,
       lat: 15.602,
       lng: 73.734
-    },
-    {
-      id: 'goa_hotel_3',
-      name: 'Alila Diwa Goa - Hyatt Luxury Resort',
-      destination: 'Goa',
-      address: '48/10 Adao Waddo, Majorda, South Goa 403713',
-      rating: 4.8,
-      reviewsCount: 1980,
-      pricePerNight: 14200,
-      currency: 'INR',
-      category: 'Resort',
-      imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
-      amenities: ['Paddy Field Infinity Pool', 'Spa Alila', 'Free Shuttle to Beach', 'Kids Club', 'Spice Studio Restaurant'],
-      googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Alila+Diwa+Goa+Majorda',
-      phone: '+91 832 274 6800',
-      email: 'diwagoa@alilahotels.com',
-      websiteUrl: 'https://www.hyatt.com/en-US/hotel/india/alila-diwa-goa/goaad',
-      distanceFromCenterKm: 3.8,
-      lat: 15.312,
-      lng: 73.908
     }
   ],
   mumbai: [
@@ -199,6 +227,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Luxury',
       imageUrl: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Gateway of India View', 'Wasabi by Morimoto Restaurant', 'Jiva Spa', 'Heritage Butler Service', 'Outdoor Pool'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Taj+Mahal+Palace+Mumbai',
       phone: '+91 22 6665 3366',
@@ -219,6 +254,13 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
       currency: 'INR',
       category: 'Beachfront',
       imageUrl: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=1000',
+      images: [
+        'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000'
+      ],
       amenities: ['Queen’s Necklace Bay View', 'Ziya Michelin Star Chef Dining', '24x7 Heated Pool', 'Luxury Spa'],
       googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Oberoi+Mumbai+Nariman+Point',
       phone: '+91 22 6632 5757',
@@ -245,18 +287,28 @@ export class HotelService {
 
         if (res.data && res.data.results && res.data.results.length > 0) {
           const googleHotels: HotelItem[] = res.data.results.slice(0, 8).map((p: any, idx: number) => {
-            let img = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000';
-            if (p.photos && p.photos.length > 0 && p.photos[0].photo_reference) {
-              img = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${p.photos[0].photo_reference}&key=${apiKey}`;
-            } else {
-              const placePhotos = [
-                'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
-                'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
-                'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
-                'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
-                'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000'
+            const placePhotosPool = [
+              'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+              'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+              'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+              'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+              'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000'
+            ];
+
+            let hotelImages: string[] = [];
+            if (p.photos && p.photos.length > 0) {
+              hotelImages = p.photos.slice(0, 5).map((photoObj: any) =>
+                `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoObj.photo_reference}&key=${apiKey}`
+              );
+            }
+
+            if (hotelImages.length === 0) {
+              hotelImages = [
+                placePhotosPool[idx % placePhotosPool.length],
+                placePhotosPool[(idx + 1) % placePhotosPool.length],
+                placePhotosPool[(idx + 2) % placePhotosPool.length],
+                placePhotosPool[(idx + 3) % placePhotosPool.length]
               ];
-              img = placePhotos[idx % placePhotos.length];
             }
 
             return {
@@ -269,7 +321,8 @@ export class HotelService {
               pricePerNight: 7500 + idx * 2200,
               currency: 'INR',
               category: idx % 3 === 0 ? 'Luxury' : idx % 3 === 1 ? 'Boutique' : 'Resort',
-              imageUrl: img,
+              imageUrl: hotelImages[0],
+              images: hotelImages,
               amenities: ['Free WiFi', 'Outdoor Swimming Pool', '24/7 Front Desk', 'Breakfast Included', 'Spa & Wellness'],
               googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + destination)}`,
               phone: `+91 40 6629 ${8500 + idx}`,
@@ -296,11 +349,9 @@ export class HotelService {
     if (query.includes('hyderabad')) matches = DESTINATION_HOTELS['hyderabad'];
     else if (query.includes('goa')) matches = DESTINATION_HOTELS['goa'];
     else if (query.includes('mumbai') || query.includes('bombay')) matches = DESTINATION_HOTELS['mumbai'];
-    else if (query.includes('meghalaya') || query.includes('shillong') || query.includes('cherrapunji')) matches = DESTINATION_HOTELS['meghalaya'];
-    else if (query.includes('delhi')) matches = DESTINATION_HOTELS['delhi'];
 
     if (!matches || matches.length === 0) {
-      // Dynamic real hotel generator for ANY global city with verified urban architecture images and contact details
+      // Dynamic real hotel generator for ANY global city with 4 to 5 distinct images per hotel
       const destName = destination ? destination.split(',')[0].trim() : 'Destination';
       matches = [
         {
@@ -314,6 +365,12 @@ export class HotelService {
           currency: 'INR',
           category: 'Luxury',
           imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+          images: [
+            'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000'
+          ],
           amenities: ['Infinity Swimming Pool', 'Free Airport Shuttle', 'Executive Lounge Access', 'Free WiFi', '24/7 Room Service'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Grand+Hyatt+${encodeURIComponent(destName)}`,
           phone: `+91 40 6600 1234`,
@@ -334,6 +391,12 @@ export class HotelService {
           currency: 'INR',
           category: 'Boutique',
           imageUrl: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+          images: [
+            'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000'
+          ],
           amenities: ['Rooftop Garden Cafe', 'Ayurvedic Wellness Spa', 'Artisan Bakery', 'Cultural Walking Tour'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Heritage+Boutique+Hotel+${encodeURIComponent(destName)}`,
           phone: `+91 40 6611 5678`,
@@ -354,6 +417,12 @@ export class HotelService {
           currency: 'INR',
           category: 'Resort',
           imageUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+          images: [
+            'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&q=80&w=1000'
+          ],
           amenities: ['Outdoor Swimming Pool', 'City Skyline Restaurant', 'Fitness Center', 'Sunset Lounge'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Marriott+${encodeURIComponent(destName)}`,
           phone: `+91 40 6622 9900`,
@@ -374,6 +443,12 @@ export class HotelService {
           currency: 'INR',
           category: 'Budget',
           imageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+          images: [
+            'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1000',
+            'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&q=80&w=1000'
+          ],
           amenities: ['Co-Working Lounge', 'Shared Kitchen', 'Free Breakfast', 'Bicycle Rental Desk'],
           googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Hostels+in+${encodeURIComponent(destName)}`,
           phone: `+91 40 6633 4455`,
