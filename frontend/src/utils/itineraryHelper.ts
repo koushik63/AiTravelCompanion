@@ -61,6 +61,74 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       highlight: 'Durgam Cheruvu Cable Bridge & Shilparamam'
     }
   ],
+  usa: [
+    {
+      summary: 'Statue of Liberty, Wall Street & Empire State Building',
+      morning: 'Liberty Island ferry ride to Statue of Liberty monument & Ellis Island Museum.',
+      afternoon: 'Walk through Financial District charging bull, Wall Street & 9/11 Memorial Pools.',
+      evening: 'Sunset views from Empire State Building 86th Floor Observatory & Times Square neon lights walk.',
+      baseCostINR: 18500,
+      highlight: 'Statue of Liberty & Empire State Observatory'
+    },
+    {
+      summary: 'Washington D.C. National Mall & Smithsonian Museums',
+      morning: 'Guided tour of US Capitol Building, Lincoln Memorial & Washington Monument.',
+      afternoon: 'Tour Smithsonian National Air & Space Museum & National Museum of American History.',
+      evening: 'Sunset view across Tidal Basin & fresh seafood dinner at Georgetown waterfront.',
+      baseCostINR: 16800,
+      highlight: 'National Mall & Smithsonian Museums'
+    },
+    {
+      summary: 'Las Vegas Strip Resorts, Bellagio Fountains & High Roller Wheel',
+      morning: 'Walk the iconic Las Vegas Boulevard (The Strip) & tour Venetian Gondola rides.',
+      afternoon: 'High Roller observation wheel flight overlooking Mojave Desert & Vegas valley.',
+      evening: 'Bellagio Fountains choreographed water show & dinner at Caesars Palace.',
+      baseCostINR: 19500,
+      highlight: 'Las Vegas Strip & Bellagio Fountains'
+    },
+    {
+      summary: 'Grand Canyon National Park South Rim Helicopter Flight',
+      morning: 'Scenic flight over Grand Canyon National Park & Mather Point sunrise view.',
+      afternoon: 'Walk along South Rim Trail & Desert View Watchtower panorama.',
+      evening: 'Campfire sunset at Bright Angel Lodge looking over canyon gorges.',
+      baseCostINR: 22000,
+      highlight: 'Grand Canyon South Rim Flight'
+    },
+    {
+      summary: 'Los Angeles Hollywood Walk of Fame & Santa Monica Pier',
+      morning: 'Stroll Hollywood Walk of Fame, TCL Chinese Theatre & Beverly Hills Rodeo Drive.',
+      afternoon: 'Santa Monica Pier amusement park rides & Venice Beach boardwalk.',
+      evening: 'Sunset views over Los Angeles basin from Griffith Observatory.',
+      baseCostINR: 17500,
+      highlight: 'Hollywood Walk of Fame & Santa Monica Pier'
+    }
+  ],
+  newyork: [
+    {
+      summary: 'Statue of Liberty, Wall Street & Empire State Building',
+      morning: 'Liberty Island ferry ride to Statue of Liberty monument & Ellis Island Immigration Museum.',
+      afternoon: 'Walk through Financial District charging bull, Wall Street & 9/11 Memorial Pools.',
+      evening: 'Sunset views from Empire State Building 86th Floor Observatory & Times Square neon lights walk.',
+      baseCostINR: 18500,
+      highlight: 'Statue of Liberty & Empire State Observatory'
+    },
+    {
+      summary: 'Central Park, Metropolitan Museum of Art (Met) & Broadway Show',
+      morning: 'Morning stroll through Central Park Bethesda Terrace & Strawberry Fields.',
+      afternoon: 'Tour world-class art at The Metropolitan Museum of Art (The Met) & Fifth Avenue shopping.',
+      evening: 'Live Broadway musical production in Midtown Manhattan & New York slice pizza dinner.',
+      baseCostINR: 19200,
+      highlight: 'Central Park & Broadway Show'
+    },
+    {
+      summary: 'Brooklyn Bridge Walk, DUMBO Skyline & High Line Park',
+      morning: 'Walk across iconic Brooklyn Bridge & photo shoot at DUMBO Manhattan Bridge view.',
+      afternoon: 'Explore Chelsea Market gourmet food halls & elevated High Line urban park stroll.',
+      evening: 'Rooftop cocktail lounge at Summit One Vanderbilt overlooking NYC skyline.',
+      baseCostINR: 17800,
+      highlight: 'Brooklyn Bridge & High Line Park'
+    }
+  ],
   dubai: [
     {
       summary: 'Burj Khalifa 148th Floor, Dubai Mall & Dubai Fountain Show',
@@ -268,6 +336,8 @@ export function getDetailedDestinationItinerary(
 
   let key = '';
   if (dest.includes('hyderabad') || dest.includes('secunderabad')) key = 'hyderabad';
+  else if (dest.includes('usa') || dest.includes('united states') || dest.includes('america') || dest.includes('us')) key = 'usa';
+  else if (dest.includes('new york') || dest.includes('nyc')) key = 'newyork';
   else if (dest.includes('dubai') || dest.includes('uae')) key = 'dubai';
   else if (dest.includes('paris') || dest.includes('france')) key = 'paris';
   else if (dest.includes('tokyo') || dest.includes('japan')) key = 'tokyo';
@@ -280,10 +350,13 @@ export function getDetailedDestinationItinerary(
   let templates = key ? DESTINATION_TEMPLATES[key] : null;
 
   const isInternational =
+    dest.includes('usa') ||
+    dest.includes('united states') ||
+    dest.includes('america') ||
+    dest.includes('new york') ||
     dest.includes('paris') ||
     dest.includes('london') ||
     dest.includes('tokyo') ||
-    dest.includes('new york') ||
     dest.includes('rome') ||
     dest.includes('dubai') ||
     dest.includes('singapore') ||
@@ -302,39 +375,47 @@ export function getDetailedDestinationItinerary(
   else if (currUpper === 'AUD') exchangeRateToCurrency = 0.018;
 
   if (!templates || templates.length === 0) {
-    const baseDailyCostINR = isInternational ? 15000 : 3500;
+    const baseDailyCostINR = isInternational ? 16000 : 3500;
     templates = [
       {
-        summary: `Explore Historic Landmark Quarter & Architectural Highlights of ${capitalizedName}`,
-        morning: `Morning walking tour of ${capitalizedName}'s heritage district, historical plazas, and landmark monuments.`,
-        afternoon: `Visit premier city museum, cultural art galleries & scenic waterfront garden promenade.`,
-        evening: `Sunset viewpoint overlooking ${capitalizedName} skyline followed by authentic regional dinner.`,
+        summary: `Downtown Landmark Exploration, City Center Plazas & Panoramic Sky Deck in ${capitalizedName}`,
+        morning: `Morning walking tour of ${capitalizedName}'s vibrant city center, historic plazas & architectural monuments.`,
+        afternoon: `Visit premier city art museum, cultural heritage centers & scenic waterfront garden promenade.`,
+        evening: `Sunset observation sky deck view overlooking ${capitalizedName} skyline followed by authentic regional dinner.`,
         baseCostINR: Math.round(baseDailyCostINR * 1.0),
-        highlight: `Historic Center & Skyline View of ${capitalizedName}`
+        highlight: `City Center & Skyline Observation Deck in ${capitalizedName}`
       },
       {
-        summary: `Cultural Exploration, Local Artisan Bazaars & Iconic Cuisine in ${capitalizedName}`,
-        morning: `Guided morning tour of ${capitalizedName}’s famous architectural landmarks and sacred cultural monuments.`,
-        afternoon: `Shop for handcrafted souvenirs, local spices & traditional goods at famous street markets.`,
+        summary: `Culinary Street Food Tour, Historic Bazaars & Cultural Heritage Museums in ${capitalizedName}`,
+        morning: `Guided morning tour of ${capitalizedName}’s iconic architectural landmarks and historic cultural monuments.`,
+        afternoon: `Shop for artisanal handicrafts, local fashion & traditional souvenirs at famous street markets.`,
         evening: `Gourmet food tasting walk trying top signature culinary delicacies of ${capitalizedName}.`,
         baseCostINR: Math.round(baseDailyCostINR * 0.9),
-        highlight: `${capitalizedName} Markets & Food Walk`
+        highlight: `${capitalizedName} Bazaars & Gourmet Food Walk`
       },
       {
-        summary: `Scenic Nature Excursion & Sunset Waterfront in ${capitalizedName}`,
+        summary: `Scenic Nature Excursion, Waterfront Boat Cruise & Sunset Skyline Lounge in ${capitalizedName}`,
         morning: `Morning trip to nearby hillside lookout, lake, or scenic natural landscape surrounding ${capitalizedName}.`,
         afternoon: `Relaxing boat cruise or nature trail hike with organic farm-to-table lunch.`,
         evening: `Atmospheric sunset lounge dinner with live music performance.`,
         baseCostINR: Math.round(baseDailyCostINR * 1.15),
-        highlight: `Nature Excursion & Sunset in ${capitalizedName}`
+        highlight: `Nature Excursion & Sunset Cruise in ${capitalizedName}`
       },
       {
-        summary: `Arts, Botanical Gardens & Modern Entertainment in ${capitalizedName}`,
-        morning: `Stroll through ${capitalizedName}’s lush botanical gardens and royal palace gardens.`,
+        summary: `Arts, Botanical Gardens & Performing Arts Promenade in ${capitalizedName}`,
+        morning: `Stroll through ${capitalizedName}’s lush botanical gardens and historical palace grounds.`,
         afternoon: `Visit contemporary art galleries, science centers & shopping promenade.`,
         evening: `Evening theater / cultural show and rooftop cocktail dinner.`,
         baseCostINR: Math.round(baseDailyCostINR * 1.05),
-        highlight: `Botanical Gardens & Culture in ${capitalizedName}`
+        highlight: `Botanical Gardens & Performing Arts in ${capitalizedName}`
+      },
+      {
+        summary: `Local Craft Markets, Scenic Mountain/Coastal Viewpoints & Nightlife in ${capitalizedName}`,
+        morning: `Explore artisan craft markets and historic old town district in ${capitalizedName}.`,
+        afternoon: `Scenic excursion to panoramic mountain/coastal viewpoint overlooking the region.`,
+        evening: `Farewell celebration dinner at a top-rated waterfront venue in ${capitalizedName}.`,
+        baseCostINR: Math.round(baseDailyCostINR * 1.1),
+        highlight: `Scenic Viewpoints & Nightlife in ${capitalizedName}`
       }
     ];
   }
