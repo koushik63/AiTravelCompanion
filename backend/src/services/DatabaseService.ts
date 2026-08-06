@@ -481,6 +481,22 @@ export class DatabaseService {
     return newMemory;
   }
 
+  static async deleteMemory(id: string) {
+    const idx = store.memories.findIndex((m) => m.id === id);
+    if (idx !== -1) {
+      const mem = store.memories[idx];
+      store.memories.splice(idx, 1);
+
+      const trip = store.trips.find((t) => t.id === mem.tripId);
+      if (trip && trip.memories) {
+        const tIdx = trip.memories.findIndex((m: any) => m.id === id);
+        if (tIdx !== -1) trip.memories.splice(tIdx, 1);
+      }
+      return true;
+    }
+    return false;
+  }
+
   // Notifications
   static async getNotifications(userId: string) {
     return store.notifications.filter((n) => n.userId === userId);

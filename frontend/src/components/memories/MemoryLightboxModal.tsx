@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Sparkles, Trash2 } from 'lucide-react';
 import { Memory } from '../../types';
 
 interface MemoryLightboxModalProps {
@@ -8,6 +8,7 @@ interface MemoryLightboxModalProps {
   memories: Memory[];
   currentIndex: number;
   onNavigate: (newIndex: number) => void;
+  onDelete?: (id: string) => void;
 }
 
 export const MemoryLightboxModal: React.FC<MemoryLightboxModalProps> = ({
@@ -15,7 +16,8 @@ export const MemoryLightboxModal: React.FC<MemoryLightboxModalProps> = ({
   onClose,
   memories,
   currentIndex,
-  onNavigate
+  onNavigate,
+  onDelete
 }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -41,14 +43,28 @@ export const MemoryLightboxModal: React.FC<MemoryLightboxModalProps> = ({
       onClick={onClose}
       className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 animate-fade-in"
     >
-      {/* Close Button */}
-      <button
-        onClick={onClose}
-        className="absolute top-5 right-5 z-50 p-2.5 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
-        title="Close Lightbox (Esc)"
-      >
-        <X className="w-6 h-6" />
-      </button>
+      {/* Top Action Buttons */}
+      <div className="absolute top-5 right-5 z-50 flex items-center gap-3">
+        {onDelete && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(currentMemory.id);
+            }}
+            className="p-2.5 rounded-full bg-slate-900/80 border border-slate-700 text-rose-400 hover:text-white hover:bg-rose-500/80 transition-all cursor-pointer shadow-xl"
+            title="Delete Memory"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={onClose}
+          className="p-2.5 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
+          title="Close Lightbox (Esc)"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      </div>
 
       {/* Navigation Buttons */}
       {memories.length > 1 && (

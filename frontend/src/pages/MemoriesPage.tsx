@@ -122,13 +122,32 @@ export const MemoriesPage: React.FC = () => {
       const localStr = localStorage.getItem('ai_travel_user_memories');
       const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
       const updatedLocal = [fallbackMem, ...localMems];
-      localStorage.setItem('ai_travel_user_memories', JSON.stringify(updatedLocal));
-
       setMemories((prev) => [fallbackMem, ...prev]);
       resetForm();
       setShowAddModal(false);
       addToast({ type: 'success', message: 'Memory created & saved locally!' });
     }
+  };
+
+  const handleDeleteMemory = async (id: string) => {
+    try {
+      await MemoryService.deleteMemory(id);
+    } catch (e) {}
+
+    setMemories((prev) => prev.filter((m) => m.id !== id));
+
+    const localStr = localStorage.getItem('ai_travel_user_memories');
+    if (localStr) {
+      const localMems: Memory[] = JSON.parse(localStr);
+      const updatedLocal = localMems.filter((m) => m.id !== id);
+      localStorage.setItem('ai_travel_user_memories', JSON.stringify(updatedLocal));
+    }
+
+    if (lightboxIndex !== null) {
+      setLightboxIndex(null);
+    }
+
+    addToast({ type: 'info', message: 'Memory photo deleted successfully.' });
   };
 
   return (
@@ -157,7 +176,12 @@ export const MemoriesPage: React.FC = () => {
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {memories.map((memory, idx) => (
-          <MemoryCard key={memory.id} memory={memory} onClick={() => setLightboxIndex(idx)} />
+          <MemoryCard
+            key={memory.id}
+            memory={memory}
+            onClick={() => setLightboxIndex(idx)}
+            onDelete={() => handleDeleteMemory(memory.id)}
+          />
         ))}
       </div>
 
@@ -308,6 +332,7 @@ export const MemoriesPage: React.FC = () => {
         memories={memories}
         currentIndex={lightboxIndex ?? 0}
         onNavigate={(newIdx) => setLightboxIndex(newIdx)}
+        onDelete={handleDeleteMemory}
       />
 
       {/* Share & Export Modals */}

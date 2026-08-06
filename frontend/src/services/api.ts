@@ -213,6 +213,10 @@ export const MemoryService = {
   addMemory: async (data: { tripId: string; imageUrl: string; caption?: string; location?: string }) => {
     const res = await api.post('/memories', data);
     return res.data;
+  },
+  deleteMemory: async (id: string) => {
+    const res = await api.delete(`/memories/${id}`);
+    return res.data;
   }
 };
 

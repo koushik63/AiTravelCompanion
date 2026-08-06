@@ -31,4 +31,14 @@ export class MemoriesController {
       return res.status(500).json({ error: err.message });
     }
   }
+
+  static async deleteMemory(req: AuthRequest, res: Response) {
+    try {
+      const id = (req.params.id as string) || '';
+      const success = await DatabaseService.deleteMemory(id);
+      return res.json({ success, id });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
 }
