@@ -63,14 +63,14 @@ const FALLBACK_IMAGES = [
 function getDestinationImageUrl(destination: string, tripId: string): string {
   const lower = (destination || '').toLowerCase();
   if (lower.includes('hyderabad') || lower.includes('secunderabad')) {
-    return 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
+    return 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
   }
   for (const [keyword, photoId] of Object.entries(DESTINATION_IMAGE_MAP)) {
     if (lower.includes(keyword)) {
       return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
     }
   }
-  return 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
+  return 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
 }
 
 

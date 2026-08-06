@@ -33,7 +33,9 @@ export const TripCard: React.FC<TripCardProps> = ({
             src={getTripImage(trip.destination, trip.id, trip.imageUrl, trip.title, trip.coverImage)}
             alt={trip.title}
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
+              const target = e.currentTarget;
+              target.onerror = null;
+              target.src = 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
             }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

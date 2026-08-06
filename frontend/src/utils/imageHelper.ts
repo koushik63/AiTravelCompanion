@@ -1,17 +1,17 @@
 // Centralized Destination Image Provider for AiTravelCompanion
-const HYDERABAD_CHARMINAR_PHOTO = 'https://images.unsplash.com/photo-1627894006066-b4566c72957b?auto=format&fit=crop&q=80&w=1200';
+const HYDERABAD_PHOTO = 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200';
 
 const REALTIME_DESTINATION_IMAGES: Record<string, string> = {
   // Major Indian Cities & Destinations
-  hyderabad: HYDERABAD_CHARMINAR_PHOTO,
-  secunderabad: HYDERABAD_CHARMINAR_PHOTO,
+  hyderabad: HYDERABAD_PHOTO,
+  secunderabad: HYDERABAD_PHOTO,
   goa: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1200',
   mumbai: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&q=80&w=1200',
   delhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1200',
   newdelhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1200',
   bangalore: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200',
   bengaluru: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200',
-  jaipur: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&q=80&w=1200',
+  jaipur: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200',
   udaipur: 'https://images.unsplash.com/photo-1615837136849-09516e681f4d?auto=format&fit=crop&q=80&w=1200',
   agra: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&q=80&w=1200',
   kerala: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&q=80&w=1200',
@@ -36,7 +36,7 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
 
   // Explicit check for Hyderabad -> Guaranteed real destination photo
   if (destStr.includes('hyderabad') || destStr.includes('secunderabad')) {
-    return HYDERABAD_CHARMINAR_PHOTO;
+    return HYDERABAD_PHOTO;
   }
 
   // Keyword match against verified direct destination photos
@@ -52,14 +52,15 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
     customImg &&
     customImg.trim().length > 10 &&
     !customImg.includes('wikimedia.org') &&
-    !customImg.includes('photo-1605379399642-870262d3d051') &&
-    !customImg.includes('photo-1572445271230-a78b5944a659') &&
-    !customImg.includes('photo-1476514525535-07fb3b4ae5f1') &&
-    !customImg.includes('photo-1566073771259-6a8506099945') &&
-    !customImg.includes('photo-1582719508461-905c673771fd')
+    !customImg.includes('photo-1627894006066') &&
+    !customImg.includes('photo-1605379399642') &&
+    !customImg.includes('photo-1572445271230') &&
+    !customImg.includes('photo-1476514525535') &&
+    !customImg.includes('photo-1566073771259') &&
+    !customImg.includes('photo-1582719508461')
   ) {
     return customImg;
   }
 
-  return HYDERABAD_CHARMINAR_PHOTO;
+  return HYDERABAD_PHOTO;
 }
