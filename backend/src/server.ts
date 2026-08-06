@@ -71,6 +71,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+import hotelRoutes from './routes/hotelRoutes';
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
@@ -81,6 +83,7 @@ app.use('/api/weather', weatherRoutes);
 app.use('/api/transport', transportRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/memories', memoriesRoutes);
+app.use('/api/hotels', hotelRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/share', sharingRoutes);
 app.use('/api/export', exportRoutes);

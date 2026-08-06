@@ -8,6 +8,7 @@ import { formatCurrency } from '../utils/currencyHelper';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { getTripImage } from '../utils/imageHelper';
 import { getDetailedDestinationItinerary, DayItinerary } from '../utils/itineraryHelper';
+import { HotelSection } from '../components/hotels/HotelSection';
 import { AIService } from '../services/api';
 
 export const TripDetailsPage: React.FC = () => {
@@ -215,6 +216,9 @@ export const TripDetailsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Google Maps Nearby Hotels & Accommodations Section */}
+      <HotelSection destination={trip.destination} />
     </div>
   );
 };

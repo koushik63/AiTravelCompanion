@@ -30,6 +30,7 @@ import { TripPlanningPage } from './pages/TripPlanningPage';
 import { AIGenerationHistoryPage } from './pages/AIGenerationHistoryPage';
 import { CurrentTripPage } from './pages/CurrentTripPage';
 import { TransportPage } from './pages/TransportPage';
+import { HotelsPage } from './pages/HotelsPage';
 import { NearbyPage } from './pages/NearbyPage';
 import { NavigationPage } from './pages/NavigationPage';
 import { SavedPlacesPage } from './pages/SavedPlacesPage';
@@ -85,6 +86,7 @@ export const AppContent: React.FC = () => {
         <Route path="/ai/history" element={<AIGenerationHistoryPage />} />
         <Route path="/current" element={<CurrentTripPage />} />
         <Route path="/transport" element={<TransportPage />} />
+        <Route path="/hotels" element={<HotelsPage />} />
         <Route path="/nearby" element={<NearbyPage />} />
         <Route path="/navigation" element={<NavigationPage />} />
         <Route path="/saved-places" element={<SavedPlacesPage />} />

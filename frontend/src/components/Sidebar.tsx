@@ -17,6 +17,7 @@ import {
   Shield,
   Bookmark,
   ShieldAlert,
+  Building2,
   X
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
@@ -28,6 +29,7 @@ export const Sidebar: React.FC = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Calendar Timeline', path: '/calendar', icon: Calendar },
     { name: 'Trip Management', path: '/trips', icon: Compass },
+    { name: 'Hotels & Stays', path: '/hotels', icon: Building2 },
     { name: 'Live Trip Mode', path: '/current', icon: MapPin },
     { name: 'AI Travel Assistant', path: '/assistant', icon: Bot },
     { name: 'Budget Hub', path: '/budget', icon: Wallet },

@@ -220,6 +220,13 @@ export const MemoryService = {
   }
 };
 
+export const HotelService = {
+  searchHotels: async (destination: string, category?: string) => {
+    const res = await api.get('/hotels', { params: { destination, category } });
+    return res.data;
+  }
+};
+
 export const SharingService = {
   createShareLink: async (tripId: string) => {
     const res = await api.post('/share/create', { tripId });
