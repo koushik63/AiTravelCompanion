@@ -7,6 +7,28 @@ import { formatDate } from '../utils/dateHelper';
 import { formatCurrency } from '../utils/currencyHelper';
 import { ProgressBar } from '../components/ui/ProgressBar';
 
+const DEST_MAP: Record<string, string> = {
+  goa: 'photo-1512343879784-a960bf40e7f2', ladakh: 'photo-1506905925346-21bda4d32df4',
+  ladhak: 'photo-1506905925346-21bda4d32df4', leh: 'photo-1506905925346-21bda4d32df4',
+  kerala: 'photo-1602216056096-3b40cc0c9944', rajasthan: 'photo-1524492412937-b28074a5d7da',
+  jaipur: 'photo-1524492412937-b28074a5d7da', mumbai: 'photo-1529253355930-ddbe423a2ac7',
+  delhi: 'photo-1597074866923-dc0589150358', agra: 'photo-1564507592333-c60657eea523',
+  kashmir: 'photo-1548013146-72479768bada', manali: 'photo-1626621341517-bbf3d9990a23',
+  varanasi: 'photo-1561361058-c24cecae35ca', paris: 'photo-1502602898657-3e91760cbb34',
+  london: 'photo-1513635269975-59663e0ac1ad', tokyo: 'photo-1540959733332-eab4deabeeaf',
+  dubai: 'photo-1512453979798-5ea266f8880c', bali: 'photo-1537996194471-e657df975ab4',
+  singapore: 'photo-1525625293386-3f8f99389edd', rome: 'photo-1552832230-c0197dd311b5',
+  maldives: 'photo-1573843981267-be1999ff37cd', bangkok: 'photo-1508009603885-50cf7c579365',
+  istanbul: 'photo-1524231757912-21f4fe3a7200', greece: 'photo-1555993539-1732b0258235',
+};
+const FALLBACKS = ['photo-1476514525535-07fb3b4ae5f1','photo-1500530855697-b586d89ba3ee','photo-1488085061387-422e29b40080','photo-1469474968028-56623f02e42e','photo-1519046904884-53103b34b206','photo-1503220317375-aaad61436b1b','photo-1551918120-9739cb430c6d','photo-1682685797406-97f364419b4a'];
+function getDestImage(dest: string, id: string) {
+  const low = (dest||'').toLowerCase();
+  for (const [k, v] of Object.entries(DEST_MAP)) if (low.includes(k)) return `https://images.unsplash.com/${v}?auto=format&fit=crop&q=80&w=1200`;
+  const idx = id.split('').reduce((a,c)=>a+c.charCodeAt(0),0) % FALLBACKS.length;
+  return `https://images.unsplash.com/${FALLBACKS[idx]}?auto=format&fit=crop&q=80&w=1200`;
+}
+
 export const TripDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trips, toggleFavoriteTrip, deleteTrip } = useTravelStore();
@@ -32,7 +54,7 @@ export const TripDetailsPage: React.FC = () => {
 
       <div className="relative h-64 rounded-2xl overflow-hidden shadow-2xl">
         <img
-          src={trip.coverImage || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1200'}
+          src={getDestImage(trip.destination, trip.id)}
           alt={trip.title}
           className="w-full h-full object-cover"
         />

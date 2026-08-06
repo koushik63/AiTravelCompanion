@@ -10,6 +10,7 @@ interface TravelState {
   error: string | null;
 
   fetchTrips: () => Promise<void>;
+  clearTrips: () => void;
   addTrip: (tripData: Partial<Trip>) => Promise<void>;
   updateTrip: (id: string, tripData: Partial<Trip>) => Promise<void>;
   deleteTrip: (id: string) => Promise<void>;
@@ -31,62 +32,10 @@ interface TravelState {
 }
 
 export const useTravelStore = create<TravelState>((set, get) => ({
-  trips: [
-    {
-      id: 'trip_1',
-      userId: 'usr_demo_1',
-      title: 'Goa Beachside Vacation',
-      destination: 'Goa, India',
-      country: 'India',
-      city: 'Goa',
-      startDate: new Date().toISOString(),
-      endDate: new Date(Date.now() + 604800000).toISOString(),
-      budget: 45000,
-      spent: 12500,
-      currency: 'INR',
-      coverImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1000',
-      status: 'ACTIVE',
-      travelType: 'Leisure',
-      transportType: 'FLIGHT',
-      accommodation: 'Taj Exotica Resort',
-      description: 'Relaxing 7-day coastal trip in South Goa.',
-      isFavorite: true,
-      isArchived: false
-    },
-    {
-      id: 'trip_2',
-      userId: 'usr_demo_1',
-      title: 'Jaipur Cultural Tour',
-      destination: 'Jaipur, Rajasthan, India',
-      country: 'India',
-      city: 'Jaipur',
-      startDate: new Date(Date.now() + 1296000000).toISOString(),
-      endDate: new Date(Date.now() + 1728000000).toISOString(),
-      budget: 65000,
-      spent: 0,
-      currency: 'INR',
-      coverImage: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&q=80&w=1000',
-      status: 'UPCOMING',
-      travelType: 'Family',
-      transportType: 'TRAIN',
-      accommodation: 'Heritage Haveli Hotel',
-      description: 'Exploring Pink City forts and royal cuisine.',
-      isFavorite: false,
-      isArchived: false
-    }
-  ],
+  // Start with empty state — data loads after authentication
+  trips: [],
   activeTrip: null,
-  notifications: [
-    {
-      id: 'notif_1',
-      userId: 'usr_demo_1',
-      title: 'Weather Update for Goa',
-      message: 'Sunny skies expected (29°C) for your South Goa beach trip tomorrow.',
-      type: 'WEATHER',
-      isRead: false,
-      createdAt: new Date().toISOString()
-    }
-  ],
+  notifications: [],
   isLoading: false,
   error: null,
 
@@ -101,6 +50,11 @@ export const useTravelStore = create<TravelState>((set, get) => ({
     }
   },
 
+  // Clears all trip data on logout so next user starts fresh
+  clearTrips: () => {
+    set({ trips: [], activeTrip: null, notifications: [], error: null });
+  },
+
   addTrip: async (tripData) => {
     try {
       const newTrip = await TripService.createTrip(tripData);
@@ -112,7 +66,7 @@ export const useTravelStore = create<TravelState>((set, get) => ({
 
   updateTrip: async (id, tripData) => {
     try {
-      const updated = await TripService.getTripById(id);
+      await TripService.getTripById(id);
       set((state) => ({
         trips: state.trips.map((t) => (t.id === id ? { ...t, ...tripData } : t))
       }));

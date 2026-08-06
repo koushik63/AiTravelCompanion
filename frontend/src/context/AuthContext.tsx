@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, ProfileDTO, UserPreferencesDTO } from '../types';
 import { AuthService, ProfileService } from '../services/api';
+import { useTravelStore } from '../store/useTravelStore';
 
 interface AuthContextType {
   user: User | null;
@@ -19,27 +20,32 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>({
-    id: 'usr_demo_1',
-    name: 'Alex Rivera',
-    email: 'alex.traveler@example.com',
-    role: 'USER',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300'
-  });
+  // Start unauthenticated — no hardcoded demo user
+  const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
   const [preferences, setPreferences] = useState<UserPreferencesDTO | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    // On mount: if we have a saved token, restore the session
     const token = localStorage.getItem('aitravel_token');
     if (token) {
       AuthService.getMe()
         .then((res) => {
-          if (res.user) setUser(res.user);
-          if (res.profile) setProfile(res.profile);
-          if (res.preferences) setPreferences(res.preferences);
+          if (res.user) {
+            setUser(res.user);
+            if (res.profile) setProfile(res.profile);
+            if (res.preferences) setPreferences(res.preferences);
+            // Fetch this user's trips (clears any stale data first)
+            useTravelStore.getState().fetchTrips();
+          } else {
+            // Token invalid, clear it
+            localStorage.removeItem('aitravel_token');
+          }
         })
-        .catch(() => {})
+        .catch(() => {
+          localStorage.removeItem('aitravel_token');
+        })
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
@@ -53,6 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       if (res.profile) setProfile(res.profile);
       if (res.preferences) setPreferences(res.preferences);
+      // Load this user's actual trips, replacing any stale data
+      await useTravelStore.getState().fetchTrips();
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       if (res.profile) setProfile(res.profile);
       if (res.preferences) setPreferences(res.preferences);
+      // New user starts with an empty trip list
+      await useTravelStore.getState().fetchTrips();
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(res.user);
       if (res.profile) setProfile(res.profile);
       if (res.preferences) setPreferences(res.preferences);
+      await useTravelStore.getState().fetchTrips();
     } finally {
       setIsLoading(false);
     }
@@ -98,6 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setProfile(null);
     setPreferences(null);
+    // Clear trip data so the next user doesn't see previous user's trips
+    useTravelStore.getState().clearTrips();
   };
 
   return (

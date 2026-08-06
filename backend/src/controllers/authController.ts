@@ -4,6 +4,7 @@ import { DatabaseService } from '../services/DatabaseService';
 import { SupabaseAuthService } from '../services/SupabaseAuthService';
 import { SessionService } from '../services/SessionService';
 import { AuthRequest } from '../middleware/authMiddleware';
+import { Logger } from '../utils/logger';
 
 export class AuthController {
   static async register(req: Request, res: Response) {
@@ -13,30 +14,40 @@ export class AuthController {
         return res.status(400).json({ error: 'Email, password, and name are required' });
       }
 
+      // Check if user already exists locally
       const existing = await DatabaseService.findUserByEmail(email);
       if (existing) {
-        // If user already registered, perform sign in directly
+        // User already registered — validate password and return session
+        if (existing.passwordHash) {
+          const match = await bcrypt.compare(password, existing.passwordHash);
+          if (!match) {
+            return res.status(400).json({ error: 'An account with this email already exists. Please log in instead.' });
+          }
+        }
         const profile = await DatabaseService.getProfileByUserId(existing.id);
         const preferences = await DatabaseService.getPreferencesByUserId(existing.id);
         const token = SessionService.createToken({ id: existing.id, email: existing.email, role: existing.role });
         return res.json({ user: existing, profile, preferences, token });
       }
 
-      // Attempt Supabase auth without failing if Supabase email rate limits are hit
+      // Register in Supabase Auth (stores in Supabase Authentication dashboard)
       try {
         await SupabaseAuthService.signUp(email, password, name);
       } catch (e: any) {
-        console.warn('Supabase auth signup warning, creating database user record:', e.message);
+        Logger.warn(`Supabase auth signup non-critical warning: ${e.message}`, 'AuthController');
       }
 
+      // Create user in our local database / in-memory store
       const passwordHash = await bcrypt.hash(password, 10);
       const user = await DatabaseService.createUser({ email, passwordHash, name, provider: 'email' });
       const profile = await DatabaseService.getProfileByUserId(user.id);
       const preferences = await DatabaseService.getPreferencesByUserId(user.id);
 
       const token = SessionService.createToken({ id: user.id, email: user.email, role: user.role });
+      Logger.info(`New user registered: ${email} (id: ${user.id})`, 'AuthController');
       return res.status(201).json({ user, profile, preferences, token });
     } catch (err: any) {
+      Logger.error('Registration error', err, 'AuthController');
       return res.status(500).json({ error: err.message || 'Registration failed' });
     }
   }
@@ -48,24 +59,16 @@ export class AuthController {
         return res.status(400).json({ error: 'Email and password are required' });
       }
 
-      // Demo login shortcut
-      if (email === 'demo@example.com' || email === 'alex.traveler@example.com') {
-        const demoUser = await DatabaseService.findUserByEmail('alex.traveler@example.com');
-        const profile = await DatabaseService.getProfileByUserId(demoUser!.id);
-        const preferences = await DatabaseService.getPreferencesByUserId(demoUser!.id);
-        const token = SessionService.createToken({ id: demoUser!.id, email: demoUser!.email, role: demoUser!.role });
-        return res.json({ user: demoUser, profile, preferences, token });
-      }
-
-      // Try Supabase Auth
+      // Try Supabase Auth sign-in first (logs the event in Supabase dashboard)
       await SupabaseAuthService.signIn(email, password);
 
+      // Validate against our local user store
       let user = await DatabaseService.findUserByEmail(email);
       if (!user) {
-        // Auto-register user if not in database store yet
-        const passwordHash = await bcrypt.hash(password, 10);
-        user = await DatabaseService.createUser({ email, passwordHash, name: email.split('@')[0], provider: 'email' });
-      } else if (user.passwordHash) {
+        return res.status(401).json({ error: 'No account found with this email. Please register first.' });
+      }
+
+      if (user.passwordHash) {
         const match = await bcrypt.compare(password, user.passwordHash);
         if (!match) {
           return res.status(401).json({ error: 'Invalid email or password' });
@@ -76,8 +79,10 @@ export class AuthController {
       const preferences = await DatabaseService.getPreferencesByUserId(user.id);
       const token = SessionService.createToken({ id: user.id, email: user.email, role: user.role });
 
+      Logger.info(`User logged in: ${email} (id: ${user.id})`, 'AuthController');
       return res.json({ user, profile, preferences, token });
     } catch (err: any) {
+      Logger.error('Login error', err, 'AuthController');
       return res.status(500).json({ error: err.message || 'Login failed' });
     }
   }
@@ -85,15 +90,28 @@ export class AuthController {
   static async googleLogin(req: Request, res: Response) {
     try {
       const { email, name, avatar } = req.body;
-      let user = await DatabaseService.findUserByEmail(email || 'google.user@example.com');
+
+      if (!email) {
+        return res.status(400).json({ error: 'Google OAuth email is required' });
+      }
+
+      let user = await DatabaseService.findUserByEmail(email);
 
       if (!user) {
+        // First time Google login — create account
         user = await DatabaseService.createUser({
-          email: email || `google_${Date.now()}@example.com`,
-          name: name || 'Google Traveler',
-          avatar: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
+          email,
+          name: name || email.split('@')[0],
+          avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=random`,
           provider: 'google'
         });
+        Logger.info(`New Google user registered: ${email} (id: ${user.id})`, 'AuthController');
+      } else {
+        // Update avatar if it changed
+        if (avatar && user.avatar !== avatar) {
+          await DatabaseService.updateProfile(user.id, { avatar });
+        }
+        Logger.info(`Existing Google user logged in: ${email} (id: ${user.id})`, 'AuthController');
       }
 
       const profile = await DatabaseService.getProfileByUserId(user.id);
@@ -102,14 +120,16 @@ export class AuthController {
 
       return res.json({ user, profile, preferences, token });
     } catch (err: any) {
+      Logger.error('Google OAuth error', err, 'AuthController');
       return res.status(500).json({ error: err.message || 'Google OAuth failed' });
     }
   }
 
   static async forgotPassword(req: Request, res: Response) {
     const { email } = req.body;
-    await SupabaseAuthService.resetPasswordForEmail(email || 'alex.traveler@example.com');
-    return res.json({ message: `Password reset instructions sent to ${email || 'your email'}` });
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+    await SupabaseAuthService.resetPasswordForEmail(email);
+    return res.json({ message: `Password reset instructions sent to ${email}` });
   }
 
   static async resetPassword(req: Request, res: Response) {
@@ -121,9 +141,14 @@ export class AuthController {
   }
 
   static async refreshSession(req: AuthRequest, res: Response) {
-    const user = await DatabaseService.findUserById(req.user?.id || 'usr_demo_1');
-    const token = SessionService.createToken({ id: user!.id, email: user!.email, role: user!.role });
-    return res.json({ token, user });
+    try {
+      const user = await DatabaseService.findUserById(req.user?.id || '');
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      const token = SessionService.createToken({ id: user.id, email: user.email, role: user.role });
+      return res.json({ token, user });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
   }
 
   static async logout(req: Request, res: Response) {
@@ -132,7 +157,8 @@ export class AuthController {
 
   static async getMe(req: AuthRequest, res: Response) {
     try {
-      const user = await DatabaseService.findUserById(req.user?.id || 'usr_demo_1');
+      if (!req.user?.id) return res.status(401).json({ error: 'Not authenticated' });
+      const user = await DatabaseService.findUserById(req.user.id);
       if (!user) return res.status(404).json({ error: 'User not found' });
       const profile = await DatabaseService.getProfileByUserId(user.id);
       const preferences = await DatabaseService.getPreferencesByUserId(user.id);

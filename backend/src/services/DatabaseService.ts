@@ -11,6 +11,67 @@ import {
   SEED_NOTIFICATIONS
 } from '../utils/mockData';
 
+// Destination keyword → Unsplash photo ID for destination-specific trip cover images
+const DESTINATION_IMAGE_MAP: Record<string, string> = {
+  goa: 'photo-1512343879784-a960bf40e7f2',
+  ladakh: 'photo-1506905925346-21bda4d32df4',
+  ladhak: 'photo-1506905925346-21bda4d32df4',
+  leh: 'photo-1506905925346-21bda4d32df4',
+  kerala: 'photo-1602216056096-3b40cc0c9944',
+  rajasthan: 'photo-1524492412937-b28074a5d7da',
+  jaipur: 'photo-1524492412937-b28074a5d7da',
+  mumbai: 'photo-1529253355930-ddbe423a2ac7',
+  delhi: 'photo-1597074866923-dc0589150358',
+  agra: 'photo-1564507592333-c60657eea523',
+  kashmir: 'photo-1548013146-72479768bada',
+  manali: 'photo-1626621341517-bbf3d9990a23',
+  shimla: 'photo-1626621341517-bbf3d9990a23',
+  varanasi: 'photo-1561361058-c24cecae35ca',
+  mysore: 'photo-1600697395543-b8d08c87c9d5',
+  andaman: 'photo-1537956965359-7573183d1f57',
+  paris: 'photo-1502602898657-3e91760cbb34',
+  london: 'photo-1513635269975-59663e0ac1ad',
+  tokyo: 'photo-1540959733332-eab4deabeeaf',
+  dubai: 'photo-1512453979798-5ea266f8880c',
+  bali: 'photo-1537996194471-e657df975ab4',
+  singapore: 'photo-1525625293386-3f8f99389edd',
+  'new york': 'photo-1522083165195-3424ed129620',
+  rome: 'photo-1552832230-c0197dd311b5',
+  barcelona: 'photo-1539037116277-4db20889f2d4',
+  maldives: 'photo-1573843981267-be1999ff37cd',
+  amsterdam: 'photo-1534351590666-13e3e96b5702',
+  bangkok: 'photo-1508009603885-50cf7c579365',
+  istanbul: 'photo-1524231757912-21f4fe3a7200',
+  greece: 'photo-1555993539-1732b0258235',
+  iceland: 'photo-1529963183134-61a90db47eaf',
+  hawaii: 'photo-1542259009477-d625272157b7',
+  beach: 'photo-1507525428034-b723cf961d3e',
+  mountain: 'photo-1464822759023-fed622ff2c3b',
+};
+
+const FALLBACK_IMAGES = [
+  'photo-1476514525535-07fb3b4ae5f1',
+  'photo-1500530855697-b586d89ba3ee',
+  'photo-1488085061387-422e29b40080',
+  'photo-1469474968028-56623f02e42e',
+  'photo-1519046904884-53103b34b206',
+  'photo-1503220317375-aaad61436b1b',
+  'photo-1551918120-9739cb430c6d',
+  'photo-1682685797406-97f364419b4a',
+];
+
+function getDestinationImageUrl(destination: string, tripId: string): string {
+  const lower = (destination || '').toLowerCase();
+  for (const [keyword, photoId] of Object.entries(DESTINATION_IMAGE_MAP)) {
+    if (lower.includes(keyword)) {
+      return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
+    }
+  }
+  const idx = tripId.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % FALLBACK_IMAGES.length;
+  return `https://images.unsplash.com/${FALLBACK_IMAGES[idx]}?auto=format&fit=crop&q=80&w=1200`;
+}
+
+
 let prisma: PrismaClient | null = null;
 try {
   if (process.env.DATABASE_URL) {
@@ -194,7 +255,7 @@ export class DatabaseService {
         return await prisma.savedPlace.findMany({ where: { userId } });
       } catch (err) {}
     }
-    return store.savedPlaces.filter((s) => s.userId === userId || userId === 'usr_demo_1');
+    return store.savedPlaces.filter((s) => s.userId === userId);
   }
 
   static async savePlace(userId: string, placeData: any) {
@@ -241,8 +302,10 @@ export class DatabaseService {
         });
       } catch (err) {}
     }
-    return userId ? store.trips.filter((t) => t.userId === userId || userId === 'usr_demo_1') : store.trips;
+    // Strictly filter by userId — no cross-user data leakage
+    return userId ? store.trips.filter((t) => t.userId === userId) : store.trips;
   }
+
 
   static async getTripById(id: string) {
     if (prisma) {
@@ -274,7 +337,7 @@ export class DatabaseService {
   static async createTrip(tripData: any) {
     const newTrip = {
       id: `trip_${Date.now()}`,
-      userId: tripData.userId || 'usr_demo_1',
+      userId: tripData.userId,
       title: tripData.title || `Trip to ${tripData.destination}`,
       destination: tripData.destination,
       country: tripData.country || 'India',
@@ -284,7 +347,7 @@ export class DatabaseService {
       budget: Number(tripData.budget) || 50000,
       spent: 0,
       currency: tripData.currency || 'INR',
-      coverImage: tripData.coverImage || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1200',
+      coverImage: tripData.coverImage || getDestinationImageUrl(tripData.destination, `trip_${Date.now()}`),
       status: tripData.status || 'UPCOMING',
       travelType: tripData.travelType || 'Leisure',
       transportType: tripData.transportType || 'Flight',
@@ -440,7 +503,7 @@ export class DatabaseService {
 
   // Notifications
   static async getNotifications(userId: string) {
-    return store.notifications.filter((n) => n.userId === userId || userId === 'usr_demo_1');
+    return store.notifications.filter((n) => n.userId === userId);
   }
 
   static async markNotificationRead(id: string) {

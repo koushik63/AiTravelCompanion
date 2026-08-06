@@ -15,17 +15,14 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    // Demo Mode bypass for smooth frontend exploration
-    req.user = { id: 'usr_demo_1', email: 'alex.traveler@example.com', role: 'USER' };
-    return next();
+    return res.status(401).json({ error: 'Authentication required. Please log in.' });
   }
 
   const secret = process.env.JWT_SECRET || 'super_secret_ai_travel_companion_jwt_key_2026';
   jwt.verify(token, secret, (err: any, decoded: any) => {
     if (err) {
-      Logger.warn('Invalid JWT token supplied, falling back to Demo User session', 'authMiddleware');
-      req.user = { id: 'usr_demo_1', email: 'alex.traveler@example.com', role: 'USER' };
-      return next();
+      Logger.warn(`Invalid or expired JWT token: ${err.message}`, 'authMiddleware');
+      return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
     req.user = decoded;
     next();
@@ -33,9 +30,8 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
 };
 
 export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (req.user?.role !== 'ADMIN' && req.user?.id !== 'usr_admin_1') {
-    // For demo purposes, allow viewing admin data with warning log
-    Logger.warn(`Admin access request from non-admin user ${req.user?.id}`, 'requireAdmin');
+  if (req.user?.role !== 'ADMIN') {
+    return res.status(403).json({ error: 'Admin access required.' });
   }
   next();
 };

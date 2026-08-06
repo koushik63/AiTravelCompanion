@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { DatabaseService } from '../services/DatabaseService';
+import { AuthRequest } from '../middleware/authMiddleware';
 
 export class AdminController {
   static async getStats(req: Request, res: Response) {
@@ -11,19 +12,23 @@ export class AdminController {
     }
   }
 
-  static async submitFeedback(req: Request, res: Response) {
+  static async submitFeedback(req: AuthRequest, res: Response) {
     try {
-      const { rating, comment, userId } = req.body;
-      const fb = await DatabaseService.addFeedback(userId || 'usr_demo_1', Number(rating) || 5, comment || 'Great app!');
+      const { rating, comment } = req.body;
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: 'Not authenticated' });
+      const fb = await DatabaseService.addFeedback(userId, Number(rating) || 5, comment || '');
       return res.status(201).json(fb);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
   }
 
-  static async getNotifications(req: Request, res: Response) {
+  static async getNotifications(req: AuthRequest, res: Response) {
     try {
-      const notifications = await DatabaseService.getNotifications('usr_demo_1');
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: 'Not authenticated' });
+      const notifications = await DatabaseService.getNotifications(userId);
       return res.json(notifications);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
