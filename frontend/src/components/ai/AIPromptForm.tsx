@@ -9,6 +9,13 @@ interface AIPromptFormProps {
   isLoading?: boolean;
 }
 
+const TOP_GLOBAL_CITIES = [
+  'Goa', 'Paris', 'Tokyo', 'Dubai', 'Mumbai',
+  'Hyderabad', 'New York', 'Bali', 'London',
+  'Kerala', 'Jaipur', 'Sydney', 'Zurich',
+  'Rome', 'Maldives', 'Singapore', 'Bangkok', 'Delhi'
+];
+
 export const AIPromptForm: React.FC<AIPromptFormProps> = ({ onSubmit, isLoading }) => {
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
@@ -42,18 +49,37 @@ export const AIPromptForm: React.FC<AIPromptFormProps> = ({ onSubmit, isLoading 
           <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-400" /> AI Travel Generator
           </h2>
-          <p className="text-xs text-slate-400">Configure parameters for Gemini AI itinerary synthesis</p>
+          <p className="text-xs text-slate-400">Support for 350+ global destinations & custom cities worldwide</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input
-          label="Destination (City/State/Country)"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          required
-          placeholder="e.g. Jaipur, Rajasthan or Tokyo, Japan"
-        />
+        <div className="space-y-2">
+          <Input
+            label="Destination (City/State/Country)"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            required
+            placeholder="e.g. Paris, Tokyo, Dubai, Mumbai, Bali..."
+          />
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <span className="text-[11px] font-semibold text-slate-400 self-center mr-1">Popular:</span>
+            {TOP_GLOBAL_CITIES.map((city) => (
+              <button
+                key={city}
+                type="button"
+                onClick={() => setDestination(city)}
+                className={`text-[10px] px-2 py-0.5 rounded-full border transition-all ${
+                  destination === city
+                    ? 'bg-sky-500 text-white border-sky-400 font-bold'
+                    : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-sky-500/50 hover:text-sky-300'
+                }`}
+              >
+                {city}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Input label="Start Date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />

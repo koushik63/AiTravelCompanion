@@ -5,39 +5,60 @@ export interface DestinationValidationResult {
 }
 
 const KNOWN_VALID_DESTINATIONS = [
-  'goa', 'mumbai', 'delhi', 'new delhi', 'jaipur', 'kerala', 'udaipur', 'shimla', 'manali',
+  // India & South Asia
+  'goa', 'mumbai', 'bombay', 'delhi', 'new delhi', 'jaipur', 'kerala', 'udaipur', 'shimla', 'manali',
   'kashmir', 'srinagar', 'ladakh', 'leh', 'agra', 'varanasi', 'kolkata', 'bengaluru', 'bangalore',
-  'chennai', 'hyderabad', 'pune', 'rishikesh', 'ahmedabad', 'chandigarh', 'amritsar', 'mysore',
-  'pondicherry', 'ooty', 'kodaikanal', 'darjeeling', 'gangtok', 'shillong', 'coorg', 'munnar',
-  'alleppey', 'varkala', 'wayanad', 'chikmagalur', 'gokarna', 'hampi', 'pushkar', 'jaisalmer',
-  'jodhpur', 'nainital', 'mussoorie', 'dharamshala', 'kasol', 'spiti', 'aizawl', 'imphal',
-  'bali', 'paris', 'tokyo', 'london', 'dubai', 'singapore', 'maldives', 'thailand', 'bangkok',
-  'phuket', 'pattaya', 'rome', 'venice', 'florence', 'milan', 'barcelona', 'madrid', 'amsterdam',
-  'switzerland', 'zurich', 'interlaken', 'lucerne', 'new york', 'los angeles', 'san francisco',
-  'las vegas', 'miami', 'hawaii', 'orlando', 'washington', 'chicago', 'sydney', 'melbourne',
-  'auckland', 'toronto', 'vancouver', 'cairo', 'istanbul', 'athens', 'prague', 'vienna', 'budapest',
-  'kyoto', 'osaka', 'seoul', 'vietnam', 'hanoi', 'ho chi minh', 'jakarta', 'nepal', 'kathmandu',
-  'bhutan', 'sri lanka', 'colombo', 'male', 'fiji', 'greece', 'santorini', 'italy', 'france',
-  'germany', 'berlin', 'munich', 'spain', 'japan', 'uk', 'usa', 'united states', 'canada',
-  'australia', 'indonesia', 'malaysia', 'kuala lumpur', 'turkey', 'egypt', 'brazil', 'rio de janeiro',
-  'beijing', 'shanghai', 'hong kong', 'taiwan', 'taipei', 'manila', 'philippines', 'canggu',
-  'ubud', 'seminyak', 'nusa dua', 'nusa penida', 'krabi', 'koh samui', 'chiang mai', 'boracay',
-  'maldives', 'seychelles', 'mauritius', 'dubrovnik', 'croatia', 'lisbon', 'portugal', 'porto',
-  'reykjavik', 'iceland', 'oslo', 'norway', 'stockholm', 'sweden', 'copenhagen', 'denmark',
-  'helsinki', 'finland', 'dublin', 'ireland', 'edinburgh', 'scotland', 'brussels', 'belgium',
-  'vatican', 'san marino', 'monaco', 'zurich', 'geneva', 'innsbruck', 'austria', 'salzburg',
-  'verona', 'naples', 'amalfi', 'positano', 'capri', 'sicily', 'ibiza', 'majorca', 'valencia',
-  'seville', 'granada', 'mykonos', 'crete', 'rhodes', 'cyprus', 'malta', 'vladivostok', 'moscow',
-  'st petersburg', 'russia', 'alaska', 'seattle', 'boston', 'philadelphia', 'dallas', 'houston',
-  'austin', 'denver', 'phoenix', 'san diego', 'san jose', 'portland', 'honolulu', 'anchorage',
-  'cancun', 'mexico', 'mexico city', 'tulum', 'cabo', 'havana', 'cuba', 'punta cana', 'san juan',
-  'costa rica', 'panama', 'bogota', 'colombia', 'medellin', 'lima', 'peru', 'cusco', 'machu picchu',
-  'buenos aires', 'argentina', 'santiago', 'chile', 'sao paulo', 'cape town', 'south africa',
-  'johannesburg', 'nairobi', 'kenya', 'serengeti', 'tanzania', 'zanzibar', 'morocco', 'marrakech',
-  'casablanca', 'cairo', 'luxor', 'israel', 'tel aviv', 'jerusalem', 'jordan', 'petra', 'amman',
-  'doha', 'qatar', 'abu dhabi', 'muscat', 'oman', 'riyadh', 'saudi arabia', 'jeddah', 'beirut',
-  'tashkent', 'uzbekistan', 'almaty', 'kazakhstan', 'baku', 'azerbaijan', 'tbilisi', 'georgia',
-  'yerevan', 'armenia', 'goa', 'kerala', 'ladakh', 'kashmir'
+  'chennai', 'hyderabad', 'secunderabad', 'pune', 'rishikesh', 'ahmedabad', 'chandigarh', 'amritsar', 'mysore',
+  'pondicherry', 'puducherry', 'ooty', 'kodaikanal', 'darjeeling', 'gangtok', 'shillong', 'coorg', 'munnar',
+  'alleppey', 'alappuzha', 'varkala', 'wayanad', 'chikmagalur', 'gokarna', 'hampi', 'pushkar', 'jaisalmer',
+  'jodhpur', 'nainital', 'mussoorie', 'dharamshala', 'kasol', 'spiti', 'aizawl', 'imphal', 'guwahati',
+  'kaziranga', 'madurai', 'rameshwaram', 'tirupati', 'vizag', 'visakhapatnam', 'vijayawada', 'coonoor',
+  'mahabalipuram', 'kumarakom', 'thekkady', 'poovar', 'kovalam', 'bekal', 'badami', 'dandeli', 'kabini',
+  'sakleshpur', 'tawang', 'ziro', 'cherrapunji', 'daman', 'diu', 'kathmandu', 'pokhara', 'thimphu', 'paro',
+  'colombo', 'kandy', 'galle', 'ella', 'sigiriya', 'nuwara eliya', 'male', 'maafushi', 'maldives',
+
+  // East & Southeast Asia
+  'tokyo', 'kyoto', 'osaka', 'sapporo', 'hiroshima', 'nara', 'fukuoka', 'nagoya', 'okinawa', 'japan',
+  'seoul', 'busan', 'jeju', 'korea', 'beijing', 'shanghai', 'guangzhou', 'shenzhen', 'chengdu', 'hong kong',
+  'macau', 'taipei', 'taiwan', 'bangkok', 'phuket', 'pattaya', 'chiang mai', 'krabi', 'koh samui', 'koh phangan',
+  'thailand', 'singapore', 'kuala lumpur', 'penang', 'langkawi', 'malaysia', 'bali', 'ubud', 'canggu', 'seminyak',
+  'nusa dua', 'nusa penida', 'jakarta', 'bandung', 'yogyakarta', 'indonesia', 'manila', 'boracay', 'cebu',
+  'el nido', 'coron', 'philippines', 'hanoi', 'ho chi minh', 'saigon', 'da nang', 'hoi an', 'nha trang',
+  'phu quoc', 'ha long', 'vietnam', 'luang prabang', 'vientiane', 'laos', 'siem reap', 'phnom penh', 'cambodia',
+
+  // Middle East & Central Asia
+  'dubai', 'abu dhabi', 'sharjah', 'uae', 'doha', 'qatar', 'muscat', 'salalah', 'oman', 'riyadh', 'jeddah',
+  'alula', 'saudi arabia', 'manama', 'bahrain', 'kuwait city', 'amman', 'petra', 'wadi rum', 'jordan',
+  'tel aviv', 'jerusalem', 'israel', 'istanbul', 'cappadocia', 'antalya', 'bodrum', 'turkey', 'tashkent',
+  'samarkand', 'bukhara', 'uzbekistan', 'almaty', 'astana', 'kazakhstan', 'baku', 'azerbaijan', 'tbilisi',
+  'batumi', 'georgia', 'yerevan', 'armenia',
+
+  // Europe
+  'paris', 'nice', 'lyon', 'marseille', 'bordeaux', 'cannes', 'chamonix', 'france', 'london', 'edinburgh',
+  'glasgow', 'manchester', 'liverpool', 'belfast', 'cardiff', 'oxford', 'cambridge', 'uk', 'england', 'scotland',
+  'dublin', 'galway', 'ireland', 'rome', 'florence', 'venice', 'milan', 'naples', 'turin', 'verona', 'amalfi',
+  'positano', 'capri', 'sicily', 'sardinia', 'italy', 'barcelona', 'madrid', 'seville', 'valencia', 'granada',
+  'malaga', 'ibiza', 'mallorca', 'spain', 'amsterdam', 'rotterdam', 'netherlands', 'brussels', 'bruges', 'belgium',
+  'zurich', 'geneva', 'interlaken', 'lucerne', 'zermatt', 'switzerland', 'vienna', 'salzburg', 'innsbruck', 'austria',
+  'prague', 'czechia', 'budapest', 'hungary', 'krakow', 'warsaw', 'poland', 'berlin', 'munich', 'frankfurt',
+  'hamburg', 'cologne', 'germany', 'copenhagen', 'denmark', 'stockholm', 'sweden', 'oslo', 'bergen', 'norway',
+  'helsinki', 'finland', 'reykjavik', 'iceland', 'athens', 'santorini', 'mykonos', 'crete', 'rhodes', 'greece',
+  'dubrovnik', 'split', 'zagreb', 'croatia', 'lisbon', 'porto', 'algarve', 'portugal', 'valletta', 'malta',
+
+  // North & South America
+  'new york', 'nyc', 'los angeles', 'la', 'san francisco', 'sf', 'las vegas', 'vegas', 'miami', 'orlando',
+  'chicago', 'washington', 'washington dc', 'boston', 'seattle', 'san diego', 'honolulu', 'hawaii', 'anchorage',
+  'alaska', 'usa', 'united states', 'toronto', 'vancouver', 'montreal', 'ottawa', 'banff', 'canada', 'mexico city',
+  'cancun', 'tulum', 'cabo', 'mexico', 'havana', 'cuba', 'san juan', 'puerto rico', 'punta cana', 'costa rica',
+  'panama city', 'panama', 'bogota', 'medellin', 'cartagena', 'colombia', 'lima', 'cusco', 'machu picchu', 'peru',
+  'buenos aires', 'argentina', 'santiago', 'chile', 'rio de janeiro', 'sao paulo', 'brazil',
+
+  // Oceania, Africa & Islands
+  'sydney', 'melbourne', 'brisbane', 'perth', 'cairns', 'gold coast', 'australia', 'auckland', 'queenstown',
+  'christchurch', 'new zealand', 'fiji', 'nadi', 'bora bora', 'tahiti', 'french polynesia', 'cape town',
+  'johannesburg', 'kruger', 'south africa', 'nairobi', 'masai mara', 'kenya', 'serengeti', 'zanzibar', 'tanzania',
+  'victoria falls', 'marrakech', 'casablanca', 'fes', 'morocco', 'cairo', 'luxor', 'aswan', 'hurghada', 'egypt',
+  'mauritius', 'seychelles'
 ];
 
 const GIBBERISH_REGEX = [
@@ -76,7 +97,7 @@ export function validateDestination(destinationName: string): DestinationValidat
     if (pattern.test(clean) && clean.length >= 3) {
       return {
         isValid: false,
-        errorMessage: `The place "${raw}" does not exist. Please enter a recognized city or country (e.g. Goa, Paris, Tokyo, Mumbai).`
+        errorMessage: `The place "${raw}" does not exist. Please enter a recognized city or country (e.g. Goa, Paris, Tokyo, Mumbai, Bali).`
       };
     }
   }
@@ -96,11 +117,11 @@ export function validateDestination(destinationName: string): DestinationValidat
     };
   }
 
-  // Vowel ratio check for arbitrary names
+  // Vowel ratio check for arbitrary global names
   const vowelCount = (clean.match(/[aeiouy]/gi) || []).length;
   const vowelRatio = vowelCount / clean.length;
 
-  if (vowelRatio < 0.20 || vowelCount === 0) {
+  if (vowelRatio < 0.18 || vowelCount === 0) {
     return {
       isValid: false,
       errorMessage: `The place "${raw}" does not exist. Please enter a valid geographical destination.`
