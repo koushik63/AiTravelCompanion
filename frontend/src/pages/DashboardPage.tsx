@@ -11,7 +11,7 @@ import { formatCurrency } from '../utils/currencyHelper';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
-  const { trips, activeTrip, addTrip, toggleFavoriteTrip, archiveTrip, duplicateTrip, deleteTrip } = useTravelStore();
+  const { trips, activeTrip, addTrip, toggleFavoriteTrip, archiveTrip, duplicateTrip, deleteTrip, setActiveTrip } = useTravelStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const upcomingTrips = trips.filter((t) => t.status === 'UPCOMING' && !t.isArchived);
@@ -98,6 +98,7 @@ export const DashboardPage: React.FC = () => {
               onArchive={archiveTrip}
               onDuplicate={duplicateTrip}
               onDelete={deleteTrip}
+              onSetActive={setActiveTrip}
             />
           ))}
         </div>

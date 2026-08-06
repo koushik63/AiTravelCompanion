@@ -27,6 +27,7 @@ interface TravelState {
 
   addMemory: (memoryData: { tripId: string; imageUrl: string; caption?: string; location?: string }) => Promise<void>;
 
+  setActiveTrip: (id: string) => Promise<void>;
   fetchNotifications: () => Promise<void>;
   markNotificationAsRead: (id: string) => Promise<void>;
 }
@@ -132,6 +133,16 @@ export const useTravelStore = create<TravelState>((set, get) => ({
 
   addMemory: async (memoryData) => {
     await MemoryService.addMemory(memoryData);
+  },
+
+  setActiveTrip: async (id) => {
+    set((state) => {
+      const updatedTrips = state.trips.map((t) =>
+        t.id === id ? { ...t, status: 'ACTIVE' as const } : { ...t, status: t.status === 'ACTIVE' ? ('UPCOMING' as const) : t.status }
+      );
+      const newActive = updatedTrips.find((t) => t.id === id) || null;
+      return { trips: updatedTrips, activeTrip: newActive };
+    });
   },
 
   fetchNotifications: async () => {

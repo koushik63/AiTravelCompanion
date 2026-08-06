@@ -55,8 +55,10 @@ export class TrainService {
       destination = 'Terminal Junction';
     }
 
+    const defaultTrainNum = destLower.includes('goa') ? '10111' : destLower.includes('mumbai') ? '12951' : destLower.includes('bali') ? '104' : '22901';
+
     return {
-      trainNumber: num || '20901',
+      trainNumber: num || defaultTrainNum,
       trainName,
       origin,
       destination,

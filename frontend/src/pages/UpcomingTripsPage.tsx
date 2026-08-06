@@ -5,7 +5,7 @@ import { TripCard } from '../components/trips/TripCard';
 import { EmptyState } from '../components/ui/EmptyState';
 
 export const UpcomingTripsPage: React.FC = () => {
-  const { trips, toggleFavoriteTrip, archiveTrip, duplicateTrip, deleteTrip } = useTravelStore();
+  const { trips, toggleFavoriteTrip, archiveTrip, duplicateTrip, deleteTrip, setActiveTrip } = useTravelStore();
 
   const upcomingTrips = trips.filter((t) => t.status === 'UPCOMING' && !t.isArchived);
 
@@ -30,6 +30,7 @@ export const UpcomingTripsPage: React.FC = () => {
               onArchive={archiveTrip}
               onDuplicate={duplicateTrip}
               onDelete={deleteTrip}
+              onSetActive={setActiveTrip}
             />
           ))}
         </div>

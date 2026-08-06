@@ -103,6 +103,7 @@ interface TripCardProps {
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onSetActive?: (id: string) => void;
 }
 
 export const TripCard: React.FC<TripCardProps> = ({
@@ -110,7 +111,8 @@ export const TripCard: React.FC<TripCardProps> = ({
   onFavorite,
   onArchive,
   onDuplicate,
-  onDelete
+  onDelete,
+  onSetActive
 }) => {
   return (
     <div className="glass-panel-hover overflow-hidden flex flex-col justify-between group">
@@ -148,6 +150,7 @@ export const TripCard: React.FC<TripCardProps> = ({
                 </button>
               }
               items={[
+                { label: '⚡ Set as Active Live Trip', onClick: () => onSetActive?.(trip.id) },
                 { label: 'Duplicate Trip', onClick: () => onDuplicate?.(trip.id) },
                 { label: trip.isArchived ? 'Restore Trip' : 'Archive Trip', onClick: () => onArchive?.(trip.id) },
                 { label: 'Delete Trip', onClick: () => onDelete?.(trip.id) }

@@ -7,7 +7,7 @@ export class FlightService {
     const apiKey = process.env.AVIATIONSTACK_API_KEY;
     const destCity = (destinationParam || '').trim();
 
-    if (apiKey) {
+    if (apiKey && code && code.length >= 3) {
       try {
         const res = await axios.get(`http://api.aviationstack.com/v1/flights`, {
           params: { access_key: apiKey, flight_iata: code }
@@ -68,8 +68,10 @@ export class FlightService {
       destination = 'Indira Gandhi Int Airport (DEL), New Delhi';
     }
 
+    const defaultFlightCode = destLower.includes('goa') ? '6E 504' : destLower.includes('mumbai') ? '6E 218' : destLower.includes('bali') ? 'GA 402' : destLower.includes('delhi') ? 'AI 101' : '6E 712';
+
     return {
-      flightNumber: code || '6E 218',
+      flightNumber: code || defaultFlightCode,
       airline,
       origin,
       destination,
