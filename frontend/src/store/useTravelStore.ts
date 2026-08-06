@@ -76,12 +76,18 @@ export const useTravelStore = create<TravelState>((set, get) => ({
 
   updateTrip: async (id, tripData) => {
     try {
-      await TripService.getTripById(id);
-      set((state) => ({
-        trips: state.trips.map((t) => (t.id === id ? { ...t, ...tripData } : t))
-      }));
+      const updated = await TripService.updateTrip(id, tripData);
+      set((state) => {
+        const updatedTrips = state.trips.map((t) => (t.id === id ? { ...t, ...updated } : t));
+        const updatedActive = state.activeTrip?.id === id ? { ...state.activeTrip, ...updated } : state.activeTrip;
+        return { trips: updatedTrips, activeTrip: updatedActive };
+      });
     } catch (err: any) {
-      set({ error: err.message });
+      set((state) => {
+        const updatedTrips = state.trips.map((t) => (t.id === id ? { ...t, ...tripData } : t));
+        const updatedActive = state.activeTrip?.id === id ? { ...state.activeTrip, ...tripData } : state.activeTrip;
+        return { trips: updatedTrips, activeTrip: updatedActive };
+      });
     }
   },
 

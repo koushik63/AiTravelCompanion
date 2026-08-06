@@ -7,6 +7,7 @@ interface StatisticCardProps {
   subtitle?: string;
   icon: LucideIcon;
   color?: 'sky' | 'emerald' | 'amber' | 'indigo' | 'rose';
+  actionButton?: React.ReactNode;
 }
 
 export const StatisticCard: React.FC<StatisticCardProps> = ({
@@ -14,7 +15,8 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
   value,
   subtitle,
   icon: Icon,
-  color = 'sky'
+  color = 'sky',
+  actionButton
 }) => {
   const colors = {
     sky: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
@@ -28,8 +30,11 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
     <div className="glass-panel p-5 space-y-3 relative overflow-hidden transition-transform duration-200 hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold text-slate-400">{title}</span>
-        <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${colors[color]}`}>
-          <Icon className="w-5 h-5" />
+        <div className="flex items-center gap-2">
+          {actionButton}
+          <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${colors[color]}`}>
+            <Icon className="w-5 h-5" />
+          </div>
         </div>
       </div>
       <div>

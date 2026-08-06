@@ -92,6 +92,10 @@ export const TripService = {
     const res = await api.delete(`/trips/${id}`);
     return res.data;
   },
+  updateTrip: async (id: string, tripData: any): Promise<Trip> => {
+    const res = await api.put(`/trips/${id}`, tripData);
+    return res.data;
+  },
   togglePackingItem: async (itemId: string): Promise<PackingItem> => {
     const res = await api.put(`/trips/packing/item/${itemId}/toggle`);
     return res.data;
