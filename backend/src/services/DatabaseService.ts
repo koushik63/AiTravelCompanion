@@ -62,13 +62,15 @@ const FALLBACK_IMAGES = [
 
 function getDestinationImageUrl(destination: string, tripId: string): string {
   const lower = (destination || '').toLowerCase();
+  if (lower.includes('hyderabad') || lower.includes('secunderabad')) {
+    return 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/1200px-Charminar_Hyderabad_1.jpg';
+  }
   for (const [keyword, photoId] of Object.entries(DESTINATION_IMAGE_MAP)) {
     if (lower.includes(keyword)) {
       return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=1200`;
     }
   }
-  const idx = tripId.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % FALLBACK_IMAGES.length;
-  return `https://images.unsplash.com/${FALLBACK_IMAGES[idx]}?auto=format&fit=crop&q=80&w=1200`;
+  return 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/1200px-Charminar_Hyderabad_1.jpg';
 }
 
 

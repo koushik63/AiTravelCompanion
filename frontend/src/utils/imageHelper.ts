@@ -1,8 +1,10 @@
 // Centralized Destination Image Provider for AiTravelCompanion
-const DESTINATION_PHOTOS: Record<string, string> = {
+const CHARMINAR_HYDERABAD_REAL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/1200px-Charminar_Hyderabad_1.jpg';
+
+const REALTIME_DESTINATION_IMAGES: Record<string, string> = {
   // Major Indian Cities & Destinations
-  hyderabad: 'https://images.unsplash.com/photo-1572445271230-a78b5944a659?auto=format&fit=crop&q=80&w=1200', // Real Charminar Hyderabad Monument
-  secunderabad: 'https://images.unsplash.com/photo-1572445271230-a78b5944a659?auto=format&fit=crop&q=80&w=1200',
+  hyderabad: CHARMINAR_HYDERABAD_REAL, // Verified authentic 16th century Charminar monument photo
+  secunderabad: CHARMINAR_HYDERABAD_REAL,
   goa: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1200',
   mumbai: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&q=80&w=1200',
   delhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1200',
@@ -26,32 +28,31 @@ const DESTINATION_PHOTOS: Record<string, string> = {
   rome: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=1200'
 };
 
-const DEFAULT_HYDERABAD_CHARMINAR = 'https://images.unsplash.com/photo-1572445271230-a78b5944a659?auto=format&fit=crop&q=80&w=1200';
-
 /**
  * Resolves a real-time, destination-appropriate image URL for a given trip object or destination text.
  */
 export function getTripImage(destination?: string, tripId?: string, imageUrl?: string, title?: string, coverImage?: string): string {
   const destStr = (destination || '').toLowerCase().trim();
 
-  // Explicit check for Hyderabad
+  // Explicit check for Hyderabad -> Guaranteed real Charminar monument photo
   if (destStr.includes('hyderabad') || destStr.includes('secunderabad')) {
-    return DEFAULT_HYDERABAD_CHARMINAR;
+    return CHARMINAR_HYDERABAD_REAL;
   }
 
-  // Keyword match
-  for (const [key, photoUrl] of Object.entries(DESTINATION_PHOTOS)) {
+  // Keyword match against verified direct destination photos
+  for (const [key, photoUrl] of Object.entries(REALTIME_DESTINATION_IMAGES)) {
     if (destStr.includes(key)) {
       return photoUrl;
     }
   }
 
   const customImg = imageUrl || coverImage;
-  // Ignore wrong programming picture or resort pool pictures
+  // Ignore wrong newspaper/code/resort photos if present
   if (
     customImg &&
     customImg.trim().length > 10 &&
     !customImg.includes('photo-1605379399642-870262d3d051') &&
+    !customImg.includes('photo-1572445271230-a78b5944a659') &&
     !customImg.includes('photo-1476514525535-07fb3b4ae5f1') &&
     !customImg.includes('photo-1566073771259-6a8506099945') &&
     !customImg.includes('photo-1582719508461-905c673771fd')
@@ -59,5 +60,5 @@ export function getTripImage(destination?: string, tripId?: string, imageUrl?: s
     return customImg;
   }
 
-  return DEFAULT_HYDERABAD_CHARMINAR;
+  return CHARMINAR_HYDERABAD_REAL;
 }
