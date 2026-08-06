@@ -19,6 +19,26 @@ export class GeminiService {
     const d = (destination || '').toLowerCase().trim();
     const style = (travelStyle || 'Leisure').toLowerCase();
 
+    // 0. Assam
+    if (d.includes('assam') || d.includes('guwahati') || d.includes('kaziranga')) {
+      return [
+        { summary: 'Guwahati Kamakhya Temple & Brahmaputra Sunset Cruise', morning: 'Visit sacred 51 Shakti Peeth Kamakhya Temple atop Nilachal Hill in Guwahati', afternoon: 'Guided walk through Assam State Museum & Umananda Peacock Island Temple', evening: 'Sunset Alfresco Cruise on Brahmaputra River with traditional Assamese dinner' },
+        { summary: 'Kaziranga National Park Rhinoceros Elephant Safari', morning: 'Early 5:30 AM Elephant Safari in Kaziranga Central Range viewing One-Horned Rhinoceros', afternoon: 'Jeep Safari through Western Range & visit Kaziranga National Orchid Park', evening: 'Traditional Assamese Thali dinner featuring Masor Tenga & local bamboo shoot dishes' },
+        { summary: 'Majuli River Island & Satra Monasteries', morning: 'Ferry ride from Jorhat to Majuli Island (World’s Largest River Island)', afternoon: 'Guided walk through Kamalabari & Auniati Satra Vaishnavite monasteries', evening: 'Traditional Mising tribal village walk & evening riverbank sunset view' },
+        { summary: 'Tezpur Heritage & Assam Organic Tea Gardens', morning: 'Explore Agnigarh Hill park overlooking Brahmaputra River & Cole Park', afternoon: 'Guided tour & tea tasting at historic Koliabor Tea Estate', evening: 'Traditional Assamese pita dessert & tea session' }
+      ];
+    }
+
+    // 0.1 Kerala
+    if (d.includes('kerala') || d.includes('kochi') || d.includes('munnar') || d.includes('alleppey')) {
+      return [
+        { summary: 'Fort Kochi Heritage Walk, St. Francis Church & Chinese Nets', morning: 'Explore historic Fort Kochi, Mattancherry Dutch Palace & Jewish Synagogue', afternoon: 'View iconic Chinese Fishing Nets & fresh seafood lunch by the Arabian Sea', evening: 'Traditional Kathakali Cultural Dance Performance with elaborate face makeup' },
+        { summary: 'Munnar Rolling Tea Estates & Cheeyappara Waterfalls', morning: 'Drive through misty Western Ghats stopping at Cheeyappara & Valara Waterfalls', afternoon: 'Guided walk through Tata Tea Plantations & visit Munnar Tea Museum', evening: 'Campfire dinner overlooking lush Tea Valley in Munnar hill station' },
+        { summary: 'Alleppey Deluxe Backwaters Houseboat Cruise', morning: 'Board private Deluxe Kerala Houseboat in Alleppey (Alappuzha) backwaters', afternoon: 'Cruise past quiet palm-fringed lagoons with fresh Karimeen Pollichathu fish lunch', evening: 'Sunset over Vembanad Lake & overnight peaceful houseboat stay' },
+        { summary: 'Kovalam Beach Cliff Walk & Samudra Beach Sunset', morning: 'Relaxation at Kovalam Lighthouse Beach & Samudra Beach', afternoon: 'Ayurvedic Abhyanga Herbal Oil Massage & rejuvenation session', evening: 'Sunset cliffside dining with fresh tiger prawns at Kovalam Promenade' }
+      ];
+    }
+
     // 1. Cairo / Egypt
     if (d.includes('cairo') || d.includes('egypt')) {
       return [
@@ -126,25 +146,25 @@ export class GeminiService {
 
     // 12. Dynamic Intelligent Adaptor for ANY Other Place in the World
     const cleanPlace = (destination || 'Destination').trim();
+    const capPlace = cleanPlace.charAt(0).toUpperCase() + cleanPlace.slice(1);
     if (style.includes('adventure')) {
       return [
-        { summary: `High-Altitude Mountain Trekking & Outdoor Adventure in ${cleanPlace}`, morning: `Early morning guided wilderness trekking to mountain viewpoints in ${cleanPlace}`, afternoon: `White-water river rafting, ziplining or rock climbing excursion`, evening: `Campfire barbecue & stargazing session` },
-        { summary: `Waterfall Hikes & Wildlife Nature Reserve in ${cleanPlace}`, morning: `Forest trail hike to hidden waterfalls & natural swimming pools in ${cleanPlace}`, afternoon: `Guided jeep wildlife safari through national park reserve`, evening: `Rustic mountain lodge dinner with local bonfire` }
+        { summary: `High-Altitude Mountain Trekking & Outdoor Adventure in ${capPlace}`, morning: `Early morning guided wilderness trekking to mountain viewpoints in ${capPlace}`, afternoon: `White-water river rafting, ziplining or rock climbing excursion`, evening: `Campfire barbecue & stargazing session` },
+        { summary: `Waterfall Hikes & Wildlife Nature Reserve in ${capPlace}`, morning: `Forest trail hike to hidden waterfalls & natural swimming pools in ${capPlace}`, afternoon: `Guided jeep wildlife safari through national park reserve`, evening: `Rustic mountain lodge dinner with local bonfire` }
       ];
     }
 
     if (style.includes('family')) {
       return [
-        { summary: `Family Ocean World, Theme Park & Cultural Highlights in ${cleanPlace}`, morning: `Guided visit to famous city aquarium, zoo safari or interactive science center in ${cleanPlace}`, afternoon: `Family fun theme park rides & botanical garden walk`, evening: `Water fountain light show & kid-friendly buffet dining` },
-        { summary: `Historic Castle, River Cruise & Artisan Bazaars in ${cleanPlace}`, morning: `Interactive historic castle or royal palace tour in ${cleanPlace}`, afternoon: `Scenic riverboat cruise & souvenir craft shopping`, evening: `Traditional cultural puppet show & ice cream tasting` }
+        { summary: `Family Ocean World, Theme Park & Cultural Highlights in ${capPlace}`, morning: `Guided visit to famous city aquarium, zoo safari or interactive science center in ${capPlace}`, afternoon: `Family fun theme park rides & botanical garden walk`, evening: `Water fountain light show & kid-friendly buffet dining` },
+        { summary: `Historic Castle, River Cruise & Artisan Bazaars in ${capPlace}`, morning: `Interactive historic castle or royal palace tour in ${capPlace}`, afternoon: `Scenic riverboat cruise & souvenir craft shopping`, evening: `Traditional cultural puppet show & ice cream tasting` }
       ];
     }
 
     return [
-      { summary: `Historic Central Plaza, Ancient Architecture & Landmark Tour in ${cleanPlace}`, morning: `Guided morning walking tour of iconic historical monuments & central architecture in ${cleanPlace}`, afternoon: `Sample signature local regional dishes at top-rated city bistro`, evening: `Sunset panorama viewpoint overlooking ${cleanPlace} skyline followed by authentic regional dinner` },
-      { summary: `Art & History Museums & Artisan Craft Bazaars in ${cleanPlace}`, morning: `Visit premier national history & art museum in ${cleanPlace}`, afternoon: `Shop for authentic local handicrafts & souvenirs at historic craft markets`, evening: `Gourmet culinary street food walk in famous food district` },
-      { summary: `Scenic Nature Excursion & Waterfront Promenade in ${cleanPlace}`, morning: `Nature excursion to nearby mountain viewpoint, national park or scenic lake in ${cleanPlace}`, afternoon: `Relaxing waterfront boat cruise & farm-to-table lunch`, evening: `Rooftop lounge dinner & live cultural music performance` },
-      { summary: `Heritage Architecture & Cultural Show in ${cleanPlace}`, morning: `Explore historic fort, castle or royal palace in ${cleanPlace}`, afternoon: `Stroll royal botanical gardens & local art galleries`, evening: `Attend traditional performing arts show & farewell dinner` }
+      { summary: `Historic City Heritage District & Local Monument Tour in ${capPlace}`, morning: `Morning guided walk through central historical quarter & iconic landmarks in ${capPlace}`, afternoon: `Visit top-rated national cultural museum & local craft markets in ${capPlace}`, evening: `Sunset terrace dining overlooking ${capPlace} skyline & authentic regional specialties` },
+      { summary: `Scenic Nature Excursion & Cultural Craft Bazaars in ${capPlace}`, morning: `Scenic morning excursion to nearby mountain lookout or nature park surrounding ${capPlace}`, afternoon: `Explore artisan handicraft bazaars & sample authentic street food delicacies in ${capPlace}`, evening: `Waterfront promenade walk & traditional performing arts show in ${capPlace}` },
+      { summary: `Artisan Markets & Culinary Tasting Walk in ${capPlace}`, morning: `Visit historic cathedral, fort or central cultural gallery in ${capPlace}`, afternoon: `Guided food tasting walk trying top regional delicacies at popular local bistros`, evening: `Sunset lounge session & candlelit dinner in ${capPlace}` }
     ];
   }
 
@@ -280,7 +300,7 @@ INSTRUCTIONS & CONSTRAINTS:
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
-    let targetPlace = destContext || 'Cairo';
+    let targetPlace = destContext || 'Assam';
     const match = message.match(/(?:visit|in|at|to|for|about)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
     if (match && match[1] && !['visit', 'trip', 'plan', 'schedule', 'the', 'how', 'what', 'where'].includes(match[1].toLowerCase())) {
       targetPlace = match[1].trim();
@@ -368,7 +388,7 @@ INSTRUCTIONS & CONSTRAINTS:
   }
 
   private static generateFallbackItinerary(input: any) {
-    const dest = (input.destination || 'Cairo').trim();
+    const dest = (input.destination || 'Assam').trim();
     const daysCount = Number(input.durationDays) || 4;
     const style = input.travelStyle || 'Leisure';
 
@@ -425,7 +445,7 @@ INSTRUCTIONS & CONSTRAINTS:
         'First Aid Kit'
       ],
       localTips: [
-        'Use local rideshare apps or transit passes for seamless navigation.',
+        'Use local transport apps or transit passes for seamless navigation.',
         'Early morning visits avoid long tourist queues at major landmarks.'
       ],
       safetyTips: [
@@ -478,7 +498,7 @@ Return ONLY valid JSON matching this structure:
     if (destLower.includes('ladakh') || destLower.includes('leh') || destLower.includes('kashmir') || destLower.includes('manali') || destLower.includes('shimla') || destLower.includes('switzerland') || destLower.includes('iceland')) {
       clothingItems = ['Heavy Down Thermal Jacket', 'Woolen Thermals & Innerwear', 'Waterproof Trekking Boots', 'Fleece Gloves & Beanie Cap'];
       toiletries = ['Cold-Wind Moisturizing Cream', 'SPF 50+ Sunscreen Lotion', 'Heavy Lip Balm & First Aid'];
-    } else if (destLower.includes('goa') || destLower.includes('bali') || destLower.includes('maldives') || destLower.includes('phuket') || destLower.includes('kerala')) {
+    } else if (destLower.includes('goa') || destLower.includes('bali') || destLower.includes('maldives') || destLower.includes('phuket') || destLower.includes('kerala') || destLower.includes('assam')) {
       clothingItems = ['UV-Protection Swimwear', 'Light Cotton Shirts & Linen Shorts', 'Flip-Flops & Beach Footwear'];
       toiletries = ['Water-Resistant SPF 50+ Sunscreen', 'After-Sun Aloe Vera Gel', 'Mosquito Repellent Lotion'];
     }
