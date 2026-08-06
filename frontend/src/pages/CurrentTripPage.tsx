@@ -128,7 +128,7 @@ export const CurrentTripPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {getDetailedDestinationItinerary(currentTrip.destination).map((d, idx) => (
+          {getDetailedDestinationItinerary(currentTrip.destination, 3, currentTrip.currency, currentTrip.budget).map((d, idx) => (
             <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
                 <span className="font-extrabold text-xs text-amber-400">{d.day}</span>
