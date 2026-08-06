@@ -14,10 +14,12 @@ export class GeminiService {
     return null;
   }
 
-  // Master Comprehensive City Landmark Knowledge Dictionary
-  private static getCityLandmarks(destination: string): Array<{ summary: string; morning: string; afternoon: string; evening: string }> {
+  // Master Comprehensive City Landmark Knowledge Base with Real-World Places
+  private static getCityLandmarks(destination: string, travelStyle: string = 'Leisure'): Array<{ summary: string; morning: string; afternoon: string; evening: string }> {
     const d = (destination || '').toLowerCase().trim();
+    const style = (travelStyle || 'Leisure').toLowerCase();
 
+    // 1. Cairo / Egypt
     if (d.includes('cairo') || d.includes('egypt')) {
       return [
         { summary: 'Giza Plateau Pyramids, Great Sphinx & Camel Safari', morning: 'Explore Great Pyramids of Giza (Khufu, Khafre, Menkaure) & Camel Safari', afternoon: 'Photograph iconic Great Sphinx Monument & Valley Temple of Khafre', evening: 'Sunset Nile River Felucca Boat Cruise with Egyptian Koshary Dinner' },
@@ -25,11 +27,11 @@ export class GeminiService {
         { summary: 'Khan el-Khalili 14th-Century Souk & El Fishawy Cafe', morning: 'Guided walk through 14th-century Khan el-Khalili Medieval Spice Bazaar', afternoon: 'Traditional Mint Tea & Shisha session at historic El Fishawy Cafe', evening: 'Sound & Light Show at Giza Pyramids' },
         { summary: 'Citadel of Saladin & Alabaster Mosque', morning: 'Tour Citadel of Saladin & Mosque of Muhammad Ali (Alabaster Mosque)', afternoon: 'Stroll Al-Mu\'izz Street Mamluk architectural monuments', evening: 'Panoramic sunset views from Al-Azhar Park overlooking Cairo' },
         { summary: 'Coptic Cairo Hanging Church & Ancient Churches', morning: 'Guided tour of Hanging Church of St. Mary & Church of St. Sergius', afternoon: 'Visit Ben Ezra Synagogue & Coptic Museum in Old Cairo', evening: 'Dinner Cruise on Nile River with traditional Tanoura dance' },
-        { summary: 'Saqqara Step Pyramid & Ancient Memphis Ruins', morning: 'Excursion to Saqqara Step Pyramid of Djoser & Dahshur Pyramids', afternoon: 'Explore ancient capital ruins of Memphis & Colossus of Ramesses II', evening: 'Traditional Egyptian BBQ feast in Giza' },
-        { summary: 'Alexandria Day Cruise on Mediterranean Coast', morning: 'Day trip to Alexandria: Citadel of Qaitbay overlooking Mediterranean', afternoon: 'Tour Bibliotheca Alexandrina & Catacombs of Kom El Shoqafa', evening: 'Return to Cairo for Farewell Sunset Terrace Dinner' }
+        { summary: 'Saqqara Step Pyramid & Ancient Memphis Ruins', morning: 'Excursion to Saqqara Step Pyramid of Djoser & Dahshur Pyramids', afternoon: 'Explore ancient capital ruins of Memphis & Colossus of Ramesses II', evening: 'Traditional Egyptian BBQ feast in Giza' }
       ];
     }
 
+    // 2. Darjeeling
     if (d.includes('darjeeling')) {
       return [
         { summary: 'Tiger Hill 4:00 AM Sunrise & Mount Kanchenjunga View', morning: '4:00 AM excursion to Tiger Hill for sunrise over Mount Kanchenjunga', afternoon: 'Visit Batasia Loop heritage railway monument & Ghoom Monastery', evening: 'Stroll Chowrasta Mall Road & tea tasting at Nathmulls' },
@@ -39,6 +41,7 @@ export class GeminiService {
       ];
     }
 
+    // 3. Rishikesh
     if (d.includes('rishikesh')) {
       return [
         { summary: 'Laxman Jhula & Ram Jhula Suspension Bridges Walk', morning: 'Walk historic Laxman Jhula & Ram Jhula suspension bridges across Ganges', afternoon: 'Explore Trayambakeshwar Temple (13-Story Temple)', evening: 'Attend Parmarth Niketan Evening Ganga Aarti Ceremony with Vedic Chanting' },
@@ -48,6 +51,7 @@ export class GeminiService {
       ];
     }
 
+    // 4. Ladakh / Leh
     if (d.includes('ladakh') || d.includes('leh')) {
       return [
         { summary: 'Acclimatization, Leh Market & Shanti Stupa Sunset', morning: 'Rest & acclimatization to high altitude (11,500 ft) in Leh town', afternoon: 'Walk through Leh Main Bazaar & Leh Palace ruins', evening: 'Panoramic sunset view over Indus Valley from white Shanti Stupa' },
@@ -57,6 +61,7 @@ export class GeminiService {
       ];
     }
 
+    // 5. Kashmir / Srinagar
     if (d.includes('kashmir') || d.includes('srinagar')) {
       return [
         { summary: 'Dal Lake Shikara Ride & Luxury Houseboat Check-in', morning: 'Arrive Srinagar, check-in to hand-carved Wooden Luxury Houseboat', afternoon: '2-Hour Shikara Ride on Dal Lake through Meena Bazaar & Floating Gardens', evening: 'Sunset over Zabarwan Mountains & Kashmiri Kahwa Tea' },
@@ -65,55 +70,81 @@ export class GeminiService {
       ];
     }
 
-    if (d.includes('shimla')) {
-      return [
-        { summary: 'Mall Road, The Ridge & Scandal Point Walk', morning: 'Stroll historic Mall Road & heritage Neo-Gothic Christ Church on The Ridge', afternoon: 'Visit Gaiety Theatre & shop at Lakkar Bazaar for wooden handicrafts', evening: 'Sunset panoramic views from Scandal Point promenade' },
-        { summary: 'Jakhoo Hill Temple Hike & Kufri Snow Park', morning: 'Trek or cable car ride to Jakhoo Temple & 108ft Giant Lord Hanuman Statue', afternoon: 'Excursion to Kufri Fun World for horse riding & Himalayan view', evening: 'Cozy dinner at Cafe Simla Times' }
-      ];
-    }
-
-    if (d.includes('manali')) {
-      return [
-        { summary: 'Hadimba Temple Forest Walk & Old Manali Cafes', morning: 'Visit 1553 AD Hadimba Devi Wooden Temple in Dhungri Cedar Forest', afternoon: 'Walk quaint alleyways of Old Manali & German Bakery cafes', evening: 'Sunset stroll along Beas Riverbank' },
-        { summary: 'Solang Valley Paragliding & Zipline Adventure', morning: 'Paragliding, Zorbing & Cable Car Ride at Solang Valley adventure hub', afternoon: 'Drive through 9.02km engineering marvel Atal Tunnel to Lahaul Valley', evening: 'Soak in natural sulfur hot springs at Vashisht Village' }
-      ];
-    }
-
+    // 6. Bali
     if (d.includes('bali') || d.includes('ubud')) {
       return [
         { summary: 'Ubud Sacred Monkey Forest & Royal Palace Walk', morning: 'Explore Sacred Monkey Forest Sanctuary with 700+ long-tailed macaques', afternoon: 'Tour Puri Saren Agung (Ubud Royal Palace) & shop at Ubud Art Market', evening: 'Balinese Legong Dance performance at Puri Saraswati Temple' },
         { summary: 'Tegallalang Rice Terraces & Tirta Empul Temple', morning: 'Walk through terraced green hills at Tegallalang Rice Terraces & High Jungle Swings', afternoon: 'Visit Tirta Empul Holy Spring Temple for traditional ritual purification', evening: 'Dinner overlooking lush rainforest valley at Sayan Ridge' },
         { summary: 'Uluwatu Sea Temple Cliffside & Kecak Fire Dance', morning: 'Relax & surf at Padang Padang Beach or Suluban Hidden Beach', afternoon: 'Visit Uluwatu Cliffside Temple 70 meters above the Indian Ocean', evening: 'Sunset Kecak Fire Dance Performance on Uluwatu amphitheater cliff' },
         { summary: 'Nusa Penida Island Ferry & Kelingking T-Rex Beach', morning: 'Speedboat ferry to Nusa Penida & photograph famous Kelingking T-Rex Cliff', afternoon: 'Snorkel with Manta Rays at Crystal Bay & visit Angel’s Billabong', evening: 'Return to mainland Bali & dinner in Sanur waterfront' },
-        { summary: 'Seminyak Beach Club Lounge & Sunset Cocktails', morning: 'Leisure morning boutique shopping along Seminyak Kayu Aya Street', afternoon: 'Poolside relaxation at Potato Head or Ku De Ta Beach Club', evening: 'Sunset beachside dining with live DJ beats in Seminyak' },
-        { summary: 'Mount Batur Volcano Sunrise Trek & Hot Springs', morning: 'Early 3:30 AM 4x4 Jeep tour to Mount Batur Volcano summit for sunrise', afternoon: 'Soak in Toya De Vasya Geothermal Natural Hot Springs overlooking Lake Batur', evening: 'Traditional Balinese massage & spa rejuvenation' },
-        { summary: 'Tanah Lot Sea Temple & Jimbaran Beach Seafood BBQ', morning: 'Visit Taman Ayun Royal Family Temple in Mengwi', afternoon: 'Photograph Tanah Lot offshore sea temple during low tide', evening: 'Farewell candlelit fresh seafood BBQ on the sand at Jimbaran Bay' }
+        { summary: 'Seminyak Beach Club Lounge & Sunset Cocktails', morning: 'Leisure morning boutique shopping along Seminyak Kayu Aya Street', afternoon: 'Poolside relaxation at Potato Head or Ku De Ta Beach Club', evening: 'Sunset beachside dining with live DJ beats in Seminyak' }
       ];
     }
 
-    if (d.includes('mumbai') || d.includes('bombay')) {
+    // 7. Paris / France
+    if (d.includes('paris') || d.includes('france')) {
       return [
-        { summary: 'Gateway of India & Marine Drive Sunset Promenade', morning: 'Walk Gateway of India plaza & photograph historic Taj Mahal Palace Hotel', afternoon: 'Colaba Causeway shopping & Bademiya Kebab lunch', evening: 'Sunset Promenade walk along Marine Drive (Queen’s Necklace)' },
-        { summary: 'Elephanta Caves Cruise & Crawford Market', morning: 'Ferry cruise from Gateway of India to UNESCO Elephanta Cave Temples', afternoon: 'Explore ancient 5th-century Lord Shiva rock-cut cave sculptures', evening: 'Tour UNESCO Chhatrapati Shivaji Maharaj Terminus (CSMT) & Crawford Market' },
-        { summary: 'Haji Ali Dargah & Bandra Bandstand Walk', morning: 'Walk causeway to Haji Ali Dargah & Mahalaxmi Dhobi Ghat', afternoon: 'Stroll Bandra Bandstand (Shah Rukh Khan\'s Mannat) & Linking Road shopping', evening: 'Juhu Beach Sunset chat tasting & dinner at High-End Bandra Bistro' }
+        { summary: 'Eiffel Tower Summit & Seine River Cruise', morning: 'Ascend Eiffel Tower 3rd tier summit for 360° Paris skyline view', afternoon: 'Walk Champs-Élysées avenue to Arc de Triomphe monument', evening: 'Sunset Seine River Cruise aboard Bateaux Parisiens with champagne' },
+        { summary: 'Louvre Museum & Tuileries Garden Stroll', morning: 'Guided tour of Louvre Museum: Mona Lisa, Venus de Milo & Winged Victory', afternoon: 'Stroll Tuileries Garden & Place de la Concorde', evening: 'French Bistro dinner in Saint-Germain-des-Prés' },
+        { summary: 'Montmartre Artists Quarter & Sacré-Cœur', morning: 'Walk historic cobblestone alleyways of Montmartre & Place du Tertre', afternoon: 'Visit Sacré-Cœur Basilica summit & view Paris panorama', evening: 'Moulin Rouge cabaret show or Latin Quarter bistro dinner' }
       ];
     }
 
-    if (d.includes('hyderabad') || d.includes('secunderabad')) {
+    // 8. Tokyo / Japan
+    if (d.includes('tokyo') || d.includes('japan')) {
       return [
-        { summary: 'Charminar, Laad Bazaar & Chowmahalla Palace', morning: 'Climb 1591 AD Charminar & shop for bangles in Laad Bazaar', afternoon: 'Tour Nizams grand Chowmahalla Palace & vintage car collection', evening: 'Authentic Hyderabadi Dum Biryani dinner at Paradise or Hotel Shadab' },
-        { summary: 'Golconda Fort Sound & Light Show & Qutb Shahi Tombs', morning: 'Guided hike through majestic Golconda Fort acoustics & royal palaces', afternoon: 'Explore 7 domed Qutb Shahi Royal Tombs garden complex', evening: 'Sound & Light Show at Golconda Fort' },
-        { summary: 'Full Day Ramoji Film City Adventure', morning: 'Explore World\'s Largest Film Studio Complex at Ramoji Film City', afternoon: 'Watch live stunt shows, Japanese Gardens & Movie Sets', evening: 'Return to Hyderabad city & Hussain Sagar Lake Boat Ride' }
+        { summary: 'Shibuya Scramble Crossing & Shibuya Sky', morning: 'Experience world-famous Shibuya Scramble Crossing & Hachiko Statue', afternoon: '360° Tokyo skyline views from Shibuya Sky observation deck', evening: 'Dinner at Shinjuku Omoide Yokocho (Memory Lane) yakitori alleys' },
+        { summary: 'Senso-ji Temple Asakusa & Tokyo Skytree', morning: 'Visit 7th-century Senso-ji Temple & Nakamise Shopping Street', afternoon: 'Sumida River Walk & ascend 634-meter Tokyo Skytree', evening: 'Traditional Tonkotsu Ramen dinner in Akihabara' },
+        { summary: 'teamLab Planets Digital Art & Odaiba Seaside', morning: 'Interactive digital art experience at teamLab Planets TOKYO', afternoon: 'Walk Odaiba Seaside Park, view Unicorn Gundam Statue & Rainbow Bridge', evening: 'Rooftop sushi dining overlooking Tokyo Bay' }
       ];
     }
 
-    // Default High-Fidelity Universal Generator for Any Other Place in the World
-    const place = destination || 'Destination';
+    // 9. Dubai / UAE
+    if (d.includes('dubai') || d.includes('uae')) {
+      return [
+        { summary: 'Burj Khalifa 124th Floor Deck & Dubai Fountain', morning: 'Ascend Burj Khalifa 124th/125th floor observation deck', afternoon: 'Explore Dubai Mall, Aquarium & Underwater Zoo', evening: 'Watch Dubai Fountain Light & Music Show with dinner' },
+        { summary: 'Old Dubai Gold Souk & Abra River Boat', morning: 'Explore Al Fahidi Historic Neighborhood & Dubai Museum', afternoon: 'Cross Dubai Creek on traditional Wooden Abra boat to Gold & Spice Souks', evening: 'Dubai Marina Luxury Yacht Sunset Cruise' },
+        { summary: '4x4 Red Dune Desert Safari & Bedouin Night', morning: 'Leisure morning at Jumeirah Beach overlooking Burj Al Arab', afternoon: 'Dune bashing 4x4 safari across Lahbab Red Desert', evening: 'Bedouin Desert Camp barbecue dinner with Tanoura show & stargazing' }
+      ];
+    }
+
+    // 10. Jaipur / Rajasthan
+    if (d.includes('jaipur') || d.includes('rajasthan')) {
+      return [
+        { summary: 'Amber Fort Elephant Jeep Ride & Mirror Palace', morning: 'Ascend hilltop Amber Fort & explore Sheesh Mahal (Mirror Palace)', afternoon: 'View Maota Lake & traditional Rajasthani thali lunch at 1135 AD', evening: 'Photograph Panna Meena Ka Kund ancient stepwell' },
+        { summary: 'Hawa Mahal, City Palace & Jantar Mantar', morning: 'Photograph honeycomb facade of Hawa Mahal (Palace of Winds)', afternoon: 'Tour Royal City Palace museum & Peacock Courtyard', evening: 'Explore UNESCO Jantar Mantar 18th-century observatory' }
+      ];
+    }
+
+    // 11. Goa
+    if (d.includes('goa')) {
+      return [
+        { summary: 'North Goa Baga Beach Water Sports & Aguada Fort', morning: 'Parasailing & Jet Skiing at Baga Beach', afternoon: 'Explore 17th-century Portuguese Fort Aguada & Lighthouse', evening: 'Sunset cocktails at Vagator Cliff Lounge (Thalassa)' },
+        { summary: 'Old Goa UNESCO Cathedrals & Spice Plantation', morning: 'Tour Basilica of Bom Jesus & Se Cathedral in Old Goa', afternoon: 'Guided walk & buffet lunch at Sahakari Spice Plantation', evening: 'Mandovi River Sunset Cruise with Goan Folk Dance' }
+      ];
+    }
+
+    // 12. Dynamic Intelligent Adaptor for ANY Other Place in the World
+    const cleanPlace = (destination || 'Destination').trim();
+    if (style.includes('adventure')) {
+      return [
+        { summary: `High-Altitude Mountain Trekking & Outdoor Adventure in ${cleanPlace}`, morning: `Early morning guided wilderness trekking to mountain viewpoints in ${cleanPlace}`, afternoon: `White-water river rafting, ziplining or rock climbing excursion`, evening: `Campfire barbecue & stargazing session` },
+        { summary: `Waterfall Hikes & Wildlife Nature Reserve in ${cleanPlace}`, morning: `Forest trail hike to hidden waterfalls & natural swimming pools in ${cleanPlace}`, afternoon: `Guided jeep wildlife safari through national park reserve`, evening: `Rustic mountain lodge dinner with local bonfire` }
+      ];
+    }
+
+    if (style.includes('family')) {
+      return [
+        { summary: `Family Ocean World, Theme Park & Cultural Highlights in ${cleanPlace}`, morning: `Guided visit to famous city aquarium, zoo safari or interactive science center in ${cleanPlace}`, afternoon: `Family fun theme park rides & botanical garden walk`, evening: `Water fountain light show & kid-friendly buffet dining` },
+        { summary: `Historic Castle, River Cruise & Artisan Bazaars in ${cleanPlace}`, morning: `Interactive historic castle or royal palace tour in ${cleanPlace}`, afternoon: `Scenic riverboat cruise & souvenir craft shopping`, evening: `Traditional cultural puppet show & ice cream tasting` }
+      ];
+    }
+
     return [
-      { summary: `Explore Famous Historic Landmarks & Plazas in ${place}`, morning: `Guided morning walking tour of iconic historical monuments & central architecture in ${place}`, afternoon: `Sample signature local regional dishes at top-rated city bistro`, evening: `Sunset panorama viewpoint overlooking ${place} skyline followed by regional dinner` },
-      { summary: `Art & History Museums & Artisan Craft Bazaars in ${place}`, morning: `Visit premier national history & art museum in ${place}`, afternoon: `Shop for authentic local handicrafts & souvenirs at historic craft markets`, evening: `Gourmet culinary street food walk in famous food district` },
-      { summary: `Scenic Nature Excursion & Waterfront Promenade in ${place}`, morning: `Nature excursion to nearby mountain viewpoint, national park or scenic lake in ${place}`, afternoon: `Relaxing waterfront boat cruise & farm-to-table lunch`, evening: `Rooftop lounge dinner & live cultural music performance` },
-      { summary: `Heritage Architecture & Cultural Show in ${place}`, morning: `Explore historic fort, castle or royal palace in ${place}`, afternoon: `Stroll royal botanical gardens & local art galleries`, evening: `Attend traditional performing arts show & farewell dinner` }
+      { summary: `Historic Central Plaza, Ancient Architecture & Landmark Tour in ${cleanPlace}`, morning: `Guided morning walking tour of iconic historical monuments & central architecture in ${cleanPlace}`, afternoon: `Sample signature local regional dishes at top-rated city bistro`, evening: `Sunset panorama viewpoint overlooking ${cleanPlace} skyline followed by authentic regional dinner` },
+      { summary: `Art & History Museums & Artisan Craft Bazaars in ${cleanPlace}`, morning: `Visit premier national history & art museum in ${cleanPlace}`, afternoon: `Shop for authentic local handicrafts & souvenirs at historic craft markets`, evening: `Gourmet culinary street food walk in famous food district` },
+      { summary: `Scenic Nature Excursion & Waterfront Promenade in ${cleanPlace}`, morning: `Nature excursion to nearby mountain viewpoint, national park or scenic lake in ${cleanPlace}`, afternoon: `Relaxing waterfront boat cruise & farm-to-table lunch`, evening: `Rooftop lounge dinner & live cultural music performance` },
+      { summary: `Heritage Architecture & Cultural Show in ${cleanPlace}`, morning: `Explore historic fort, castle or royal palace in ${cleanPlace}`, afternoon: `Stroll royal botanical gardens & local art galleries`, evening: `Attend traditional performing arts show & farewell dinner` }
     ];
   }
 
@@ -131,17 +162,11 @@ export class GeminiService {
     }
 
     const ai = this.getClient();
-    if (!ai) {
-      Logger.warn(`Gemini API key missing or fallback active. Generating rich varied fallback itinerary for ${input.destination}`, 'GeminiService');
-      const fallback = this.generateFallbackItinerary(input);
-      AICacheService.set(cacheKey, fallback);
-      return fallback;
-    }
-
-    const startTime = Date.now();
-    try {
-      const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-      const prompt = `Act as an expert AI Travel Agent. Create a detailed structured JSON itinerary for ${input.destination} for ${input.durationDays || 3} days.
+    if (ai) {
+      const startTime = Date.now();
+      try {
+        const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+        const prompt = `Act as an expert AI Travel Agent. Create a detailed structured JSON itinerary for ${input.destination} for ${input.durationDays || 3} days.
 Travel Style: ${input.travelStyle || 'Balanced'}. Budget: ${input.budget || 50000} ${input.currency || 'INR'}.
 Interests: ${input.interests?.join(', ') || 'Sightseeing, Local Cuisine'}.
 
@@ -181,18 +206,23 @@ Return ONLY valid JSON matching this schema:
   "confidenceNotes": "Generated via Gemini AI Engine v1.5"
 }`;
 
-      AILoggingService.logPrompt(prompt);
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      AILoggingService.logResponse('success', Date.now() - startTime);
+        AILoggingService.logPrompt(prompt);
+        const result = await model.generateContent(prompt);
+        const text = result.response.text();
+        AILoggingService.logResponse('success', Date.now() - startTime);
 
-      const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-      AICacheService.set(cacheKey, parsed);
-      return parsed;
-    } catch (err) {
-      Logger.error('Gemini AI Generation Error, engaging fallback', err, 'GeminiService');
-      return this.generateFallbackItinerary(input);
+        const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+        AICacheService.set(cacheKey, parsed);
+        return parsed;
+      } catch (err) {
+        Logger.warn('Gemini AI API Call Failed, switching to Master Landmark Engine', 'GeminiService');
+      }
     }
+
+    // High-Fidelity Landmark Fallback Generator
+    const fallback = this.generateFallbackItinerary(input);
+    AICacheService.set(cacheKey, fallback);
+    return fallback;
   }
 
   static async getBudgetTips(destination: string, budget: number, currency: string = 'INR') {
@@ -252,11 +282,11 @@ INSTRUCTIONS & CONSTRAINTS:
 
     let targetPlace = destContext || 'Cairo';
     const match = message.match(/(?:visit|in|at|to|for|about)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
-    if (match && match[1] && !['visit', 'trip', 'plan', 'schedule', 'the'].includes(match[1].toLowerCase())) {
+    if (match && match[1] && !['visit', 'trip', 'plan', 'schedule', 'the', 'how', 'what', 'where'].includes(match[1].toLowerCase())) {
       targetPlace = match[1].trim();
     }
 
-    const dayTemplates = this.getCityLandmarks(targetPlace);
+    const dayTemplates = this.getCityLandmarks(targetPlace, tripContext?.travelStyle);
 
     // 0. Places to Visit Query
     if (/\b(place|places|visit|attraction|attractions|things to do|sightseeing|spot|spots|see|highlights|tourist)\b/i.test(lowMsg) && !/\b(itinerary|plan|schedule|trip)\b/i.test(lowMsg)) {
@@ -340,8 +370,9 @@ INSTRUCTIONS & CONSTRAINTS:
   private static generateFallbackItinerary(input: any) {
     const dest = (input.destination || 'Cairo').trim();
     const daysCount = Number(input.durationDays) || 4;
+    const style = input.travelStyle || 'Leisure';
 
-    const dayTemplates = this.getCityLandmarks(dest);
+    const dayTemplates = this.getCityLandmarks(dest, style);
     const budgetTotal = Number(input.budget) || 50000;
     const approxDailyBudget = Math.round(budgetTotal / daysCount);
 
@@ -371,13 +402,13 @@ INSTRUCTIONS & CONSTRAINTS:
     return {
       tripTitle: `AI Expedition to ${dest}`,
       destination: dest,
-      summary: `Comprehensive ${daysCount}-day AI-curated travel itinerary for ${dest} featuring authentic famous landmarks & tailored for ${input.travelStyle || 'Balanced'} travel.`,
+      summary: `Comprehensive ${daysCount}-day AI-curated travel itinerary for ${dest} featuring authentic famous landmarks & tailored for ${style} travel.`,
       estimatedTotalCost: budgetTotal,
       currency: input.currency || 'INR',
       days,
       recommendedAttractions: [
-        { name: `Top Landmark in ${dest}`, category: 'Sightseeing', description: 'Iconic spot for sunset and photography.', cost: 400 },
-        { name: `Central Heritage Square`, category: 'Culture', description: 'Vibrant local plaza with rich history.', cost: 600 }
+        { name: `Top Landmark in ${dest}`, category: 'Sightseeing', description: 'Iconic spot for sunset and photography.', cost: Math.round(approxDailyBudget * 0.2) },
+        { name: `Central Heritage Square`, category: 'Culture', description: 'Vibrant local plaza with rich history.', cost: Math.round(approxDailyBudget * 0.25) }
       ],
       recommendedRestaurants: [
         { name: `The Culinary Bistro`, cuisine: 'Authentic Local', priceRange: 'Moderate', location: dest },
