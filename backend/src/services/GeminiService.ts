@@ -116,20 +116,23 @@ Return ONLY valid JSON matching this schema:
         try {
           const model = ai.getGenerativeModel({ model: modelName });
           const contextStr = tripContext && tripContext.destination
-            ? `Active Trip Destination: ${tripContext.destination}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}, Status: ${tripContext.status || 'UPCOMING'}.`
-            : 'No specific trip context provided.';
-          const prompt = `You are a master AI Travel Advisor & Guide.
-Previous Conversation History:
+            ? `Active Trip Destination Context: ${tripContext.destination}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}.`
+            : 'No active trip context.';
+
+          const prompt = `You are an expert AI Travel Assistant. Answer the user's specific question directly, accurately, and naturally.
+
+Conversation History:
 ${history || 'None'}
 
-User Trip Context: ${contextStr}
+User Context: ${contextStr}
+
 User Question: "${message}"
 
-INSTRUCTIONS:
-1. Provide an extensive, highly detailed, comprehensive travel answer tailored to the destination and query.
-2. Include specific landmark names, recommended neighborhoods, detailed multi-day itineraries, exact cost breakdowns, authentic local dishes, transport methods, and insider safety & cultural tips.
-3. Use attractive formatting with emojis, bold headers (e.g. 📍 Top Places, 💰 Budget & Costs, 🍽️ Must-Try Dishes, 🗺️ Detailed Itinerary), and bullet points.
-4. Do NOT output raw JSON markdown or code blocks.`;
+INSTRUCTIONS & CONSTRAINTS:
+1. Answer the exact question asked by the user. If they ask about food, answer about food. If they ask about safety, transport, visa, weather, or costs, answer that directly.
+2. Do NOT output a full multi-day trip itinerary unless the user explicitly asks for a trip plan or itinerary.
+3. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
+4. Do NOT output raw JSON code blocks.`;
 
           const result = await model.generateContent(prompt);
           const text = result.response.text().trim();
@@ -140,85 +143,91 @@ INSTRUCTIONS:
       }
     }
 
-    const messageTrim = message.trim();
-    const lowMsg = message.toLowerCase();
+    // Advanced Fallback Intelligence: Answer directly based on user input intent
+    const lowMsg = message.toLowerCase().trim();
+    const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
-    let dest = '';
-    const knownDestinationsMap: { keys: string[]; label: string }[] = [
-      { keys: ['singapore', 'sg'], label: 'Singapore' },
-      { keys: ['japan', 'tokyo', 'kyoto', 'osaka'], label: 'Japan (Tokyo)' },
-      { keys: ['france', 'paris', 'nice'], label: 'France (Paris)' },
-      { keys: ['uk', 'united kingdom', 'london', 'england'], label: 'United Kingdom (London)' },
-      { keys: ['thailand', 'bangkok', 'phuket', 'pattaya'], label: 'Thailand (Bangkok)' },
-      { keys: ['dubai', 'uae', 'abu dhabi'], label: 'Dubai (UAE)' },
-      { keys: ['maldives', 'male'], label: 'Maldives' },
-      { keys: ['switzerland', 'zurich', 'swiss', 'interlaken'], label: 'Switzerland' },
-      { keys: ['australia', 'sydney', 'melbourne'], label: 'Australia' },
-      { keys: ['usa', 'united states', 'america', 'california'], label: 'United States (USA)' },
-      { keys: ['mumbai', 'bombay'], label: 'Mumbai' },
-      { keys: ['goa'], label: 'Goa' },
-      { keys: ['delhi', 'new delhi'], label: 'New Delhi' },
-      { keys: ['kerala', 'alleppey', 'munnar'], label: 'Kerala' },
-      { keys: ['jaipur', 'rajasthan'], label: 'Jaipur' },
-      { keys: ['ladakh', 'leh'], label: 'Ladakh' },
-      { keys: ['kashmir', 'srinagar', 'gulmarg'], label: 'Kashmir' },
-      { keys: ['bali', 'ubud'], label: 'Bali, Indonesia' }
-    ];
-
-    for (const item of knownDestinationsMap) {
-      for (const key of item.keys) {
-        const regex = new RegExp(`\\b${key}\\b`, 'i');
-        if (regex.test(lowMsg)) {
-          dest = item.label;
-          break;
-        }
-      }
-      if (dest) break;
+    let targetPlace = destContext || 'your destination';
+    const placeMatch = message.match(/(?:in|at|to|for|about|visiting)\s+([A-Za-z\s]+)/i);
+    if (placeMatch && placeMatch[1]) {
+      targetPlace = placeMatch[1].trim();
     }
 
-    if (!dest && tripContext?.destination && tripContext.destination !== 'your destination' && tripContext.destination !== 'Worldwide Travel') {
-      dest = tripContext.destination;
-    }
-
-    if (!dest) {
-      const match = message.match(/(?:to|in|visit|for|at)\s+([A-Za-z\s]+)/i);
-      dest = match && match[1] ? match[1].trim() : messageTrim || 'Worldwide Travel';
-    }
-
-    const destLower = dest.toLowerCase();
-
-    if (destLower.includes('california') || destLower.includes('usa') || destLower.includes('america')) {
+    // 1. Food & Culinary Query
+    if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('dish') || lowMsg.includes('restaurant') || lowMsg.includes('cuisine') || lowMsg.includes('lunch') || lowMsg.includes('dinner')) {
       return {
-        reply: `🌉 Master Travel Guide for California & USA:
-
-📍 Top Regions & Must-Visit Highlights:
-1. San Francisco: Golden Gate Bridge, Alcatraz Island, Fisherman's Wharf Pier 39 & Cable Cars.
-2. Los Angeles: Hollywood Walk of Fame, Beverly Hills Rodeo Drive, Santa Monica Pier & Universal Studios.
-3. Yosemite National Park: El Capitan granite monolith, Half Dome & Yosemite Falls.
-4. Highway 1 Pacific Coast Highway: Big Sur coastal cliffs & Napa Valley wine tasting.
-
-🗺️ Recommended 5-Day California Highlights Itinerary:
-• Day 1: San Francisco Arrival, Golden Gate Bridge Walk & Pier 39 Seafood Dinner
-• Day 2: Alcatraz Island Ferry Tour & Cable Car ride to Chinatown
-• Day 3: Yosemite National Park Valley Day Excursion & Waterfall Hike
-• Day 4: Highway 1 Drive to Los Angeles & Hollywood Walk of Fame Sunset
-• Day 5: Universal Studios Hollywood Theme Park & Santa Monica Beach Promenade`
+        reply: `🍽️ **Must-Try Local Food & Dining Advice for ${targetPlace}:**\n\n` +
+          `• **Signature Dishes:** Sample authentic regional specialties and local street food in famous culinary districts of ${targetPlace}.\n` +
+          `• **Top Dining Hubs:** Visit central food halls, night markets, and highly-rated local bistros.\n` +
+          `• **Dietary & Hygiene Tips:** Opt for popular stalls with high customer turnover for fresh, hot meals.\n` +
+          `• **Tipping & Payment:** Check local customary tipping rules (most places accept card/mobile payments).`
       };
     }
 
+    // 2. Transport & Getting Around
+    if (lowMsg.includes('transport') || lowMsg.includes('bus') || lowMsg.includes('train') || lowMsg.includes('metro') || lowMsg.includes('subway') || lowMsg.includes('taxi') || lowMsg.includes('cab') || lowMsg.includes('flight') || lowMsg.includes('airport')) {
+      return {
+        reply: `🚕 **Transport & Navigation Guide for ${targetPlace}:**\n\n` +
+          `• **Public Transit:** Metro subway systems and local buses offer fast, budget-friendly transit across the city.\n` +
+          `• **Rideshare Apps:** Use local rideshare apps or official licensed meter taxis for safe point-to-point rides.\n` +
+          `• **Transit Cards:** Consider purchasing a 1-day or multi-day tourist transit card for unlimited rides.\n` +
+          `• **Airport Transfers:** Express trains or shuttle buses connect major airports directly to the city center.`
+      };
+    }
+
+    // 3. Budget, Currency & Costs
+    if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money') || lowMsg.includes('currency') || lowMsg.includes('price') || lowMsg.includes('cheap') || lowMsg.includes('expensive')) {
+      return {
+        reply: `💰 **Budget & Money Tips for ${targetPlace}:**\n\n` +
+          `• **Daily Allocation:** Budget travelers: ~$40–$70/day; Mid-range travelers: ~$120–$200/day.\n` +
+          `• **Payment Methods:** Major credit/debit cards and digital wallets are widely accepted.\n` +
+          `• **Cash Handling:** Keep a small amount of local currency cash for street markets and small vendors.\n` +
+          `• **Money Saving Hack:** Book attraction passes online in advance and dine at local lunch spots.`
+      };
+    }
+
+    // 4. Weather, Climate & Best Time to Visit
+    if (lowMsg.includes('weather') || lowMsg.includes('rain') || lowMsg.includes('temperature') || lowMsg.includes('climate') || lowMsg.includes('season') || lowMsg.includes('when to visit')) {
+      return {
+        reply: `☀️ **Weather & Season Forecast for ${targetPlace}:**\n\n` +
+          `• **Current Climate:** Generally pleasant temperatures with sunny skies; pack comfortable breathable layers.\n` +
+          `• **Packing Essentials:** Bring lightweight cotton clothes, comfortable walking shoes, and a light jacket or umbrella.\n` +
+          `• **Peak Season:** Early morning and late afternoon are optimal for outdoor sightseeing.`
+      };
+    }
+
+    // 5. Safety, Emergency & Visas
+    if (lowMsg.includes('safe') || lowMsg.includes('safety') || lowMsg.includes('visa') || lowMsg.includes('passport') || lowMsg.includes('emergency') || lowMsg.includes('police') || lowMsg.includes('hospital')) {
+      return {
+        reply: `🛡️ **Safety & Practical Travel Advice for ${targetPlace}:**\n\n` +
+          `• **General Safety:** ${targetPlace} is generally welcoming and safe for tourists. Keep your belongings secure in busy areas.\n` +
+          `• **Emergency Contacts:** Save local emergency hotline numbers and your nation's embassy contact info offline.\n` +
+          `• **Document Backups:** Keep digital copies of your passport, visa, and travel insurance saved on your phone.`
+      };
+    }
+
+    // 6. Explicit Request for Itinerary / Trip Plan
+    if (lowMsg.includes('itinerary') || lowMsg.includes('plan') || lowMsg.includes('schedule') || lowMsg.includes('days') || lowMsg.includes('day 1')) {
+      return {
+        reply: `🗺️ **Custom Travel Itinerary for ${targetPlace}:**\n\n` +
+          `📍 **Day 1: Arrival & Historic City Center**\n` +
+          `• Morning: Check-in & walk through central heritage plazas.\n` +
+          `• Afternoon: Visit premier regional art & history museums.\n` +
+          `• Evening: Sunset sky deck view & authentic local dinner.\n\n` +
+          `📍 **Day 2: Cultural Landmarks & Culinary Tasting**\n` +
+          `• Morning: Guided tour of famous monuments & architectural spots.\n` +
+          `• Afternoon: Shop for handicrafts at local artisan markets.\n` +
+          `• Evening: Gourmet street food walk and rooftop drinks.`
+      };
+    }
+
+    // 7. Direct Response tailored to User Query Input
     return {
-      reply: `🗺️ Master Travel Guide & Itinerary for ${dest}:
-
-📍 Top Attractions & Must-Visit Highlights in ${dest}:
-1. Historic City Center & Cultural Quarter — Explore landmark architecture, museums, and vibrant plazas in ${dest}.
-2. Panoramic Viewpoint & Fort Headland — Perfect location for sunset views and photography.
-3. Central Bazaar & Artisan Markets — Vibrant atmosphere for local handicrafts, souvenirs, and regional cuisine.
-
-🗺️ Recommended Day-by-Day Itinerary Overview:
-• Day 1: Arrival, Check-in & Scenic Evening Promenade Walk
-• Day 2: Guided Cultural Heritage Tour & Must-Try Local Culinary Spots
-• Day 3: Excursion to Top Nature Viewpoint & Evening Leisure Shopping
-• Day 4: Farewell Gourmet Dinner at Top-Rated Rooftop Bistro`
+      reply: `💡 **Advice regarding "${message}":**\n\n` +
+        `Regarding your question about **"${message}"** for **${targetPlace}**:\n\n` +
+        `• **Direct Answer:** Always double check official local guides, verified reviews, or venue operating hours before visiting.\n` +
+        `• **Insider Travel Tip:** Morning hours (8:30 AM – 10:30 AM) offer shorter queues and better photo lighting.\n` +
+        `• **Have More Questions?** Feel free to ask about local food, public transit, weather, or safety tips for ${targetPlace}!`
     };
   }
 
