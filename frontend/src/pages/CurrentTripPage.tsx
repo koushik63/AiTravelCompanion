@@ -10,6 +10,8 @@ import { EmergencyWidget } from '../components/live/EmergencyWidget';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { WeatherInfo, FlightStatus, TrainStatus } from '../types';
 
+import { EmptyState } from '../components/ui/EmptyState';
+
 export const CurrentTripPage: React.FC = () => {
   const { activeTrip } = useTravelStore();
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
@@ -17,22 +19,28 @@ export const CurrentTripPage: React.FC = () => {
   const [train, setTrain] = useState<TrainStatus | null>(null);
 
   useEffect(() => {
-    const destination = activeTrip?.destination || 'Goa, India';
-    WeatherService.getCurrent(destination).then(setWeather).catch(() => {});
-    TransportService.getFlightStatus('6E 504').then(setFlight).catch(() => {});
-    TransportService.getTrainStatus('20901').then(setTrain).catch(() => {});
+    if (activeTrip?.destination) {
+      WeatherService.getCurrent(activeTrip.destination).then(setWeather).catch(() => {});
+    }
   }, [activeTrip]);
 
-  const defaultTrip = activeTrip || {
-    id: 'trip_1',
-    title: 'Goa Beachside Vacation',
-    destination: 'Goa, India',
-    startDate: new Date().toISOString(),
-    endDate: new Date(Date.now() + 604800000).toISOString(),
-    budget: 45000,
-    spent: 12500,
-    currency: 'INR'
-  };
+  if (!activeTrip) {
+    return (
+      <div className="space-y-6 pb-16">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-100 flex items-center gap-2">
+            <Compass className="w-6 h-6 text-sky-400" /> Live Mode Navigation
+          </h1>
+          <p className="text-xs text-slate-400">Real-time GPS tracking, active itinerary checkpoints, and live weather updates</p>
+        </div>
+
+        <EmptyState
+          title="No Active Trip Running"
+          description="You currently have no trip set as active. Plan a new trip or select an active trip from your Trips page to enable Live Mode navigation!"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-16">
@@ -43,15 +51,15 @@ export const CurrentTripPage: React.FC = () => {
             <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">
               Live Mode Active
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2">{defaultTrip.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2">{activeTrip.title}</h1>
             <p className="text-xs text-slate-300 flex items-center gap-1.5 mt-1">
-              <MapPin className="w-4 h-4 text-sky-400" /> {defaultTrip.destination}
+              <MapPin className="w-4 h-4 text-sky-400" /> {activeTrip.destination}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(defaultTrip.destination)}`, '_blank')}
+              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeTrip.destination)}`, '_blank')}
               className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5"
             >
               <Navigation className="w-4 h-4" /> Open Navigation
@@ -70,7 +78,7 @@ export const CurrentTripPage: React.FC = () => {
       {/* Map & Weather Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <InteractiveMap destination={defaultTrip.destination} />
+          <InteractiveMap destination={activeTrip.destination} />
         </div>
         <div>
           {weather ? (

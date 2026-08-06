@@ -17,11 +17,11 @@ export const MemoriesPage: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
 
   // New Memory State
-  const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=800');
-  const [caption, setCaption] = useState('Sunset Cocktail Session at Baga');
-  const [location, setLocation] = useState('Goa, India');
+  const [imageUrl, setImageUrl] = useState('');
+  const [caption, setCaption] = useState('');
+  const [location, setLocation] = useState('');
 
-  const tripId = activeTrip?.id || 'trip_1';
+  const tripId = activeTrip?.id || '';
 
   useEffect(() => {
     MemoryService.getMemories(tripId).then(setMemories).catch(() => {});

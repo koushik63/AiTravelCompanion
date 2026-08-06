@@ -2,37 +2,10 @@ import React, { useState } from 'react';
 import { Bell, CheckCheck } from 'lucide-react';
 import { NotificationCard } from '../components/notifications/NotificationCard';
 import { NotificationItem } from '../types';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export const NotificationsPage: React.FC = () => {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: 'n1',
-      userId: 'usr_demo_1',
-      title: 'Flight Boarding Alert',
-      message: 'IndiGo flight 6E 504 to Goa departs in 3 hours from Terminal 3, Gate 14B.',
-      type: 'BOARDING',
-      isRead: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'n2',
-      userId: 'usr_demo_1',
-      title: 'Weather Warning: Pleasant Coastal Skies',
-      message: 'Expect 29°C clear sunny weather in Goa today. Remember sunscreen!',
-      type: 'WEATHER',
-      isRead: false,
-      createdAt: new Date(Date.now() - 3600000).toISOString()
-    },
-    {
-      id: 'n3',
-      userId: 'usr_demo_1',
-      title: 'Budget Allocation Update',
-      message: 'You have logged ₹1,200 for Seafood Dinner. ₹32,500 remains in your budget.',
-      type: 'BUDGET',
-      isRead: true,
-      createdAt: new Date(Date.now() - 86400000).toISOString()
-    }
-  ]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const handleMarkRead = (id: string) => {
     setNotifications((prev) =>
@@ -59,11 +32,18 @@ export const NotificationsPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="space-y-3">
-        {notifications.map((n) => (
-          <NotificationCard key={n.id} notification={n} onMarkRead={handleMarkRead} />
-        ))}
-      </div>
+      {notifications.length === 0 ? (
+        <EmptyState
+          title="No Notifications"
+          description="You are all caught up! Trip alerts and flight updates will appear here when active."
+        />
+      ) : (
+        <div className="space-y-3">
+          {notifications.map((n) => (
+            <NotificationCard key={n.id} notification={n} onMarkRead={handleMarkRead} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -10,15 +10,15 @@ interface AIPromptFormProps {
 }
 
 export const AIPromptForm: React.FC<AIPromptFormProps> = ({ onSubmit, isLoading }) => {
-  const [destination, setDestination] = useState('Goa, India');
+  const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date(Date.now() + 345600000).toISOString().split('T')[0]);
   const [travelersCount, setTravelersCount] = useState(2);
-  const [budget, setBudget] = useState(40000);
+  const [budget, setBudget] = useState(50000);
   const [currency, setCurrency] = useState('INR');
   const [travelStyle, setTravelStyle] = useState<any>('Leisure');
-  const [foodPreferences, setFoodPreferences] = useState('Vegetarian & Seafood');
-  const [mustVisitPlaces, setMustVisitPlaces] = useState('Baga Beach, Fort Aguada');
+  const [foodPreferences, setFoodPreferences] = useState('');
+  const [mustVisitPlaces, setMustVisitPlaces] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

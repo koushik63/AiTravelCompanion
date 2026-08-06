@@ -60,10 +60,18 @@ export class AuthController {
       }
 
       // Try Supabase Auth sign-in first (logs the event in Supabase dashboard)
-      await SupabaseAuthService.signIn(email, password);
+      const supabaseRes = await SupabaseAuthService.signIn(email, password);
 
       // Validate against our local user store
       let user = await DatabaseService.findUserByEmail(email);
+
+      // If user exists in Supabase Auth but not in local memory, auto-sync user record
+      if (!user && supabaseRes?.user) {
+        const passwordHash = await bcrypt.hash(password, 10);
+        const name = supabaseRes.user.user_metadata?.name || email.split('@')[0];
+        user = await DatabaseService.createUser({ email, passwordHash, name, provider: 'email' });
+      }
+
       if (!user) {
         return res.status(401).json({ error: 'No account found with this email. Please register first.' });
       }

@@ -1,8 +1,11 @@
 import React from 'react';
 import { Navigation } from 'lucide-react';
 import { InteractiveMap } from '../components/live/InteractiveMap';
+import { useTravelStore } from '../store/useTravelStore';
 
 export const NavigationPage: React.FC = () => {
+  const { activeTrip } = useTravelStore();
+
   return (
     <div className="space-y-6 pb-12">
       <div>
@@ -12,7 +15,7 @@ export const NavigationPage: React.FC = () => {
         <p className="text-xs text-slate-400">Turn-by-turn route step directions and live map visualizer</p>
       </div>
 
-      <InteractiveMap destination="Goa Beach Resort" height="h-96" />
+      <InteractiveMap destination={activeTrip?.destination || 'Destination'} height="h-96" />
     </div>
   );
 };
