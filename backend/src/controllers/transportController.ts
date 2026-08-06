@@ -15,6 +15,18 @@ export class TransportController {
     }
   }
 
+  static async searchFlights(req: Request, res: Response) {
+    try {
+      const origin = (req.query.origin as string) || 'DEL';
+      const destination = (req.query.destination as string) || 'BOM';
+      const outboundDate = (req.query.outboundDate as string) || '';
+      const flights = await FlightService.searchFlightsSerpApi(origin, destination, outboundDate);
+      return res.json(flights);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   static async getTrainStatus(req: Request, res: Response) {
     try {
       const trainNumber = (req.query.trainNumber as string) || '';

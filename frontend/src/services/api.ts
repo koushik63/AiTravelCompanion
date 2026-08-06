@@ -184,6 +184,10 @@ export const TransportService = {
     const res = await api.get('/transport/flight-status', { params: { flightNumber, destination } });
     return res.data;
   },
+  searchFlights: async (origin: string, destination: string, outboundDate?: string) => {
+    const res = await api.get('/transport/flights/search', { params: { origin, destination, outboundDate } });
+    return res.data;
+  },
   getTrainStatus: async (trainNumber: string, destination?: string) => {
     const res = await api.get('/transport/train-status', { params: { trainNumber, destination } });
     return res.data;

@@ -4,6 +4,7 @@ import { TransportController } from '../controllers/transportController';
 const router = Router();
 
 router.get('/flight-status', TransportController.getFlightStatus);
+router.get('/flights/search', TransportController.searchFlights);
 router.get('/train-status', TransportController.getTrainStatus);
 router.get('/tickets', TransportController.getTickets);
 
