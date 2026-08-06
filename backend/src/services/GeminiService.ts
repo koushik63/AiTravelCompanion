@@ -135,110 +135,191 @@ INSTRUCTIONS:
     }
 
     // Advanced Fallback Intelligence Engine
+    const messageTrim = message.trim();
     const fullText = `${history || ''} ${message}`.toLowerCase();
-    let dest = tripContext?.destination;
 
-    // Detect destination from prompt or history
-    const knownDestinations = ['bali', 'goa', 'jaipur', 'kerala', 'paris', 'tokyo', 'dubai', 'thailand', 'singapore', 'new york', 'rome', 'london'];
-    for (const kd of knownDestinations) {
-      if (fullText.includes(kd)) {
-        dest = kd.charAt(0).toUpperCase() + kd.slice(1);
+    // 1. Detect destination from user message or context
+    let dest = '';
+
+    const knownDestinationsMap: Record<string, string> = {
+      usa: 'United States (USA)',
+      'united states': 'United States (USA)',
+      america: 'United States (USA)',
+      us: 'United States (USA)',
+      mumbai: 'Mumbai',
+      goa: 'Goa',
+      delhi: 'New Delhi',
+      newdelhi: 'New Delhi',
+      kerala: 'Kerala',
+      jaipur: 'Jaipur',
+      ladakh: 'Ladakh',
+      kashmir: 'Kashmir',
+      bali: 'Bali',
+      paris: 'Paris',
+      london: 'London',
+      tokyo: 'Tokyo',
+      japan: 'Japan',
+      dubai: 'Dubai',
+      singapore: 'Singapore',
+      maldives: 'Maldives',
+      rome: 'Rome',
+      italy: 'Italy',
+      switzerland: 'Switzerland',
+      australia: 'Australia',
+      bangkok: 'Bangkok',
+      thailand: 'Thailand'
+    };
+
+    for (const [key, label] of Object.entries(knownDestinationsMap)) {
+      if (fullText.includes(key)) {
+        dest = label;
         break;
       }
     }
 
-    if (!dest || dest === 'your destination') {
+    if (!dest && tripContext?.destination && tripContext.destination !== 'your destination' && tripContext.destination !== 'Worldwide Travel') {
+      dest = tripContext.destination;
+    }
+
+    if (!dest) {
       const match = message.match(/(?:to|in|visit|for|at)\s+([A-Za-z\s]+)/i);
-      dest = match && match[1] ? match[1].trim() : 'Bali';
+      dest = match && match[1] ? match[1].trim() : messageTrim || 'Worldwide Travel';
     }
 
     const lowMsg = message.toLowerCase();
+    const destLower = dest.toLowerCase();
 
-    // Destination Specific Master Knowledge Bases
-    if (dest.toLowerCase().includes('bali')) {
+    // Destination Knowledge Base 1: USA (United States)
+    if (destLower.includes('usa') || destLower.includes('united states') || destLower.includes('america')) {
       if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money')) {
         return {
-          reply: `💰 Detailed Budget & Expense Breakdown for Bali, Indonesia:
+          reply: `💰 Budget & Cost Breakdown for United States (USA):
 
-• Backpacker / Budget: $30 - $45 / day (~₹2,500 - ₹3,700)
-  - Stay: Hostels or guesthouses in Canggu / Kuta ($10 - $18/night)
-  - Meals: Local Warungs (Nasi Goreng, Mie Goreng for $2 - $4 per meal)
-  - Transit: Scooter rental ($5 - $7/day)
+• Budget Traveler: $70 - $110 / day (~₹5,800 - ₹9,100)
+  - Stay: Shared hostels, motels, or budget Airbnb ($35 - $65/night)
+  - Food: Fast-casual eateries, food trucks, or self-gourmet groceries ($15 - $25/day)
+  - Transit: Public subways, buses, or Amtrak Regional ($10 - $20/day)
 
-• Mid-Range Traveler: $85 - $150 / day (~₹7,000 - ₹12,500)
-  - Stay: Boutique Private Pool Villa in Ubud / Seminyak ($50 - $90/night)
-  - Meals: Beach clubs & trendy cafes ($10 - $20 per meal)
-  - Transit: Gojek / Grab rides or Private Driver ($35 - $45/day)
+• Mid-Range Traveler: $180 - $350 / day (~₹15,000 - ₹29,000)
+  - Stay: 3-Star/4-Star Hotels (Marriott, Hilton, Hyatt) ($120 - $220/night)
+  - Food: Sit-down dining & craft breweries ($40 - $80/day)
+  - Transit: Domestic flights (Delta, United) or rental car ($40 - $70/day)
 
-• Luxury Traveler: $300+ / day (~₹25,000+)
-  - Stay: 5-Star Luxury Resorts in Nusa Dua or Cliffside Uluwatu ($200 - $600/night)
-  - Dining: Fine dining & VIP Beach Club Lounges ($50+ per meal)
+• Luxury Traveler: $600+ / day (~₹50,000+)
+  - Stay: 5-Star Luxury Resorts in Manhattan, Las Vegas, or Miami ($400 - $1,200/night)
 
-💡 Pro-Tip: Carry IDR cash for local markets and use Gojek/Grab for fair-priced transport!`
-        };
-      }
-
-      if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('restaurant')) {
-        return {
-          reply: `🍽️ Must-Try Authentic Bali Dishes & Top Recommended Dining Spots:
-
-1. Signature Local Dishes:
-  • Babi Guling (Balinese Roasted Pork with crispy skin & spicy sambal)
-  • Nasi Campur Bali (Mixed rice with satay, fried tofu, and sambal matah)
-  • Sate Lilit (Minced seafood or chicken satay wrapped around lemongrass sticks)
-  • Lawar (Finely chopped vegetables, coconut & spiced meat)
-
-2. Must-Visit Dining Locations:
-  • Warung Babi Guling Ibu Oka (Ubud) — Iconic traditional spot
-  • Bebek Tepi Sawah (Ubud) — Crispy duck served overlooking rice paddies
-  • Motel Mexicola (Seminyak) — Vibrant Mexican dining & party atmosphere
-  • La Plancha (Seminyak Beach) — Sunset drinks on colourful beanbags`
+💡 Pro-Tip: Tipping 15%-20% at sit-down US restaurants is standard etiquette.`
         };
       }
 
       return {
-        reply: `🌴 Complete Master Travel Guide for Bali, Indonesia:
+        reply: `🗽 Master Travel Guide for United States (USA):
 
 📍 Top Regions & Highlights:
-1. Ubud (Cultural & Spiritual Heart): Tegallalang Rice Terraces, Sacred Monkey Forest Sanctuary, Tirta Empul Holy Water Temple.
-2. Uluwatu (Cliffside Coastal): Uluwatu Temple Sunset Kecak Fire Dance, Single Fin Beach Club, Padang Padang Beach.
-3. Canggu & Seminyak (Lifestyle & Surfing): Finns Beach Club, Echo Beach surfing, organic brunch cafes.
-4. Nusa Penida Island (Day Trip): Kelingking T-Rex Beach, Broken Beach & Angel's Billabong.
+1. New York City (East Coast): Statue of Liberty, Times Square, Broadway shows, Central Park & Brooklyn Bridge.
+2. West Coast (California): San Francisco Golden Gate, Los Angeles Hollywood, Santa Monica Pier & Highway 1.
+3. Las Vegas & Grand Canyon (Southwest): Neon Strip nightlife & World Wonder Grand Canyon Helicopter tours.
+4. National Parks: Yellowstone Geysers, Yosemite Valley Cliffs, and Zion Canyon.
 
-🗺️ Recommended 5-Day Itinerary Overview:
-• Day 1: Arrival, Seminyak Beach Sunset & Mexican Dinner
-• Day 2: Ubud Rice Terraces, Sacred Monkey Forest & Campuhan Ridge Walk
-• Day 3: Tirta Empul Temple Water Purification & Mount Batur Viewpoint
-• Day 4: Day Trip Speedboat to Nusa Penida Island (Kelingking Beach)
-• Day 5: Uluwatu Cliffside Sunset Kecak Fire Dance & Seafood Dinner in Jimbaran Bay
+🗺️ Recommended 7-Day USA Highlights Itinerary:
+• Day 1: New York Arrival & Manhattan Skyline Dinner Cruise
+• Day 2: Statue of Liberty, Wall Street & Central Park Bike Tour
+• Day 3: Flight to Las Vegas & Evening Strip Lights Tour
+• Day 4: Grand Canyon West Rim Skywalk Day Excursion
+• Day 5: Flight to Los Angeles & Hollywood Walk of Fame
+• Day 6: Universal Studios Hollywood & Santa Monica Sunset Beach
+• Day 7: Beverly Hills Shopping & Departure
 
 💡 Essential Travel Advice:
-• Visa: VoA (Visa on Arrival) for 30 days is $35 / IDR 500,000.
-• Best Season: April to October (Dry Season with sunshine & low humidity).`
+• Visa: ESTA (for Visa Waiver countries) or B1/B2 Tourist Visa.
+• Best Season: April to May (Spring) and September to November (Autumn).`
       };
     }
 
-    // Default Rich Detailed Generator for Any Destination
+    // Destination Knowledge Base 2: Mumbai, India
+    if (destLower.includes('mumbai')) {
+      return {
+        reply: `🏙️ Master Travel Guide for Mumbai, Maharashtra:
+
+📍 Top Attractions & Highlights:
+1. Gateway of India & Taj Mahal Palace Hotel (Colaba Waterfront)
+2. Marine Drive Queen’s Necklace Promenade (Sunset walk)
+3. Chhatrapati Shivaji Maharaj Terminus (UNESCO Heritage Railway Architecture)
+4. Bandra Bandstand & Bandra-Worli Sea Link Viewpoint
+
+🗺️ Recommended 3-Day Itinerary:
+• Day 1: Heritage Colaba Walk, Gateway of India & High Tea at Taj
+• Day 2: Elephanta Caves Speedboat Excursion & Marine Drive Sunset
+• Day 3: Bandra Heritage Churches, Street Shopping at Hill Road & Bastian Dinner
+
+💡 Essential Travel Advice:
+• Best Season: November to February (Cool pleasant coastal breeze).`
+      };
+    }
+
+    // Destination Knowledge Base 3: Goa, India
+    if (destLower.includes('goa')) {
+      return {
+        reply: `🏖️ Master Travel Guide for Goa, India:
+
+📍 Top Regions & Highlights:
+1. North Goa: Baga Beach, Calangute, Vagator Sunset, Fort Aguada, Chapora Fort.
+2. South Goa: Palolem Beach, Agonda, Colva Beach, Cape Goa Cliff Viewpoint.
+3. Heritage Panaji: Fontainhas Latin Quarter colorful streets & Mandovi River Cruise.
+
+🗺️ Recommended 4-Day Itinerary:
+• Day 1: Arrival, Baga Beachside Dinner & Nightlife
+• Day 2: Fort Aguada, Panaji Fontainhas Walk & Mandovi Sunset Cruise
+• Day 3: South Goa Coastal Drive, Palolem Kayaking & Beach Huts
+• Day 4: Dudhsagar Waterfalls Jeep Safari & Spice Plantation Lunch
+
+💡 Essential Travel Advice:
+• Transit: Rent a 2-wheeler scooter ($5/day) or hire self-drive cars for hassle-free beach hopping.`
+      };
+    }
+
+    // Destination Knowledge Base 4: Bali, Indonesia
+    if (destLower.includes('bali')) {
+      return {
+        reply: `🌴 Master Travel Guide for Bali, Indonesia:
+
+📍 Top Regions & Highlights:
+1. Ubud: Tegallalang Rice Terraces, Sacred Monkey Forest, Tirta Empul Temple.
+2. Uluwatu: Cliffside Temple Sunset Kecak Dance, Single Fin Beach Club.
+3. Nusa Penida: Kelingking T-Rex Beach & Angel's Billabong.
+
+🗺️ Recommended 5-Day Itinerary:
+• Day 1: Seminyak Sunset & Mexican Dinner
+• Day 2: Ubud Rice Terraces & Sacred Monkey Forest
+• Day 3: Tirta Empul Temple & Mount Batur View
+• Day 4: Nusa Penida Island Speedboat Day Trip
+• Day 5: Uluwatu Cliffside Sunset & Jimbaran Seafood Dinner`
+      };
+    }
+
+    // Dynamic Generic Master Guide for ANY Destination (e.g., Kerala, Jaipur, Paris, Tokyo, London, etc.)
     return {
-      reply: `🗺️ Master Travel Plan & Guide for ${dest}:
+      reply: `🗺️ Master Travel Guide & Itinerary for ${dest}:
 
-📍 Top Landmarks & Attractions:
-1. Historic City Center & Heritage Quarter — Explore centuries-old architecture, local museums, and scenic plazas.
-2. Iconic Panoramic Viewpoint & Fort — Perfect location for sunset views and panoramic landscape photography.
-3. Local Cultural Bazaar & Artisan Markets — Vibrant atmosphere for local handicrafts, souvenirs, and street food.
+📍 Top Attractions & Must-Visit Highlights in ${dest}:
+1. Historic City Center & Cultural Quarter — Explore centuries-old architecture, local museums, and landmark plazas in ${dest}.
+2. Panoramic Viewpoint & Fort Headland — Perfect spot for sunset photography and sweeping skyline views.
+3. Central Bazaar & Artisan Markets — Vibrant atmosphere for regional handicrafts, souvenirs, and local delicacies.
 
-💰 Estimated Cost & Budget Allocation:
-• Budget: $40 - $60 / day (~₹3,300 - ₹5,000) for guesthouses, public transit & local eateries.
-• Mid-Range: $100 - $180 / day (~₹8,200 - ₹15,000) for 4-star boutique hotels, private cabs & casual dining.
-• Luxury: $300+ / day (~₹25,000+) for luxury resorts, private tours & fine dining.
+🗺️ Recommended Day-by-Day Itinerary Overview:
+• Day 1: Arrival, Hotel Check-in & Scenic Evening Promenade Walk
+• Day 2: Guided Cultural Heritage Tour & Must-Try Local Culinary Spots
+• Day 3: Excursion to Top Nature Viewpoint & Evening Leisure Shopping
+• Day 4: Farewell Gourmet Dinner at Top-Rated Rooftop Bistro
 
-🍽️ Authentic Local Culinary Highlights:
-• Sample regional signature dishes at traditional family-owned bistros.
-• Visit evening street food markets for authentic local snacks and desserts.
+💰 Estimated Travel Budget:
+• Budget: $40 - $70 / day (~₹3,300 - ₹5,800) for guesthouses & local transit.
+• Mid-Range: $120 - $220 / day (~₹10,000 - ₹18,000) for 4-star boutique hotels & private rides.
+• Luxury: $350+ / day (~₹29,000+) for 5-star luxury resorts & fine dining.
 
 💡 Essential Travel Tips for ${dest}:
-• Transport: Use digital rideshare apps or daily transit passes for maximum savings.
-• Planning: Visit major attractions early morning (before 10:00 AM) to beat tour crowds.`
+• Transport: Book local transit passes or rideshare apps for seamless navigation.
+• Timing: Visit top attractions early morning (before 9:30 AM) to enjoy pleasant crowds.`
     };
   }
 
