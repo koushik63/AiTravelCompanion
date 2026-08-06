@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, MapPin, ExternalLink, Wifi, Sparkles, Navigation, ShieldCheck } from 'lucide-react';
+import { Star, MapPin, ExternalLink, Navigation } from 'lucide-react';
 
 export interface HotelData {
   id: string;
@@ -99,14 +99,16 @@ export const HotelCard: React.FC<{ hotel: HotelData }> = ({ hotel }) => {
           target="_blank"
           rel="noopener noreferrer"
           className="glass-button-secondary text-xs py-2 px-3 flex-1 text-center flex items-center justify-center gap-1 cursor-pointer"
+          title="Open location on Google Maps"
         >
-          <MapPin className="w-3.5 h-3.5 text-sky-400" /> Maps View
+          <MapPin className="w-3.5 h-3.5 text-sky-400" /> Google Maps
         </a>
         <a
           href={hotel.bookingUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="glass-button text-xs py-2 px-4 flex-1 text-center flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/10 cursor-pointer font-bold"
+          className="glass-button text-xs py-2 px-3 flex-1 text-center flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/20 cursor-pointer font-extrabold bg-sky-500 hover:bg-sky-400 text-white"
+          title="Book room on direct booking engine"
         >
           Book Hotel <ExternalLink className="w-3.5 h-3.5" />
         </a>
