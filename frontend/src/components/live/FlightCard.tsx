@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Plane, CheckCircle2, AlertCircle } from 'lucide-react';
 import { FlightStatus } from '../../types';
 
 export const FlightCard: React.FC<{ flight: FlightStatus }> = ({ flight }) => {
@@ -28,7 +28,7 @@ export const FlightCard: React.FC<{ flight: FlightStatus }> = ({ flight }) => {
           </div>
           <div>
             <h4 className="font-bold text-slate-100 text-sm">{flight.airline} ({flight.flightNumber})</h4>
-            <span className="text-xs text-slate-400">Live Status Tracker</span>
+            <span className="text-xs text-slate-400">SerpApi & Gemini Live Tracker</span>
           </div>
         </div>
 
@@ -49,21 +49,6 @@ export const FlightCard: React.FC<{ flight: FlightStatus }> = ({ flight }) => {
         <div className="text-right">
           <span className="text-[10px] text-slate-500 uppercase font-bold block">Destination</span>
           <span className="font-bold text-slate-200">{flight.destination}</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800 text-center text-xs">
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Terminal</span>
-          <span className="font-bold text-slate-100">{flight.terminal}</span>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Gate</span>
-          <span className="font-bold text-sky-400">{flight.gate}</span>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Delay</span>
-          <span className="font-bold text-emerald-400">{flight.delayMinutes} mins</span>
         </div>
       </div>
     </div>

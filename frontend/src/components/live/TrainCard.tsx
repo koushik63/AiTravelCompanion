@@ -28,7 +28,7 @@ export const TrainCard: React.FC<{ train: TrainStatus }> = ({ train }) => {
           </div>
           <div>
             <h4 className="font-bold text-slate-100 text-sm">{train.trainName} ({train.trainNumber})</h4>
-            <span className="text-xs text-slate-400">IRCTC / Vande Bharat Status</span>
+            <span className="text-xs text-slate-400">IRCTC / Vande Bharat Live Tracker</span>
           </div>
         </div>
 
@@ -45,21 +45,6 @@ export const TrainCard: React.FC<{ train: TrainStatus }> = ({ train }) => {
         <div>
           <span className="text-[10px] text-slate-500 uppercase font-bold block text-right">To</span>
           <span className="font-bold text-slate-200">{train.destination}</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800 text-center text-xs">
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Platform</span>
-          <span className="font-bold text-amber-400">{train.platform}</span>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Coach</span>
-          <span className="font-bold text-slate-100">{train.coach}</span>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block font-bold uppercase">Seat</span>
-          <span className="font-bold text-sky-400">{train.seat}</span>
         </div>
       </div>
     </div>

@@ -288,7 +288,7 @@ export const TransportPage: React.FC = () => {
                   </div>
 
                   <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-400">{f.terminal || 'T2'} • {f.gate || 'Gate 14'}</span>
+                    <span className="text-[10px] text-slate-400">Direct Flight</span>
                     <div className="flex items-center gap-2">
                       {f.bookingUrl && (
                         <a
@@ -359,7 +359,7 @@ export const TransportPage: React.FC = () => {
                   </div>
 
                   <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-400">{t.platform} • {t.coach}</span>
+                    <span className="text-[10px] text-slate-400">Express Rail</span>
                     <button
                       type="button"
                       onClick={() => trackSpecificTrainOption(t)}
