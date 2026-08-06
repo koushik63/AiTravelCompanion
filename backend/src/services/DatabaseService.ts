@@ -13,6 +13,8 @@ import {
 
 // Destination keyword → Unsplash photo ID for destination-specific trip cover images
 const DESTINATION_IMAGE_MAP: Record<string, string> = {
+  hyderabad: 'photo-1605379399642-870262d3d051',
+  secunderabad: 'photo-1605379399642-870262d3d051',
   goa: 'photo-1512343879784-a960bf40e7f2',
   ladakh: 'photo-1506905925346-21bda4d32df4',
   ladhak: 'photo-1506905925346-21bda4d32df4',
@@ -44,9 +46,7 @@ const DESTINATION_IMAGE_MAP: Record<string, string> = {
   istanbul: 'photo-1524231757912-21f4fe3a7200',
   greece: 'photo-1555993539-1732b0258235',
   iceland: 'photo-1529963183134-61a90db47eaf',
-  hawaii: 'photo-1542259009477-d625272157b7',
-  beach: 'photo-1507525428034-b723cf961d3e',
-  mountain: 'photo-1464822759023-fed622ff2c3b',
+  hawaii: 'photo-1542259009477-d625272157b7'
 };
 
 const FALLBACK_IMAGES = [
