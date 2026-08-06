@@ -14,8 +14,8 @@ export const FAQSection: React.FC = () => {
       a: 'Yes! WanderAI has built-in support for Indian destinations (Goa, Jaipur, Kerala, Delhi, Mumbai, etc.), INR (₹) currency budgeting, and Vande Bharat / IRCTC train tracking.'
     },
     {
-      q: 'How does Demo Mode work?',
-      a: 'If external API keys or database connections are unconfigured, Demo Mode automatically engages mock fallback generators so every page and feature works 100% smoothly.'
+      q: 'How does the AI Assistant work?',
+      a: 'The AI assistant integrates Gemini AI to generate custom itineraries, pack lists, budget breakdowns, and real-time travel recommendations.'
     },
     {
       q: 'Can I track flight and train status live?',

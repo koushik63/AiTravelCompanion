@@ -47,7 +47,7 @@ export const HeroSection: React.FC = () => {
           Get Started Free <ArrowRight className="w-5 h-5" />
         </Link>
         <Link to="/dashboard" className="glass-button-secondary text-base px-8 py-3.5 flex items-center gap-2">
-          View Demo Dashboard
+          Go to Dashboard
         </Link>
       </motion.div>
     </section>

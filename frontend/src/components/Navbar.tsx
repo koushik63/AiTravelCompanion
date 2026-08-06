@@ -36,9 +36,6 @@ export const Navbar: React.FC = () => {
               <span className="text-xl font-bold bg-gradient-to-r from-white via-sky-200 to-sky-400 bg-clip-text text-transparent">
                 WanderAI
               </span>
-              <span className="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                Demo Active
-              </span>
             </div>
           </Link>
         </div>
