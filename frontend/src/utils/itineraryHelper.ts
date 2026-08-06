@@ -64,18 +64,114 @@ const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
       evening: 'Seafood grill dinner at Rushikonda Beach Resort.',
       baseCostINR: 3800,
       highlight: 'Kailasagiri Ropeway & Rushikonda Beach'
+    },
+    {
+      summary: 'Borra Caves & Araku Coffee Plantations Excursion',
+      morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels.',
+      afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls.',
+      evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee.',
+      baseCostINR: 4500,
+      highlight: 'Borra Caves & Araku Valley Coffee'
     }
   ],
 
-  // 2. Pune
-  pune: [
+  // 2. Tirupati
+  tirupati: [
     {
-      summary: 'Shaniwar Wada Fort, Lal Mahal & Dagdusheth Ganpati Temple',
-      morning: 'Explore historic 1730 AD Shaniwar Wada Peshwa Palace ramparts & Lal Mahal.',
-      afternoon: 'Visit revered Shreemant Dagdusheth Halwai Ganpati Temple & Tulshibaug market.',
-      evening: 'Authentic Puneri Misal Pav & Mastani Mango drink tasting at Sujata Mastani.',
+      summary: 'Tirumala Venkateswara Swamy Temple & Srivari Padalu',
+      morning: 'Darshan at sacred Lord Venkateswara Swamy Temple in Tirumala hills.',
+      afternoon: 'Visit Srivari Padalu, Silathoranam natural rock arch & Chakra Tirtham.',
+      evening: 'Traditional South Indian Prasadam thali & evening temple illuminations.',
+      baseCostINR: 2800,
+      highlight: 'Tirumala Temple & Silathoranam Arch'
+    },
+    {
+      summary: 'Sri Kalahasti Temple & Chandragiri Fort Excursion',
+      morning: 'Visit ancient Vayu Lingam Sri Kalahasteeswara Temple in Sri Kalahasti.',
+      afternoon: 'Tour 11th-century Vijayanagara Raja Mahal & Rani Mahal at Chandragiri Fort.',
+      evening: 'Sunset view from Kapila Theertham waterfall temple in Tirupati town.',
       baseCostINR: 3200,
-      highlight: 'Shaniwar Wada Fort & Dagdusheth Temple'
+      highlight: 'Sri Kalahasti & Chandragiri Fort'
+    }
+  ],
+
+  // 3. Vijayawada / Amaravati
+  vijayawada: [
+    {
+      summary: 'Kanakadurga Temple, Prakasam Barrage & Bhavani Island',
+      morning: 'Visit sacred Kanakadurga Temple atop Indrakeeladri Hill overlooking Krishna River.',
+      afternoon: 'Walk scenic Prakasam Barrage & boat ride to Bhavani Island resort.',
+      evening: 'Water sports & riverside dinner at Bhavani Island.',
+      baseCostINR: 3000,
+      highlight: 'Kanakadurga Temple & Bhavani Island'
+    },
+    {
+      summary: 'Undavalli Caves & Amaravati Stupa Heritage',
+      morning: 'Explore 7th-century monolithic rock-cut Undavalli Caves & 5-story Anantasayana Vishnu statue.',
+      afternoon: 'Excursion to ancient Buddhist Maha Stupa & Dhyana Buddha Statue in Amaravati.',
+      evening: 'Traditional Andhra thali dinner featuring Gongura Pachadi.',
+      baseCostINR: 3400,
+      highlight: 'Undavalli Caves & Amaravati Stupa'
+    }
+  ],
+
+  // 4. Coorg / Madikeri
+  coorg: [
+    {
+      summary: 'Abbey Falls, Raja’s Seat & Madikeri Fort',
+      morning: 'Walk through spice plantations to majestic Abbey Falls waterfalls.',
+      afternoon: 'Explore Madikeri Fort palace, museum & Omkareshwara Temple.',
+      evening: 'Sunset panorama view over misty Western Ghats valleys at Raja’s Seat.',
+      baseCostINR: 3600,
+      highlight: 'Abbey Falls & Raja’s Seat Sunset'
+    },
+    {
+      summary: 'Bhadra / Dubare Elephant Camp & Namdroling Monastery',
+      morning: 'Elephant bathing & feeding experience at Dubare Elephant Camp on Cauvery River.',
+      afternoon: 'Visit Golden Temple Namdroling Tibetan Monastery in Bylakuppe.',
+      evening: 'Campfire dinner tasting authentic Pandi Curry & Akki Roti in Coorg.',
+      baseCostINR: 4200,
+      highlight: 'Dubare Elephant Camp & Tibetan Golden Temple'
+    }
+  ],
+
+  // 5. Wayanad
+  wayanad: [
+    {
+      summary: 'Edakkal Caves Prehistoric Petroglyphs & Banasura Sagar Dam',
+      morning: 'Trek to 7,000-year-old Neolithic Stone Age petroglyphs inside Edakkal Caves.',
+      afternoon: 'Speedboating & ziplining at Banasura Sagar Dam (largest earth dam in India).',
+      evening: 'Sunset walk at Pookode Lake & spice shopping.',
+      baseCostINR: 3800,
+      highlight: 'Edakkal Caves & Banasura Sagar Dam'
+    },
+    {
+      summary: 'Chembra Peak Heart Lake & Meenmutty Waterfalls',
+      morning: 'Trek to famous natural Heart-Shaped Lake at Chembra Peak.',
+      afternoon: 'Guided walk through tea gardens to 300m 3-tiered Meenmutty Waterfalls.',
+      evening: 'Resort bonfire & authentic Kerala Malabar Biryani dinner.',
+      baseCostINR: 4200,
+      highlight: 'Chembra Peak Heart Lake & Meenmutty Falls'
+    }
+  ],
+
+  // 6. Ooty / Kodaikanal
+  ooty: [
+    {
+      summary: 'Ooty Nilgiri Mountain Toy Train & Botanical Gardens',
+      morning: 'Ride UNESCO Nilgiri Mountain Railway Steam Toy Train from Coonoor to Ooty.',
+      afternoon: 'Stroll 55-acre Government Botanical Garden & Rose Garden.',
+      evening: 'Boating at Ooty Lake & Homemade Chocolate tasting on Commercial Road.',
+      baseCostINR: 3800,
+      highlight: 'UNESCO Toy Train & Botanical Garden'
+    },
+    {
+      summary: 'Doddabetta Peak (8,652 ft) & Pykara Lake Waterfalls',
+      morning: 'Panoramic sunrise views over Nilgiri hills from Doddabetta Peak telescope house.',
+      afternoon: 'Speedboating on Pykara Lake & walk Pykara Waterfalls pine forests.',
+      evening: 'Cozy dinner at Earl’s Secret heritage restaurant in Ooty.',
+      baseCostINR: 4000,
+      highlight: 'Doddabetta Peak & Pykara Waterfalls'
     }
   ]
 };
@@ -94,11 +190,15 @@ export function getDetailedDestinationItinerary(
   let key = '';
   if (dest.includes('araku')) key = 'araku';
   else if (dest.includes('vizag') || dest.includes('visakhapatnam')) key = 'vizag';
+  else if (dest.includes('tirupati')) key = 'tirupati';
+  else if (dest.includes('vijayawada') || dest.includes('amaravati')) key = 'vijayawada';
+  else if (dest.includes('coorg') || dest.includes('madikeri')) key = 'coorg';
+  else if (dest.includes('wayanad')) key = 'wayanad';
+  else if (dest.includes('ooty') || dest.includes('kodaikanal')) key = 'ooty';
   else if (dest.includes('pune')) key = 'pune';
   else if (dest.includes('assam')) key = 'assam';
   else if (dest.includes('kerala')) key = 'kerala';
-  else if (dest.includes('hyderabad') || dest.includes('secunderabad')) key = 'hyderabad';
-  else if (dest.includes('goa')) key = 'goa';
+  else if (dest.includes('hyderabad')) key = 'hyderabad';
 
   let templates = key ? DESTINATION_TEMPLATES[key] : null;
 
@@ -171,28 +271,28 @@ export function getDetailedDestinationItinerary(
     } else {
       templates = [
         {
-          summary: `Historic City Heritage District & Local Monument Tour in ${capitalizedName}`,
-          morning: `Morning guided walk through central historical quarter & iconic landmarks in ${capitalizedName}.`,
-          afternoon: `Visit top-rated national cultural museum & local craft markets in ${capitalizedName}.`,
-          evening: `Sunset terrace dining overlooking ${capitalizedName} skyline & authentic regional specialties.`,
+          summary: `${capitalizedName} Heritage Circuit & Landmark Exploration`,
+          morning: `Morning guided walk through ${capitalizedName}'s historic architectural monuments & central heritage square.`,
+          afternoon: `Visit ${capitalizedName}'s renowned local heritage gallery, artisan craft bazaars & cultural exhibits.`,
+          evening: `Sunset viewpoint walk followed by authentic regional dinner specialties in ${capitalizedName}.`,
           baseCostINR: Math.round(baseDailyCostINR * 1.0),
-          highlight: `Heritage District & City Skyline in ${capitalizedName}`
+          highlight: `Heritage Circuit & City Views in ${capitalizedName}`
         },
         {
-          summary: `Scenic Nature Excursion & Cultural Craft Bazaars in ${capitalizedName}`,
-          morning: `Scenic morning excursion to nearby mountain lookout or nature park surrounding ${capitalizedName}.`,
-          afternoon: `Explore artisan handicraft bazaars & sample authentic street food delicacies in ${capitalizedName}.`,
-          evening: `Waterfront promenade walk & traditional performing arts show in ${capitalizedName}.`,
+          summary: `${capitalizedName} Nature Trails & Panoramic Excursion`,
+          morning: `Scenic morning excursion to nearby hillside lookout, nature reserve & botanical paths surrounding ${capitalizedName}.`,
+          afternoon: `Sample signature local regional delicacies & street food specialties at top-rated ${capitalizedName} bistros.`,
+          evening: `Waterfront promenade stroll & evening cultural music session in ${capitalizedName}.`,
           baseCostINR: Math.round(baseDailyCostINR * 0.9),
-          highlight: `Nature Excursion & Cultural Bazaars in ${capitalizedName}`
+          highlight: `Nature Trails & Gourmet Tasting in ${capitalizedName}`
         },
         {
-          summary: `Artisan Markets & Culinary Tasting Walk in ${capitalizedName}`,
-          morning: `Visit historic cathedral, fort or central cultural gallery in ${capitalizedName}.`,
-          afternoon: `Guided food tasting walk trying top regional delicacies at popular local bistros.`,
-          evening: `Sunset lounge session & candlelit dinner in ${capitalizedName}.`,
+          summary: `${capitalizedName} Cultural Crafts & Scenic Overlook`,
+          morning: `Explore historic fort ruins, ancient temples & traditional craft workshops in ${capitalizedName}.`,
+          afternoon: `Guided walk through ${capitalizedName}'s famous spice markets & artisan souvenir shops.`,
+          evening: `Farewell candlelit rooftop dinner overlooking the golden lights of ${capitalizedName}.`,
           baseCostINR: Math.round(baseDailyCostINR * 1.1),
-          highlight: `Artisan Markets & Gourmet Tasting in ${capitalizedName}`
+          highlight: `Cultural Crafts & Rooftop Dinner in ${capitalizedName}`
         }
       ];
     }

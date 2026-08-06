@@ -35,11 +35,51 @@ export class GeminiService {
       return [
         { summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park', morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach', afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach', evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner' },
         { summary: 'Kailasagiri Hilltop Ropeway & Rushikonda Blue Flag Beach', morning: 'Ride Kailasagiri Ropeway to hilltop park viewing giant Lord Shiva & Parvati statues', afternoon: 'Water sports, speedboating & surf lessons at Rushikonda Blue Flag Beach', evening: 'Seafood grill dinner at Rushikonda Beach Resort' },
-        { summary: 'Borra Caves & Araku Valley Coffee Plantations Excursion', morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels', afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls', evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee' }
+        { summary: 'Borra Caves & Araku Coffee Plantations Excursion', morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels', afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls', evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee' }
       ];
     }
 
-    // 2. Pune
+    // 2. Tirupati
+    if (d.includes('tirupati') || d.includes('tirumala')) {
+      return [
+        { summary: 'Tirumala Venkateswara Swamy Temple & Srivari Padalu', morning: 'Darshan at sacred Lord Venkateswara Swamy Temple in Tirumala hills', afternoon: 'Visit Srivari Padalu, Silathoranam natural rock arch & Chakra Tirtham', evening: 'Traditional South Indian Prasadam thali & evening temple illuminations' },
+        { summary: 'Sri Kalahasti Temple & Chandragiri Fort Excursion', morning: 'Visit ancient Vayu Lingam Sri Kalahasteeswara Temple in Sri Kalahasti', afternoon: 'Tour 11th-century Vijayanagara Raja Mahal & Rani Mahal at Chandragiri Fort', evening: 'Sunset view from Kapila Theertham waterfall temple in Tirupati town' }
+      ];
+    }
+
+    // 3. Vijayawada / Amaravati
+    if (d.includes('vijayawada') || d.includes('amaravati')) {
+      return [
+        { summary: 'Kanakadurga Temple, Prakasam Barrage & Bhavani Island', morning: 'Visit sacred Kanakadurga Temple atop Indrakeeladri Hill overlooking Krishna River', afternoon: 'Walk scenic Prakasam Barrage & boat ride to Bhavani Island resort', evening: 'Water sports & riverside dinner at Bhavani Island' },
+        { summary: 'Undavalli Caves & Amaravati Stupa Heritage', morning: 'Explore 7th-century monolithic rock-cut Undavalli Caves & 5-story Anantasayana Vishnu statue', afternoon: 'Excursion to ancient Buddhist Maha Stupa & Dhyana Buddha Statue in Amaravati', evening: 'Traditional Andhra thali dinner featuring Gongura Pachadi' }
+      ];
+    }
+
+    // 4. Coorg / Madikeri
+    if (d.includes('coorg') || d.includes('madikeri')) {
+      return [
+        { summary: 'Abbey Falls, Raja’s Seat & Madikeri Fort', morning: 'Walk through spice plantations to majestic Abbey Falls waterfalls', afternoon: 'Explore Madikeri Fort palace, museum & Omkareshwara Temple', evening: 'Sunset panorama view over misty Western Ghats valleys at Raja’s Seat' },
+        { summary: 'Dubare Elephant Camp & Namdroling Tibetan Golden Temple', morning: 'Elephant bathing & feeding experience at Dubare Elephant Camp on Cauvery River', afternoon: 'Visit Golden Temple Namdroling Tibetan Monastery in Bylakuppe', evening: 'Campfire dinner tasting authentic Pandi Curry & Akki Roti in Coorg' }
+      ];
+    }
+
+    // 5. Wayanad
+    if (d.includes('wayanad')) {
+      return [
+        { summary: 'Edakkal Caves Prehistoric Petroglyphs & Banasura Sagar Dam', morning: 'Trek to 7,000-year-old Neolithic Stone Age petroglyphs inside Edakkal Caves', afternoon: 'Speedboating & ziplining at Banasura Sagar Dam (largest earth dam in India)', evening: 'Sunset walk at Pookode Lake & spice shopping' },
+        { summary: 'Chembra Peak Heart Lake & Meenmutty Waterfalls', morning: 'Trek to famous natural Heart-Shaped Lake at Chembra Peak', afternoon: 'Guided walk through tea gardens to 300m 3-tiered Meenmutty Waterfalls', evening: 'Resort bonfire & authentic Kerala Malabar Biryani dinner' }
+      ];
+    }
+
+    // 6. Ooty / Kodaikanal
+    if (d.includes('ooty') || d.includes('kodaikanal')) {
+      return [
+        { summary: 'Ooty Nilgiri Mountain Toy Train & Botanical Gardens', morning: 'Ride UNESCO Nilgiri Mountain Railway Steam Toy Train from Coonoor to Ooty', afternoon: 'Stroll 55-acre Government Botanical Garden & Rose Garden', evening: 'Boating at Ooty Lake & Homemade Chocolate tasting on Commercial Road' },
+        { summary: 'Doddabetta Peak (8,652 ft) & Pykara Lake Waterfalls', morning: 'Panoramic sunrise views over Nilgiri hills from Doddabetta Peak telescope house', afternoon: 'Speedboating on Pykara Lake & walk Pykara Waterfalls pine forests', evening: 'Cozy dinner at Earl’s Secret heritage restaurant in Ooty' }
+      ];
+    }
+
+    // 7. Pune
     if (d.includes('pune')) {
       return [
         { summary: 'Shaniwar Wada Fort, Lal Mahal & Dagdusheth Ganpati Temple', morning: 'Explore historic 1730 AD Shaniwar Wada Peshwa Palace ramparts & Lal Mahal', afternoon: 'Visit revered Shreemant Dagdusheth Halwai Ganpati Temple & Tulshibaug shopping market', evening: 'Authentic Puneri Misal Pav & Mastani Mango drink tasting at Sujata Mastani' },
@@ -47,7 +87,7 @@ export class GeminiService {
       ];
     }
 
-    // 3. Hyderabad
+    // 8. Hyderabad
     if (d.includes('hyderabad') || d.includes('secunderabad')) {
       return [
         { summary: 'Charminar, Laad Bazaar Pearls & Chowmahalla Palace', morning: 'Climb 1591 AD Charminar & shop for bangles in Laad Bazaar', afternoon: 'Tour Nizams grand Chowmahalla Palace & vintage car collection', evening: 'Authentic Hyderabadi Dum Biryani dinner at Paradise or Hotel Shadab' },
@@ -55,7 +95,7 @@ export class GeminiService {
       ];
     }
 
-    // 4. Assam
+    // 9. Assam
     if (d.includes('assam') || d.includes('guwahati') || d.includes('kaziranga') || d.includes('majuli')) {
       return [
         { summary: 'Guwahati Kamakhya Temple & Brahmaputra Sunset Cruise', morning: 'Visit sacred 51 Shakti Peeth Kamakhya Temple atop Nilachal Hill in Guwahati', afternoon: 'Guided walk through Assam State Museum & Umananda Peacock Island Temple', evening: 'Sunset Alfresco Cruise on Brahmaputra River with traditional Assamese dinner' },
@@ -63,7 +103,7 @@ export class GeminiService {
       ];
     }
 
-    // 5. Kerala
+    // 10. Kerala
     if (d.includes('kerala') || d.includes('kochi') || d.includes('munnar') || d.includes('alleppey') || d.includes('kovalam')) {
       return [
         { summary: 'Fort Kochi Heritage Walk, St. Francis Church & Chinese Nets', morning: 'Explore historic Fort Kochi, Mattancherry Dutch Palace & Jewish Synagogue', afternoon: 'View iconic Chinese Fishing Nets & fresh seafood lunch by the Arabian Sea', evening: 'Traditional Kathakali Cultural Dance Performance with elaborate face makeup' },
@@ -71,7 +111,7 @@ export class GeminiService {
       ];
     }
 
-    // 6. Goa
+    // 11. Goa
     if (d.includes('goa') || d.includes('baga') || d.includes('panaji')) {
       return [
         { summary: 'North Goa Baga Beach Water Sports & Aguada Fort', morning: 'Parasailing & Jet Skiing at Baga Beach', afternoon: 'Explore 17th-century Portuguese Fort Aguada & Lighthouse', evening: 'Sunset cocktails at Vagator Cliff Lounge (Thalassa)' },
@@ -112,9 +152,9 @@ export class GeminiService {
     }
 
     return [
-      { summary: `Historic City Heritage District & Local Monument Tour in ${capPlace}`, morning: `Morning guided walk through central historical quarter & iconic landmarks in ${capPlace}`, afternoon: `Visit top-rated national cultural museum & local craft markets in ${capPlace}`, evening: `Sunset terrace dining overlooking ${capPlace} skyline & authentic regional specialties` },
-      { summary: `Scenic Nature Excursion & Cultural Craft Bazaars in ${capPlace}`, morning: `Scenic morning excursion to nearby mountain lookout or nature park surrounding ${capPlace}`, afternoon: `Explore artisan handicraft bazaars & sample authentic street food delicacies in ${capPlace}`, evening: `Waterfront promenade walk & traditional performing arts show in ${capPlace}` },
-      { summary: `Artisan Markets & Culinary Tasting Walk in ${capPlace}`, morning: `Visit historic cathedral, fort or central cultural gallery in ${capPlace}`, afternoon: `Guided food tasting walk trying top regional delicacies at popular local bistros`, evening: `Sunset lounge session & candlelit dinner in ${capPlace}` }
+      { summary: `${capPlace} Heritage Circuit & Landmark Exploration`, morning: `Morning guided walk through ${capPlace}'s historic architectural monuments & central heritage square`, afternoon: `Visit ${capPlace}'s renowned local heritage gallery, artisan craft bazaars & cultural exhibits`, evening: `Sunset viewpoint walk followed by authentic regional dinner specialties in ${capPlace}` },
+      { summary: `${capPlace} Nature Trails & Panoramic Excursion`, morning: `Scenic morning excursion to nearby hillside lookout, nature reserve & botanical paths surrounding ${capPlace}`, afternoon: `Sample signature local regional delicacies & street food specialties at top-rated ${capPlace} bistros`, evening: `Waterfront promenade stroll & evening cultural music session in ${capPlace}` },
+      { summary: `${capPlace} Cultural Crafts & Scenic Overlook`, morning: `Explore historic fort ruins, ancient temples & traditional craft workshops in ${capPlace}`, afternoon: `Guided walk through ${capPlace}'s famous spice markets & artisan souvenir shops`, evening: `Farewell candlelit rooftop dinner overlooking the golden lights of ${capPlace}` }
     ];
   }
 
