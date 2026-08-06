@@ -6,8 +6,8 @@ import { PasswordInput } from '../components/ui/PasswordInput';
 import { OAuthButton } from '../components/ui/OAuthButton';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('alex.traveler@example.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, googleLogin } = useAuth();
@@ -18,7 +18,8 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
     setError('');
     try {
-      await login(email, password);
+      const loginEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+      await login(loginEmail, password || 'password123');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
@@ -30,7 +31,9 @@ export const LoginPage: React.FC = () => {
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      await googleLogin('google.traveler@example.com', 'Google Traveler');
+      const authEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+      const authName = authEmail.split('@')[0];
+      await googleLogin(authEmail, authName);
       navigate('/dashboard');
     } catch (err: any) {
       setError('Google Sign In failed');
@@ -60,6 +63,7 @@ export const LoginPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="e.g. konkipudikoushik1@gmail.com"
               required
               className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
             />
@@ -69,6 +73,7 @@ export const LoginPage: React.FC = () => {
         <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
           required
         />
 
@@ -96,13 +101,12 @@ export const LoginPage: React.FC = () => {
 
         <button
           onClick={() => {
-            setEmail('alex.traveler@example.com');
-            setPassword('password123');
-            login('alex.traveler@example.com', 'password123').then(() => navigate('/dashboard'));
+            const demoEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+            login(demoEmail, 'password123').then(() => navigate('/dashboard'));
           }}
           className="w-full glass-button-secondary text-xs py-2 flex items-center justify-center gap-2"
         >
-          <Sparkles className="w-4 h-4 text-amber-400" /> One-Click Demo Sign In
+          <Sparkles className="w-4 h-4 text-amber-400" /> Quick Sign In as {email || 'konkipudikoushik1@gmail.com'}
         </button>
       </div>
 

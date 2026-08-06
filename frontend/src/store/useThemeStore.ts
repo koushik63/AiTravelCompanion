@@ -38,4 +38,6 @@ export const useThemeStore = create<ThemeState>((set) => ({
 }));
 
 // Apply on startup
-applyThemeToDOM(getInitialTheme());
+if (typeof window !== 'undefined') {
+  applyThemeToDOM(getInitialTheme());
+}
