@@ -97,11 +97,30 @@ export class AuthController {
 
   static async googleLogin(req: Request, res: Response) {
     try {
-      const { email, name, avatar } = req.body;
+      let { email, name, avatar } = req.body;
 
       if (!email) {
         return res.status(400).json({ error: 'Google OAuth email is required' });
       }
+
+      // Format a clean, natural display name if missing or generic "Google User"
+      if (!name || name.trim() === '' || name.toLowerCase() === 'google user') {
+        const handle = email.split('@')[0];
+        name = handle
+          .replace(/[._\d]+/g, ' ')
+          .trim()
+          .split(' ')
+          .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+        if (!name) name = 'Koushik Konkipudi';
+      }
+
+      if (!avatar) {
+        avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D9488&color=ffffff`;
+      }
+
+      // Sync user directly into Supabase Auth & Database tables
+      await SupabaseAuthService.syncGoogleUserToSupabase(email, name, avatar);
 
       let user = await DatabaseService.findUserByEmail(email);
 
@@ -109,17 +128,17 @@ export class AuthController {
         // First time Google login — create account
         user = await DatabaseService.createUser({
           email,
-          name: name || email.split('@')[0],
-          avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=random`,
+          name,
+          avatar,
           provider: 'google'
         });
-        Logger.info(`New Google user registered: ${email} (id: ${user.id})`, 'AuthController');
+        Logger.info(`New Google user registered & synced to Supabase: ${email} (${name})`, 'AuthController');
       } else {
-        // Update avatar if it changed
-        if (avatar && user.avatar !== avatar) {
-          await DatabaseService.updateProfile(user.id, { avatar });
+        // Update user name and avatar if needed
+        if (user.name !== name || (avatar && user.avatar !== avatar)) {
+          user = await DatabaseService.updateUser(user.id, { name, avatar }) || user;
         }
-        Logger.info(`Existing Google user logged in: ${email} (id: ${user.id})`, 'AuthController');
+        Logger.info(`Existing Google user logged in & synced: ${email} (${name})`, 'AuthController');
       }
 
       const profile = await DatabaseService.getProfileByUserId(user.id);

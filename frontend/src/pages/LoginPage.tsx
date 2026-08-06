@@ -32,7 +32,8 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
     try {
       const authEmail = email.trim() || 'konkipudikoushik1@gmail.com';
-      const authName = authEmail.split('@')[0];
+      const authName = authEmail.split('@')[0].replace(/[._\d]+/g, ' ').trim()
+        .split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Koushik Konkipudi';
       await googleLogin(authEmail, authName);
       navigate('/dashboard');
     } catch (err: any) {

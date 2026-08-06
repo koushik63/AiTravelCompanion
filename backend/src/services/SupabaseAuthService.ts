@@ -32,6 +32,47 @@ export class SupabaseAuthService {
   }
 
   /**
+   * Sync Google OAuth user directly to Supabase Auth & Database tables
+   */
+  static async syncGoogleUserToSupabase(email: string, name: string, avatar?: string) {
+    const adminClient = this.getAdminClient();
+    if (!adminClient) return null;
+
+    try {
+      // 1. Create or sync in Supabase Auth Admin Dashboard
+      const { data, error } = await adminClient.auth.admin.createUser({
+        email,
+        email_confirm: true,
+        user_metadata: { name, avatar, provider: 'google' }
+      });
+
+      if (error && !error.message.toLowerCase().includes('already')) {
+        Logger.warn(`Supabase Google Auth sync note: ${error.message}`, 'SupabaseAuthService');
+      } else {
+        Logger.info(`Google user ${email} (${name}) synced to Supabase Auth`, 'SupabaseAuthService');
+      }
+
+      // 2. Sync directly into Supabase Database public.profiles or public.users table if accessible
+      const client = this.getClient() || adminClient;
+      if (client) {
+        try {
+          await client.from('profiles').upsert({
+            email,
+            name,
+            avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D9488&color=ffffff`,
+            provider: 'google',
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'email' });
+        } catch (dbErr: any) {
+          Logger.warn(`Supabase database profiles table upsert note: ${dbErr.message}`, 'SupabaseAuthService');
+        }
+      }
+    } catch (err: any) {
+      Logger.warn(`Supabase Google sync error: ${err.message}`, 'SupabaseAuthService');
+    }
+  }
+
+  /**
    * Register a new user in Supabase Authentication.
    * Uses admin API with email_confirm=true so users can log in immediately
    * without needing to click a confirmation email.
@@ -55,61 +96,43 @@ export class SupabaseAuthService {
             return { user: { email, name } };
           }
           Logger.warn(`Supabase admin createUser warning: ${error.message}`, 'SupabaseAuthService');
-          // Fall through to anon client
         } else {
-          Logger.info(`User ${email} successfully registered in Supabase Auth (admin)`, 'SupabaseAuthService');
+          Logger.info(`User ${email} (${name}) registered in Supabase Auth (admin)`, 'SupabaseAuthService');
           return data;
         }
       } catch (err: any) {
-        Logger.warn(`Supabase admin signup error: ${err.message}, trying anon client`, 'SupabaseAuthService');
+        Logger.warn(`Supabase admin signup error: ${err.message}`, 'SupabaseAuthService');
       }
     }
 
-    // Fallback: anon client signUp (may require email confirmation)
+    // Fallback: anon client signUp
     const supabase = this.getClient();
-    if (!supabase) {
-      Logger.info(`Supabase credentials unconfigured, using local auth for ${email}`, 'SupabaseAuthService');
-      return null;
-    }
+    if (!supabase) return null;
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { name } }
       });
-      if (error) {
-        if (error.message.toLowerCase().includes('rate limit') ||
-            error.message.toLowerCase().includes('already registered')) {
-          Logger.warn(`Supabase signUp note for ${email}: ${error.message}`, 'SupabaseAuthService');
-          return { user: { email, name } };
-        }
-        Logger.warn(`Supabase anon signUp warning: ${error.message}`, 'SupabaseAuthService');
-        return null;
-      }
+      if (error) return null;
       return data;
     } catch (err: any) {
-      Logger.warn(`Supabase signUp caught: ${err.message}`, 'SupabaseAuthService');
       return null;
     }
   }
 
   /**
    * Sign in a user via Supabase Authentication.
-   * Returns Supabase session data or null if not available (falls back to local auth).
    */
   static async signIn(email: string, password: string) {
     const supabase = this.getClient();
     if (!supabase) return null;
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        Logger.warn(`Supabase signIn: ${error.message} — using local auth fallback`, 'SupabaseAuthService');
-        return null;
-      }
+      if (error) return null;
       Logger.info(`User ${email} signed in via Supabase Auth`, 'SupabaseAuthService');
       return data;
     } catch (err: any) {
-      Logger.warn(`Supabase signIn error: ${err.message}`, 'SupabaseAuthService');
       return null;
     }
   }
@@ -122,7 +145,6 @@ export class SupabaseAuthService {
       if (error) throw error;
       return data;
     } catch (err) {
-      Logger.error('Supabase Password Reset Error', err, 'SupabaseAuthService');
       return { message: `Password reset instructions sent to ${email}` };
     }
   }

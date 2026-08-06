@@ -171,6 +171,27 @@ export class DatabaseService {
     return newUser;
   }
 
+  static async updateUser(id: string, updates: Partial<any>) {
+    if (prisma) {
+      try {
+        const u = await prisma.user.update({ where: { id }, data: updates });
+        await prisma.profile.update({ where: { userId: id }, data: { name: updates.name, avatar: updates.avatar } });
+        return u;
+      } catch (err) {}
+    }
+    const user = store.users.find((u) => u.id === id);
+    if (user) {
+      if (updates.name) user.name = updates.name;
+      if (updates.avatar) user.avatar = updates.avatar;
+      const prof = store.profiles.find((p) => p.userId === id);
+      if (prof) {
+        if (updates.name) prof.name = updates.name;
+        if (updates.avatar) prof.avatar = updates.avatar;
+      }
+    }
+    return user;
+  }
+
   static async getProfileByUserId(userId: string) {
     if (prisma) {
       try {

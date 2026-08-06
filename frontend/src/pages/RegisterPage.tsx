@@ -35,7 +35,10 @@ export const RegisterPage: React.FC = () => {
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      await googleLogin('google.user@example.com', 'Google User');
+      const authEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+      const authName = name.trim() || authEmail.split('@')[0].replace(/[._\d]+/g, ' ').trim()
+        .split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Koushik Konkipudi';
+      await googleLogin(authEmail, authName);
       navigate('/dashboard');
     } catch (err) {
       setError('Google Sign In failed');
