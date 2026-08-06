@@ -138,45 +138,44 @@ INSTRUCTIONS:
     const messageTrim = message.trim();
     const fullText = `${history || ''} ${message}`.toLowerCase();
 
-    // 1. Detect destination from user message or context
+    // 1. Detect destination from user message or context using word boundary matching
     let dest = '';
+    const lowMsg = message.toLowerCase();
 
-    const knownDestinationsMap: Record<string, string> = {
-      usa: 'United States (USA)',
-      'united states': 'United States (USA)',
-      america: 'United States (USA)',
-      us: 'United States (USA)',
-      mumbai: 'Mumbai',
-      goa: 'Goa',
-      delhi: 'New Delhi',
-      newdelhi: 'New Delhi',
-      kerala: 'Kerala',
-      jaipur: 'Jaipur',
-      ladakh: 'Ladakh',
-      kashmir: 'Kashmir',
-      bali: 'Bali',
-      paris: 'Paris',
-      london: 'London',
-      tokyo: 'Tokyo',
-      japan: 'Japan',
-      dubai: 'Dubai',
-      singapore: 'Singapore',
-      maldives: 'Maldives',
-      rome: 'Rome',
-      italy: 'Italy',
-      switzerland: 'Switzerland',
-      australia: 'Australia',
-      bangkok: 'Bangkok',
-      thailand: 'Thailand'
-    };
+    const knownDestinationsMap: { keys: string[]; label: string }[] = [
+      { keys: ['singapore', 'sg'], label: 'Singapore' },
+      { keys: ['japan', 'tokyo', 'kyoto', 'osaka'], label: 'Japan (Tokyo)' },
+      { keys: ['france', 'paris', 'nice'], label: 'France (Paris)' },
+      { keys: ['uk', 'united kingdom', 'london', 'england'], label: 'United Kingdom (London)' },
+      { keys: ['thailand', 'bangkok', 'phuket', 'pattaya'], label: 'Thailand (Bangkok)' },
+      { keys: ['dubai', 'uae', 'abu dhabi'], label: 'Dubai (UAE)' },
+      { keys: ['maldives', 'male'], label: 'Maldives' },
+      { keys: ['switzerland', 'zurich', 'swiss', 'interlaken'], label: 'Switzerland' },
+      { keys: ['australia', 'sydney', 'melbourne'], label: 'Australia' },
+      { keys: ['usa', 'united states', 'america'], label: 'United States (USA)' },
+      { keys: ['mumbai', 'bombay'], label: 'Mumbai' },
+      { keys: ['goa'], label: 'Goa' },
+      { keys: ['delhi', 'new delhi'], label: 'New Delhi' },
+      { keys: ['kerala', 'alleppey', 'munnar'], label: 'Kerala' },
+      { keys: ['jaipur', 'rajasthan'], label: 'Jaipur' },
+      { keys: ['ladakh', 'leh'], label: 'Ladakh' },
+      { keys: ['kashmir', 'srinagar', 'gulmarg'], label: 'Kashmir' },
+      { keys: ['bali', 'ubud'], label: 'Bali, Indonesia' }
+    ];
 
-    for (const [key, label] of Object.entries(knownDestinationsMap)) {
-      if (fullText.includes(key)) {
-        dest = label;
-        break;
+    // First check user's direct message with word boundaries
+    for (const item of knownDestinationsMap) {
+      for (const key of item.keys) {
+        const regex = new RegExp(`\\b${key}\\b`, 'i');
+        if (regex.test(lowMsg)) {
+          dest = item.label;
+          break;
+        }
       }
+      if (dest) break;
     }
 
+    // Second check history or active trip context
     if (!dest && tripContext?.destination && tripContext.destination !== 'your destination' && tripContext.destination !== 'Worldwide Travel') {
       dest = tripContext.destination;
     }
@@ -186,10 +185,104 @@ INSTRUCTIONS:
       dest = match && match[1] ? match[1].trim() : messageTrim || 'Worldwide Travel';
     }
 
-    const lowMsg = message.toLowerCase();
     const destLower = dest.toLowerCase();
 
-    // Destination Knowledge Base 1: USA (United States)
+    // Destination Knowledge Base: Singapore
+    if (destLower.includes('singapore')) {
+      if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money')) {
+        return {
+          reply: `💰 Detailed Budget & Expense Breakdown for Singapore:
+
+• Budget Traveler: $60 - $90 USD / day (~SGD 80 - 120 / ~₹5,000 - ₹7,500)
+  - Stay: Boutique Pod Hostels in Chinatown or Kampong Glam ($30 - $45/night)
+  - Meals: Michelin-rated Hawker Centers (Lau Pa Sat, Maxwell Road) ($3 - $6 per meal)
+  - Transit: MRT Subway & Bus Unlimited Tourist Pass ($10/day)
+
+• Mid-Range Traveler: $180 - $320 USD / day (~SGD 240 - 430 / ~₹15,000 - ₹26,000)
+  - Stay: 4-Star Hotels near Orchard Road or Clarke Quay ($120 - $200/night)
+  - Meals: Mid-range bistros & rooftop bars ($20 - $45 per meal)
+  - Transit: Grab Taxi rides ($15 - $25/day)
+
+• Luxury Traveler: $600+ USD / day (~₹50,000+)
+  - Stay: Iconic Marina Bay Sands or Raffles Hotel ($450 - $1,100/night)
+
+💡 Pro-Tip: Buy an EZ-Link card or tap your contactless credit card directly on MRT subway turnstiles!`
+        };
+      }
+
+      return {
+        reply: `🦁 Master Travel Guide for Singapore (The Garden City):
+
+📍 Top Regions & Must-Visit Highlights:
+1. Marina Bay Sands & Gardens by the Bay: Supertree Grove Light Show, Flower Dome & Cloud Forest Glass Greenhouses.
+2. Sentosa Island & Universal Studios: Palawan Beach, Cable Car Ride & S.E.A. Aquarium.
+3. Cultural Enclaves: Chinatown Street Market, Little India Spice Bazaars & Kampong Glam Sultan Mosque.
+4. Jewel Changi Airport: Rain Vortex (World's Tallest Indoor Waterfall) & Canopy Park.
+
+🗺️ Recommended 4-Day Singapore Highlights Itinerary:
+• Day 1: Jewel Changi Waterfall Arrival, Hotel Check-in & Gardens by the Bay Evening Supertree Light Show
+• Day 2: Sentosa Island Cable Car, Universal Studios Theme Park & Wings of Time Night Show
+• Day 3: Merlion Park Skyline Photos, Chinatown Heritage Tour & Clarke Quay River Cruise
+• Day 4: Orchard Road Shopping, National Gallery & Evening Hawker Food Feast at Lau Pa Sat
+
+🍽️ Must-Try Signature Culinary Delicacies:
+• Hainanese Chicken Rice (Tian Tian Chicken Rice at Maxwell)
+• Singapore Chili Crab & Mantou Buns (Jumbo Seafood)
+• Laksa Coconut Noodle Soup (328 Katong Laksa)
+• Kaya Toast & Soft-Boiled Eggs with Teh Tarik (Ya Kun Kaya Toast)
+
+💡 Essential Travel Advice:
+• Visa: SG Arrival Card (SGAC) must be submitted online 3 days before entry (Free).
+• Best Season: November to January (Festive lights & pleasant tropical breeze).`
+      };
+    }
+
+    // Destination Knowledge Base: Japan / Tokyo
+    if (destLower.includes('japan') || destLower.includes('tokyo')) {
+      return {
+        reply: `🏯 Master Travel Guide for Tokyo & Japan:
+
+📍 Top Attractions & Highlights:
+1. Tokyo: Shibuya Scramble Crossing, Senso-ji Temple in Asakusa, TeamLab Planets & Akihabara.
+2. Kyoto: Fushimi Inari 10,000 Torii Gates, Arashiyama Bamboo Grove & Kinkaku-ji Golden Pavilion.
+3. Mount Fuji & Hakone: Lake Ashi Pirate Cruise & Mount Fuji 5th Station.
+
+🗺️ Recommended 6-Day Japan Itinerary:
+• Day 1: Tokyo Arrival, Shibuya Crossing & Harajuku Takeshita Street
+• Day 2: Senso-ji Temple, Skytree Tower & Akihabara Anime Quarter
+• Day 3: Bullet Train (Shinkansen) to Kyoto & Fushimi Inari Torii Gates
+• Day 4: Arashiyama Bamboo Grove & Kinkaku-ji Golden Pavilion
+• Day 5: Day Excursion to Mount Fuji & Hakone Onsen Hot Springs
+• Day 6: Shinjuku Gyoen National Garden & Departure
+
+💡 Essential Travel Advice:
+• Transit: Get a JR Pass or Suica/Pasmo IC Transit Card for seamless train rides.`
+      };
+    }
+
+    // Destination Knowledge Base: France / Paris
+    if (destLower.includes('france') || destLower.includes('paris')) {
+      return {
+        reply: `🇫🇷 Master Travel Guide for Paris, France:
+
+📍 Top Attractions & Highlights:
+1. Eiffel Tower Summit & Champ de Mars Lawns
+2. Louvre Museum (Mona Lisa) & Musee d'Orsay
+3. Arc de Triomphe, Champs-Élysées & Sacré-Cœur Basilica in Montmartre
+4. Seine River Evening Dinner Cruise
+
+🗺️ Recommended 4-Day Paris Itinerary:
+• Day 1: Eiffel Tower Ascent & Seine River Sunset Cruise
+• Day 2: Louvre Art Museum, Tuileries Garden & Champs-Élysées
+• Day 3: Montmartre Sacré-Cœur Basilica & Moulin Rouge Show
+• Day 4: Palace of Versailles Day Excursion & French Pastry Tasting
+
+💡 Essential Travel Advice:
+• Visa: Schengen Short-Stay Visa for Non-EU passport holders.`
+      };
+    }
+
+    // Destination Knowledge Base: United States (USA)
     if (destLower.includes('usa') || destLower.includes('united states') || destLower.includes('america')) {
       if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money')) {
         return {
@@ -206,9 +299,7 @@ INSTRUCTIONS:
   - Transit: Domestic flights (Delta, United) or rental car ($40 - $70/day)
 
 • Luxury Traveler: $600+ / day (~₹50,000+)
-  - Stay: 5-Star Luxury Resorts in Manhattan, Las Vegas, or Miami ($400 - $1,200/night)
-
-💡 Pro-Tip: Tipping 15%-20% at sit-down US restaurants is standard etiquette.`
+  - Stay: 5-Star Luxury Resorts in Manhattan, Las Vegas, or Miami ($400 - $1,200/night)`
         };
       }
 
@@ -228,15 +319,11 @@ INSTRUCTIONS:
 • Day 4: Grand Canyon West Rim Skywalk Day Excursion
 • Day 5: Flight to Los Angeles & Hollywood Walk of Fame
 • Day 6: Universal Studios Hollywood & Santa Monica Sunset Beach
-• Day 7: Beverly Hills Shopping & Departure
-
-💡 Essential Travel Advice:
-• Visa: ESTA (for Visa Waiver countries) or B1/B2 Tourist Visa.
-• Best Season: April to May (Spring) and September to November (Autumn).`
+• Day 7: Beverly Hills Shopping & Departure`
       };
     }
 
-    // Destination Knowledge Base 2: Mumbai, India
+    // Destination Knowledge Base: Mumbai
     if (destLower.includes('mumbai')) {
       return {
         reply: `🏙️ Master Travel Guide for Mumbai, Maharashtra:
@@ -250,14 +337,11 @@ INSTRUCTIONS:
 🗺️ Recommended 3-Day Itinerary:
 • Day 1: Heritage Colaba Walk, Gateway of India & High Tea at Taj
 • Day 2: Elephanta Caves Speedboat Excursion & Marine Drive Sunset
-• Day 3: Bandra Heritage Churches, Street Shopping at Hill Road & Bastian Dinner
-
-💡 Essential Travel Advice:
-• Best Season: November to February (Cool pleasant coastal breeze).`
+• Day 3: Bandra Heritage Churches, Street Shopping at Hill Road & Bastian Dinner`
       };
     }
 
-    // Destination Knowledge Base 3: Goa, India
+    // Destination Knowledge Base: Goa
     if (destLower.includes('goa')) {
       return {
         reply: `🏖️ Master Travel Guide for Goa, India:
@@ -271,14 +355,11 @@ INSTRUCTIONS:
 • Day 1: Arrival, Baga Beachside Dinner & Nightlife
 • Day 2: Fort Aguada, Panaji Fontainhas Walk & Mandovi Sunset Cruise
 • Day 3: South Goa Coastal Drive, Palolem Kayaking & Beach Huts
-• Day 4: Dudhsagar Waterfalls Jeep Safari & Spice Plantation Lunch
-
-💡 Essential Travel Advice:
-• Transit: Rent a 2-wheeler scooter ($5/day) or hire self-drive cars for hassle-free beach hopping.`
+• Day 4: Dudhsagar Waterfalls Jeep Safari & Spice Plantation Lunch`
       };
     }
 
-    // Destination Knowledge Base 4: Bali, Indonesia
+    // Destination Knowledge Base: Bali
     if (destLower.includes('bali')) {
       return {
         reply: `🌴 Master Travel Guide for Bali, Indonesia:
@@ -297,17 +378,17 @@ INSTRUCTIONS:
       };
     }
 
-    // Dynamic Generic Master Guide for ANY Destination (e.g., Kerala, Jaipur, Paris, Tokyo, London, etc.)
+    // Dynamic Generic Master Guide for ANY Destination
     return {
       reply: `🗺️ Master Travel Guide & Itinerary for ${dest}:
 
 📍 Top Attractions & Must-Visit Highlights in ${dest}:
-1. Historic City Center & Cultural Quarter — Explore centuries-old architecture, local museums, and landmark plazas in ${dest}.
-2. Panoramic Viewpoint & Fort Headland — Perfect spot for sunset photography and sweeping skyline views.
-3. Central Bazaar & Artisan Markets — Vibrant atmosphere for regional handicrafts, souvenirs, and local delicacies.
+1. Historic City Center & Cultural Quarter — Explore landmark architecture, museums, and vibrant plazas in ${dest}.
+2. Panoramic Viewpoint & Fort Headland — Perfect location for sunset views and photography.
+3. Central Bazaar & Artisan Markets — Vibrant atmosphere for local handicrafts, souvenirs, and regional cuisine.
 
 🗺️ Recommended Day-by-Day Itinerary Overview:
-• Day 1: Arrival, Hotel Check-in & Scenic Evening Promenade Walk
+• Day 1: Arrival, Check-in & Scenic Evening Promenade Walk
 • Day 2: Guided Cultural Heritage Tour & Must-Try Local Culinary Spots
 • Day 3: Excursion to Top Nature Viewpoint & Evening Leisure Shopping
 • Day 4: Farewell Gourmet Dinner at Top-Rated Rooftop Bistro
@@ -319,7 +400,7 @@ INSTRUCTIONS:
 
 💡 Essential Travel Tips for ${dest}:
 • Transport: Book local transit passes or rideshare apps for seamless navigation.
-• Timing: Visit top attractions early morning (before 9:30 AM) to enjoy pleasant crowds.`
+• Timing: Visit top attractions early morning (before 9:30 AM) to beat tour crowds.`
     };
   }
 
