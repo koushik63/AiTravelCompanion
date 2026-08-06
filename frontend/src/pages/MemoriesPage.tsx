@@ -6,6 +6,7 @@ import { useUIStore } from '../store/useUIStore';
 import { MemoryCard } from '../components/memories/MemoryCard';
 import { ShareModal } from '../components/memories/ShareModal';
 import { ExportModal } from '../components/memories/ExportModal';
+import { MemoryLightboxModal } from '../components/memories/MemoryLightboxModal';
 import { Memory } from '../types';
 
 export const MemoriesPage: React.FC = () => {
@@ -15,6 +16,7 @@ export const MemoriesPage: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // New Memory State
   const [imageUrl, setImageUrl] = useState('');
@@ -66,7 +68,7 @@ export const MemoriesPage: React.FC = () => {
       setCaption('');
       setLocation('');
       setShowAddModal(false);
-      addToast({ type: 'success', message: 'Memory created & saved!' });
+      addToast({ type: 'success', message: 'Memory created & saved to calendar!' });
     } catch (err: any) {
       // Local fallback memory creation
       const fallbackMem: Memory = {
@@ -99,7 +101,7 @@ export const MemoriesPage: React.FC = () => {
           <h1 className="text-2xl font-extrabold text-slate-100 flex items-center gap-2">
             <Camera className="w-6 h-6 text-amber-400" /> Travel Memories & Photo Album
           </h1>
-          <p className="text-xs text-slate-400">Post-travel gallery, AI captions, public sharing, and data export</p>
+          <p className="text-xs text-slate-400">Click any memory image to enlarge. New memories automatically reflect in Calendar Timeline!</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -117,8 +119,8 @@ export const MemoriesPage: React.FC = () => {
 
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {memories.map((memory) => (
-          <MemoryCard key={memory.id} memory={memory} />
+        {memories.map((memory, idx) => (
+          <MemoryCard key={memory.id} memory={memory} onClick={() => setLightboxIndex(idx)} />
         ))}
       </div>
 
@@ -146,6 +148,15 @@ export const MemoriesPage: React.FC = () => {
           </form>
         </div>
       )}
+
+      {/* Image Lightbox Modal */}
+      <MemoryLightboxModal
+        isOpen={lightboxIndex !== null}
+        onClose={() => setLightboxIndex(null)}
+        memories={memories}
+        currentIndex={lightboxIndex ?? 0}
+        onNavigate={(newIdx) => setLightboxIndex(newIdx)}
+      />
 
       {/* Share & Export Modals */}
       <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} tripId={tripId} />
