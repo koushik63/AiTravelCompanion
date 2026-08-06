@@ -82,50 +82,19 @@ try {
 }
 
 const store = {
-  users: [...SEED_USERS],
-  profiles: SEED_USERS.map((u) => ({
-    id: `prof_${u.id}`,
-    userId: u.id,
-    name: u.name,
-    email: u.email,
-    avatar: u.avatar,
-    provider: 'email',
-    createdAt: u.createdAt,
-    updatedAt: u.createdAt
-  })),
-  preferences: SEED_USERS.map((u) => ({
-    id: `pref_${u.id}`,
-    userId: u.id,
-    preferredCurrency: 'INR',
-    travelStyle: 'Balanced',
-    theme: 'dark',
-    emailNotifications: true
-  })),
-  trips: SEED_TRIPS.map((t) => ({
-    ...t,
-    country: t.destination.includes('Japan') ? 'Japan' : 'India',
-    city: t.destination.split(',')[0],
-    travelType: 'Leisure',
-    transportType: 'Flight',
-    accommodation: 'Boutique Hotel',
-    description: `Automated journey to ${t.destination}`,
-    isFavorite: false,
-    isArchived: false,
-    archivedAt: null
-  })),
+  users: [] as any[],
+  profiles: [] as any[],
+  preferences: [] as any[],
+  trips: [] as any[],
   savedPlaces: [] as any[],
-  itineraries: [...SEED_ITINERARIES],
-  packingItems: [...SEED_PACKING_ITEMS],
-  expenses: [...SEED_EXPENSES],
-  transport: [...SEED_TRANSPORT],
-  memories: [...SEED_MEMORIES],
-  notifications: [...SEED_NOTIFICATIONS],
-  feedbacks: [
-    { id: 'fb_1', userId: 'usr_demo_1', rating: 5, comment: 'The AI Itinerary & packing suggestions saved us hours of planning!', createdAt: new Date().toISOString() }
-  ],
-  logs: [
-    { id: 'log_1', level: 'INFO', message: 'System started successfully in Demo Mode', source: 'Backend Server', timestamp: new Date().toISOString() }
-  ]
+  itineraries: [] as any[],
+  packingItems: [] as any[],
+  expenses: [] as any[],
+  transport: [] as any[],
+  memories: [] as any[],
+  notifications: [] as any[],
+  feedbacks: [] as any[],
+  logs: [] as any[]
 };
 
 export class DatabaseService {
