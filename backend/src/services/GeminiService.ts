@@ -116,21 +116,29 @@ Return ONLY valid JSON matching this schema:
     };
   }
 
-  static async assistantChat(message: string, tripContext?: any) {
+  static async assistantChat(message: string, tripContext?: any, history?: string) {
     const ai = this.getClient();
     if (ai) {
-      const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro'];
+      const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
       for (const modelName of modelsToTry) {
         try {
           const model = ai.getGenerativeModel({ model: modelName });
           const contextStr = tripContext && tripContext.destination
             ? `Active Trip Destination: ${tripContext.destination}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}, Status: ${tripContext.status || 'UPCOMING'}.`
             : 'No specific trip context provided.';
-          const prompt = `You are an expert AI Travel Assistant.
-User Context: ${contextStr}
+          const prompt = `You are a master AI Travel Advisor & Guide.
+Previous Conversation History:
+${history || 'None'}
+
+User Trip Context: ${contextStr}
 User Question: "${message}"
 
-Give a helpful, natural, specific response (1-3 paragraphs) answering the user's question directly. Do NOT return JSON or code blocks.`;
+INSTRUCTIONS:
+1. Provide an extensive, highly detailed, comprehensive travel answer tailored to the destination and query.
+2. Include specific landmark names, recommended neighborhoods, detailed multi-day itineraries, exact cost breakdowns, authentic local dishes, transport methods, and insider safety & cultural tips.
+3. Use attractive formatting with emojis, bold headers (e.g. 📍 Top Places, 💰 Budget & Costs, 🍽️ Must-Try Dishes, 🗺️ Detailed Itinerary), and bullet points.
+4. Do NOT output raw JSON markdown or code blocks.`;
+
           const result = await model.generateContent(prompt);
           const text = result.response.text().trim();
           if (text) return { reply: text };
@@ -140,32 +148,112 @@ Give a helpful, natural, specific response (1-3 paragraphs) answering the user's
       }
     }
 
-    // Dynamic contextual fallback if API key is not present or error occurred
-    const lowMsg = message.toLowerCase();
+    // Advanced Fallback Intelligence Engine
+    const fullText = `${history || ''} ${message}`.toLowerCase();
     let dest = tripContext?.destination;
 
-    if (!dest || dest === 'your destination') {
-      const matched = message.match(/(?:to|in|visit|for|at)\s+([A-Za-z\s]+)/i);
-      if (matched && matched[1]) {
-        dest = matched[1].trim();
-      } else {
-        dest = 'your destination';
+    // Detect destination from prompt or history
+    const knownDestinations = ['bali', 'goa', 'jaipur', 'kerala', 'paris', 'tokyo', 'dubai', 'thailand', 'singapore', 'new york', 'rome', 'london'];
+    for (const kd of knownDestinations) {
+      if (fullText.includes(kd)) {
+        dest = kd.charAt(0).toUpperCase() + kd.slice(1);
+        break;
       }
     }
 
-    let reply = `I'm happy to help with your trip to ${dest}! `;
-    if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('restaurant') || lowMsg.includes('dish') || lowMsg.includes('dine')) {
-      reply += `For authentic local dining in ${dest}, try visiting popular local markets and heritage bistros. Sampling regional specialties from highly rated family-run eateries is a great way to experience the local culture while staying within budget!`;
-    } else if (lowMsg.includes('budget') || lowMsg.includes('money') || lowMsg.includes('cost') || lowMsg.includes('cheap')) {
-      reply += `To manage your expenses in ${dest}, prioritize public or rideshare transit, use digital payments (like UPI), and set a daily threshold for dining vs sightseeing.`;
-    } else if (lowMsg.includes('pack') || lowMsg.includes('luggage') || lowMsg.includes('wear') || lowMsg.includes('clothes')) {
-      reply += `When packing for ${dest}, bring lightweight breathable clothing, comfortable walking sneakers, sunscreen (SPF 50+), a power bank, and any required travel documents.`;
-    } else if (lowMsg.includes('place') || lowMsg.includes('visit') || lowMsg.includes('see') || lowMsg.includes('attraction') || lowMsg.includes('plan')) {
-      reply += `In ${dest}, start your mornings early to beat the crowds at iconic landmarks, explore cultural districts in the afternoon, and enjoy scenic sunset views or night markets in the evening!`;
-    } else {
-      reply += `Feel free to ask me about local attractions, dining recommendations, packing tips, budget management, or travel safety in ${dest}.`;
+    if (!dest || dest === 'your destination') {
+      const match = message.match(/(?:to|in|visit|for|at)\s+([A-Za-z\s]+)/i);
+      dest = match && match[1] ? match[1].trim() : 'Bali';
     }
-    return { reply };
+
+    const lowMsg = message.toLowerCase();
+
+    // Destination Specific Master Knowledge Bases
+    if (dest.toLowerCase().includes('bali')) {
+      if (lowMsg.includes('budget') || lowMsg.includes('cost') || lowMsg.includes('money')) {
+        return {
+          reply: `💰 Detailed Budget & Expense Breakdown for Bali, Indonesia:
+
+• Backpacker / Budget: $30 - $45 / day (~₹2,500 - ₹3,700)
+  - Stay: Hostels or guesthouses in Canggu / Kuta ($10 - $18/night)
+  - Meals: Local Warungs (Nasi Goreng, Mie Goreng for $2 - $4 per meal)
+  - Transit: Scooter rental ($5 - $7/day)
+
+• Mid-Range Traveler: $85 - $150 / day (~₹7,000 - ₹12,500)
+  - Stay: Boutique Private Pool Villa in Ubud / Seminyak ($50 - $90/night)
+  - Meals: Beach clubs & trendy cafes ($10 - $20 per meal)
+  - Transit: Gojek / Grab rides or Private Driver ($35 - $45/day)
+
+• Luxury Traveler: $300+ / day (~₹25,000+)
+  - Stay: 5-Star Luxury Resorts in Nusa Dua or Cliffside Uluwatu ($200 - $600/night)
+  - Dining: Fine dining & VIP Beach Club Lounges ($50+ per meal)
+
+💡 Pro-Tip: Carry IDR cash for local markets and use Gojek/Grab for fair-priced transport!`
+        };
+      }
+
+      if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('restaurant')) {
+        return {
+          reply: `🍽️ Must-Try Authentic Bali Dishes & Top Recommended Dining Spots:
+
+1. Signature Local Dishes:
+  • Babi Guling (Balinese Roasted Pork with crispy skin & spicy sambal)
+  • Nasi Campur Bali (Mixed rice with satay, fried tofu, and sambal matah)
+  • Sate Lilit (Minced seafood or chicken satay wrapped around lemongrass sticks)
+  • Lawar (Finely chopped vegetables, coconut & spiced meat)
+
+2. Must-Visit Dining Locations:
+  • Warung Babi Guling Ibu Oka (Ubud) — Iconic traditional spot
+  • Bebek Tepi Sawah (Ubud) — Crispy duck served overlooking rice paddies
+  • Motel Mexicola (Seminyak) — Vibrant Mexican dining & party atmosphere
+  • La Plancha (Seminyak Beach) — Sunset drinks on colourful beanbags`
+        };
+      }
+
+      return {
+        reply: `🌴 Complete Master Travel Guide for Bali, Indonesia:
+
+📍 Top Regions & Highlights:
+1. Ubud (Cultural & Spiritual Heart): Tegallalang Rice Terraces, Sacred Monkey Forest Sanctuary, Tirta Empul Holy Water Temple.
+2. Uluwatu (Cliffside Coastal): Uluwatu Temple Sunset Kecak Fire Dance, Single Fin Beach Club, Padang Padang Beach.
+3. Canggu & Seminyak (Lifestyle & Surfing): Finns Beach Club, Echo Beach surfing, organic brunch cafes.
+4. Nusa Penida Island (Day Trip): Kelingking T-Rex Beach, Broken Beach & Angel's Billabong.
+
+🗺️ Recommended 5-Day Itinerary Overview:
+• Day 1: Arrival, Seminyak Beach Sunset & Mexican Dinner
+• Day 2: Ubud Rice Terraces, Sacred Monkey Forest & Campuhan Ridge Walk
+• Day 3: Tirta Empul Temple Water Purification & Mount Batur Viewpoint
+• Day 4: Day Trip Speedboat to Nusa Penida Island (Kelingking Beach)
+• Day 5: Uluwatu Cliffside Sunset Kecak Fire Dance & Seafood Dinner in Jimbaran Bay
+
+💡 Essential Travel Advice:
+• Visa: VoA (Visa on Arrival) for 30 days is $35 / IDR 500,000.
+• Best Season: April to October (Dry Season with sunshine & low humidity).`
+      };
+    }
+
+    // Default Rich Detailed Generator for Any Destination
+    return {
+      reply: `🗺️ Master Travel Plan & Guide for ${dest}:
+
+📍 Top Landmarks & Attractions:
+1. Historic City Center & Heritage Quarter — Explore centuries-old architecture, local museums, and scenic plazas.
+2. Iconic Panoramic Viewpoint & Fort — Perfect location for sunset views and panoramic landscape photography.
+3. Local Cultural Bazaar & Artisan Markets — Vibrant atmosphere for local handicrafts, souvenirs, and street food.
+
+💰 Estimated Cost & Budget Allocation:
+• Budget: $40 - $60 / day (~₹3,300 - ₹5,000) for guesthouses, public transit & local eateries.
+• Mid-Range: $100 - $180 / day (~₹8,200 - ₹15,000) for 4-star boutique hotels, private cabs & casual dining.
+• Luxury: $300+ / day (~₹25,000+) for luxury resorts, private tours & fine dining.
+
+🍽️ Authentic Local Culinary Highlights:
+• Sample regional signature dishes at traditional family-owned bistros.
+• Visit evening street food markets for authentic local snacks and desserts.
+
+💡 Essential Travel Tips for ${dest}:
+• Transport: Use digital rideshare apps or daily transit passes for maximum savings.
+• Planning: Visit major attractions early morning (before 10:00 AM) to beat tour crowds.`
+    };
   }
 
   static async suggestPlaces(destination: string, category: string) {

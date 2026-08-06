@@ -82,11 +82,11 @@ export class AIController {
 
   static async assistantChat(req: AuthRequest, res: Response) {
     try {
-      const { message, tripContext } = req.body;
+      const { message, tripContext, history } = req.body;
       if (!message) {
         return res.status(400).json({ error: 'Message is required' });
       }
-      const response = await GeminiService.assistantChat(message, tripContext);
+      const response = await GeminiService.assistantChat(message, tripContext, history);
       return res.json(response);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

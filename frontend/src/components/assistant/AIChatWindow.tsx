@@ -25,7 +25,8 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
     setIsLoading(true);
 
     try {
-      const res = await AIService.assistantChat(userText, tripContext);
+      const historyStr = messages.map((m) => `${m.sender}: ${m.text}`).join('\n');
+      const res = await AIService.assistantChat(userText, tripContext, historyStr);
       setMessages((prev) => [...prev, { id: `ai_${Date.now()}`, sender: 'ai', text: res.reply }]);
     } catch (err) {
       setMessages((prev) => [
@@ -42,20 +43,20 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
   };
 
   return (
-    <div className="glass-panel h-[500px] flex flex-col justify-between p-4 border-sky-500/30">
+    <div className="glass-panel h-[550px] flex flex-col justify-between p-4 border-sky-500/30">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-amber-400" />
-          <h3 className="font-bold text-slate-100 text-sm">AI Travel Assistant</h3>
+          <h3 className="font-bold text-slate-100 text-sm">Smart AI Travel Assistant</h3>
         </div>
         <span className="text-[10px] bg-sky-500/10 text-sky-400 font-bold px-2 py-0.5 rounded-full border border-sky-500/20">
-          Trip Context Loaded
+          {tripContext?.destination ? `Context: ${tripContext.destination}` : 'Conversational Engine Ready'}
         </span>
       </div>
 
       {/* Messages Window */}
-      <div className="flex-1 overflow-y-auto my-3 space-y-3 pr-2">
+      <div className="flex-1 overflow-y-auto my-3 space-y-4 pr-2">
         {messages.map((m) => (
           <div key={m.id} className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'flex-row-reverse' : ''}`}>
             <div
@@ -67,7 +68,7 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
             </div>
 
             <div
-              className={`max-w-[80%] p-3 rounded-2xl text-xs leading-relaxed ${
+              className={`max-w-[85%] p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
                 m.sender === 'user'
                   ? 'bg-sky-500 text-white rounded-tr-none'
                   : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none'

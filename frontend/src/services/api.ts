@@ -131,8 +131,8 @@ export const AIService = {
     const res = await api.post('/ai/budget-tips', { destination, totalBudget, daysCount, currency });
     return res.data;
   },
-  assistantChat: async (message: string, tripContext?: any) => {
-    const res = await api.post('/ai/assistant/chat', { message, tripContext });
+  assistantChat: async (message: string, tripContext?: any, history?: string) => {
+    const res = await api.post('/ai/assistant/chat', { message, tripContext, history });
     return res.data;
   }
 };
