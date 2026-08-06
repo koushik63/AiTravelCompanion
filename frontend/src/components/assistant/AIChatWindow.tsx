@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles, User, Bot, Trash2 } from 'lucide-react';
 import { AIService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) => {
+  const { user } = useAuth();
+  const userId = user?.id || user?.email || 'guest';
+
   const destName = tripContext?.destination || 'your destination';
   const contextId = tripContext?.id || (tripContext?.destination === 'Worldwide Travel' ? 'general' : 'default');
-  const storageKey = `wanderai_chat_history_${contextId}`;
+  const storageKey = `wanderai_chat_history_${userId}_${contextId}`;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -32,9 +36,9 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sync messages when switching trip context
+  // Sync messages when switching trip context or user account
   useEffect(() => {
-    const key = `wanderai_chat_history_${contextId}`;
+    const key = `wanderai_chat_history_${userId}_${contextId}`;
     try {
       const saved = localStorage.getItem(key);
       if (saved) {
@@ -54,9 +58,9 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
         text: `Hello! I am your AI Travel Companion for ${destName}. Ask me anything about your itinerary, budget, live weather, local food, or top places to visit!`
       }
     ]);
-  }, [contextId, destName]);
+  }, [contextId, destName, userId]);
 
-  // Persist chat history on any change
+  // Persist chat history on any message or account change
   useEffect(() => {
     try {
       localStorage.setItem(storageKey, JSON.stringify(messages));
@@ -120,7 +124,7 @@ export const AIChatWindow: React.FC<{ tripContext?: any }> = ({ tripContext }) =
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[10px] bg-sky-500/10 text-sky-400 font-bold px-2 py-0.5 rounded-full border border-sky-500/20">
-            {tripContext?.destination ? `Context: ${tripContext.destination}` : 'Worldwide Engine'}
+            {user?.name ? `${user.name}` : (tripContext?.destination ? `Context: ${tripContext.destination}` : 'Worldwide Engine')}
           </span>
           <button
             onClick={handleClearHistory}
