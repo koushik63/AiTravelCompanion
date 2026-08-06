@@ -10,7 +10,7 @@ interface InteractiveMapProps {
 export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   destination = 'Mumbai, India',
   activities = [],
-  height = 'h-96'
+  height = 'h-full min-h-[480px]'
 }) => {
   const [currentSearch, setCurrentSearch] = useState<string>(destination);
   const [activeQuery, setActiveQuery] = useState<string>(destination);
@@ -43,7 +43,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             placeholder="Search map location..."
             className="bg-transparent text-slate-100 placeholder-slate-400 focus:outline-none text-xs w-36 sm:w-48"
           />
-          <button type="submit" className="p-1 text-sky-400 hover:text-white transition-colors" title="Search Location">
+          <button type="submit" className="p-1 text-sky-400 hover:text-white transition-colors cursor-pointer" title="Search Location">
             <Search className="w-3.5 h-3.5" />
           </button>
         </form>
@@ -54,7 +54,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       </div>
 
       {/* Real Interactive Map Canvas Embed */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full min-h-[400px]">
         <iframe
           title={`Map of ${destination}`}
           width="100%"

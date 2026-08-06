@@ -118,16 +118,16 @@ export const CurrentTripPage: React.FC = () => {
         />
       </div>
 
-      {/* Map & Weather Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <InteractiveMap destination={currentTrip.destination} />
+      {/* Map & Weather Row - Perfectly Aligned & Spacious */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <div className="lg:col-span-2 h-full">
+          <InteractiveMap destination={currentTrip.destination} height="h-full min-h-[480px]" />
         </div>
-        <div>
+        <div className="lg:col-span-1 h-full">
           {weather ? (
             <WeatherCard weather={weather} />
           ) : (
-            <div className="glass-panel p-8 text-center text-xs text-slate-400">Loading Live Climate...</div>
+            <div className="glass-panel p-8 text-center text-xs text-slate-400 h-full flex items-center justify-center">Loading Live Climate...</div>
           )}
         </div>
       </div>
@@ -146,26 +146,26 @@ export const CurrentTripPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {getDetailedDestinationItinerary(currentTrip.destination, totalDays, currentTrip.currency, currentTrip.budget).map((d, idx) => (
-            <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+            <div key={idx} className="p-4.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3.5 shadow-lg">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
                 <span className="font-extrabold text-xs text-amber-400">{d.day}</span>
                 <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                   Est. {d.cost}
                 </span>
               </div>
-              <div className="space-y-2 text-xs">
-                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
-                  <span className="text-[10px] font-bold text-amber-300 block uppercase">☀️ Morning</span>
+              <div className="space-y-2.5 text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/60 space-y-1">
+                  <span className="text-[10px] font-bold text-amber-300 block uppercase tracking-wider">☀️ Morning</span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">{d.morning}</p>
                 </div>
-                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
-                  <span className="text-[10px] font-bold text-sky-300 block uppercase">🌤️ Afternoon</span>
+                <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/60 space-y-1">
+                  <span className="text-[10px] font-bold text-sky-300 block uppercase tracking-wider">🌤️ Afternoon</span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">{d.afternoon}</p>
                 </div>
-                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
-                  <span className="text-[10px] font-bold text-indigo-300 block uppercase">🌙 Evening</span>
+                <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/60 space-y-1">
+                  <span className="text-[10px] font-bold text-indigo-300 block uppercase tracking-wider">🌙 Evening</span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">{d.evening}</p>
                 </div>
               </div>
