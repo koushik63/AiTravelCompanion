@@ -73,10 +73,33 @@ export class MapsService {
           { name: 'Gateway of India', address: 'Apollo Bunder, Waterfront, Mumbai', rating: 4.9, distanceKm: 0.2 },
           { name: 'Marine Drive Queen’s Necklace Promenade', address: 'Marine Drive Bay, South Mumbai', rating: 4.9, distanceKm: 1.1 },
           { name: 'Chhatrapati Shivaji Maharaj Terminus (CSMT)', address: 'Fort, Mumbai', rating: 4.8, distanceKm: 1.8 }
+        ],
+        hospital: [
+          { name: 'Lilavati Hospital & Research Centre', address: 'A-791, Bandra Reclamation, Bandra West, Mumbai', rating: 4.8, distanceKm: 2.4 },
+          { name: 'Saifee Hospital', address: '159, Maharshi Karve Rd, Girgaon, Mumbai', rating: 4.7, distanceKm: 1.6 },
+          { name: 'Bombay Hospital & Medical Research Centre', address: '12, Marine Lines, Mumbai', rating: 4.8, distanceKm: 1.1 },
+          { name: 'Sir H. N. Reliance Foundation Hospital', address: 'Prarthana Samaj, Raja Rammohan Roy Rd, Girgaon', rating: 4.9, distanceKm: 2.1 }
+        ],
+        atm: [
+          { name: 'HDFC Bank 24/7 ATM', address: 'Colaba Causeway, Near Leopold, Mumbai', rating: 4.6, distanceKm: 0.2 },
+          { name: 'State Bank of India (SBI) ATM', address: 'Marine Drive Promenade, South Mumbai', rating: 4.5, distanceKm: 0.8 },
+          { name: 'ICICI Bank ATM Branch', address: 'Linking Road, Bandra West, Mumbai', rating: 4.7, distanceKm: 2.0 }
+        ],
+        petrol: [
+          { name: 'HPCL Auto Fuel Pump Station', address: 'Netaji Subhash Chandra Bose Rd, Marine Drive, Mumbai', rating: 4.7, distanceKm: 0.9 },
+          { name: 'Indian Oil Petrol Pump', address: 'Worli Sea Face Road, Mumbai', rating: 4.6, distanceKm: 3.1 },
+          { name: 'Bharat Petroleum Station', address: 'SV Road, Bandra West, Mumbai', rating: 4.5, distanceKm: 2.7 }
+        ],
+        pharmacy: [
+          { name: 'Apollo Pharmacy 24/7', address: 'Shop 4, Colaba Causeway, South Mumbai', rating: 4.8, distanceKm: 0.4 },
+          { name: 'Wellness Forever 24x7 Chemist', address: 'Bandra West, Hill Road, Mumbai', rating: 4.9, distanceKm: 2.2 },
+          { name: 'MedPlus Express Pharmacy', address: 'Fort Junction, South Mumbai', rating: 4.7, distanceKm: 1.3 }
         ]
       };
-      const list = mumbaiPlaces[cat] || mumbaiPlaces.restaurant;
-      return list.map((item, idx) => ({ id: `near_mum_${idx}_${Date.now()}`, name: item.name, category: type, address: item.address, rating: item.rating, distanceKm: item.distanceKm, lat: 18.922 + idx * 0.005, lng: 72.833 + idx * 0.005 }));
+
+      const key = cat.includes('hosp') ? 'hospital' : cat.includes('atm') ? 'atm' : cat.includes('petrol') || cat.includes('gas') ? 'petrol' : cat.includes('pharm') ? 'pharmacy' : cat.includes('hotel') ? 'hotel' : cat.includes('attr') ? 'attraction' : 'restaurant';
+      const list = mumbaiPlaces[key] || mumbaiPlaces.restaurant;
+      return list.map((item, idx) => ({ id: `near_mum_${key}_${idx}_${Date.now()}`, name: item.name, category: type, address: item.address, rating: item.rating, distanceKm: item.distanceKm, lat: 18.922 + idx * 0.005, lng: 72.833 + idx * 0.005 }));
     }
 
     if (dest.includes('bali')) {
@@ -93,10 +116,26 @@ export class MapsService {
         attraction: [
           { name: 'Tegallalang Scenic Rice Terraces', address: 'Jalan Tegallalang, Gianyar, Bali', rating: 4.9, distanceKm: 0.8 },
           { name: 'Uluwatu Cliff Temple & Sunset Amphitheater', address: 'Pecatu, South Kuta, Bali', rating: 4.9, distanceKm: 3.2 }
+        ],
+        hospital: [
+          { name: 'BIMC Hospital Kuta 24/7 Medical Center', address: 'Jalan Bypass Ngurah Rai No.100, Kuta, Bali', rating: 4.8, distanceKm: 1.5 },
+          { name: 'Siloam Hospitals Denpasar', address: 'Jalan Sunset Road No.818, Kuta, Bali', rating: 4.9, distanceKm: 2.8 }
+        ],
+        atm: [
+          { name: 'Bank Mandiri 24h International ATM', address: 'Ubud Main Street, Bali', rating: 4.7, distanceKm: 0.3 },
+          { name: 'BCA International Bank ATM', address: 'Seminyak Square, Bali', rating: 4.6, distanceKm: 0.9 }
+        ],
+        petrol: [
+          { name: 'Pertamina SPBU Gas & Fuel Station', address: 'Sunset Road, Kuta, Bali', rating: 4.6, distanceKm: 1.8 }
+        ],
+        pharmacy: [
+          { name: 'Guardian Health & Pharmacy 24h', address: 'Seminyak Square, Bali', rating: 4.8, distanceKm: 0.5 },
+          { name: 'Kimia Farma Pharmacy', address: 'Denpasar City Center, Bali', rating: 4.7, distanceKm: 2.0 }
         ]
       };
-      const list = baliPlaces[cat] || baliPlaces.restaurant;
-      return list.map((item, idx) => ({ id: `near_bali_${idx}_${Date.now()}`, name: item.name, category: type, address: item.address, rating: item.rating, distanceKm: item.distanceKm, lat: -8.409 + idx * 0.005, lng: 115.188 + idx * 0.005 }));
+      const key = cat.includes('hosp') ? 'hospital' : cat.includes('atm') ? 'atm' : cat.includes('petrol') || cat.includes('gas') ? 'petrol' : cat.includes('pharm') ? 'pharmacy' : cat.includes('hotel') ? 'hotel' : cat.includes('attr') ? 'attraction' : 'restaurant';
+      const list = baliPlaces[key] || baliPlaces.restaurant;
+      return list.map((item, idx) => ({ id: `near_bali_${key}_${idx}_${Date.now()}`, name: item.name, category: type, address: item.address, rating: item.rating, distanceKm: item.distanceKm, lat: -8.409 + idx * 0.005, lng: 115.188 + idx * 0.005 }));
     }
 
     // Dynamic Generic Fallback for Any Other City
@@ -113,12 +152,28 @@ export class MapsService {
       attraction: [
         { name: `Famous Viewpoint & Heritage Fort`, address: `Cliffside Headland, ${cityLabel}`, rating: 4.9, distanceKm: 1.0 },
         { name: `National Cultural Plaza & Museum`, address: `Civic Square, ${cityLabel}`, rating: 4.8, distanceKm: 1.7 }
+      ],
+      hospital: [
+        { name: `${cityLabel} Multi-Specialty Hospital & Trauma Center`, address: `Medical Zone, Main Hospital Rd, ${cityLabel}`, rating: 4.8, distanceKm: 1.1 },
+        { name: `City Care Emergency & Healthcare Hospital`, address: `Civic Center, ${cityLabel}`, rating: 4.7, distanceKm: 2.3 }
+      ],
+      atm: [
+        { name: `Global International 24/7 ATM`, address: `Central Market Plaza, ${cityLabel}`, rating: 4.6, distanceKm: 0.3 },
+        { name: `National Bank Express ATM`, address: `Transit Hub, ${cityLabel}`, rating: 4.5, distanceKm: 0.7 }
+      ],
+      petrol: [
+        { name: `City Express Fuel & Service Station`, address: `Highway Bypass, ${cityLabel}`, rating: 4.6, distanceKm: 1.5 }
+      ],
+      pharmacy: [
+        { name: `${cityLabel} Central 24/7 Chemist & Pharmacy`, address: `Market Square, ${cityLabel}`, rating: 4.8, distanceKm: 0.4 },
+        { name: `Apollo Healthcare Pharmacy Store`, address: `Main Avenue, ${cityLabel}`, rating: 4.7, distanceKm: 1.0 }
       ]
     };
 
-    const list = genericPlaces[cat] || genericPlaces.restaurant;
+    const key = cat.includes('hosp') ? 'hospital' : cat.includes('atm') ? 'atm' : cat.includes('petrol') || cat.includes('gas') ? 'petrol' : cat.includes('pharm') ? 'pharmacy' : cat.includes('hotel') ? 'hotel' : cat.includes('attr') ? 'attraction' : 'restaurant';
+    const list = genericPlaces[key] || genericPlaces.restaurant;
     return list.map((item, idx) => ({
-      id: `near_${cat}_${idx}_${Date.now()}`,
+      id: `near_${key}_${idx}_${Date.now()}`,
       name: item.name,
       category: type,
       address: item.address,
