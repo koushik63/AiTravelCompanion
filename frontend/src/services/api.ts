@@ -149,6 +149,18 @@ export const MapsService = {
   getDirections: async (origin: string, destination: string) => {
     const res = await api.get('/maps/directions', { params: { origin, destination } });
     return res.data;
+  },
+  getSavedPlaces: async () => {
+    const res = await api.get('/maps/saved-places');
+    return res.data;
+  },
+  savePlace: async (placeData: any) => {
+    const res = await api.post('/maps/saved-places', placeData);
+    return res.data;
+  },
+  removeSavedPlace: async (id: string) => {
+    const res = await api.delete(`/maps/saved-places/${id}`);
+    return res.data;
   }
 };
 

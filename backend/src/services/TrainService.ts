@@ -1,17 +1,53 @@
 export class TrainService {
   static async getTrainStatus(trainNumber: string) {
-    // Live Indian Railways Vande Bharat & Express Status Tracker
+    const num = (trainNumber || '').trim();
+    let trainName = 'Express Special';
+    let origin = 'New Delhi Railway Station (NDLS)';
+    let destination = 'Mumbai Central (MMCT)';
+    let platform = 'PF 1';
+
+    if (num.includes('20901')) {
+      trainName = 'Mumbai - Gandhinagar Vande Bharat Express';
+      origin = 'Mumbai Central (MMCT)';
+      destination = 'Gandhinagar Capital (GNC)';
+      platform = 'PF 5';
+    } else if (num.includes('12951')) {
+      trainName = 'Mumbai Rajdhani Express';
+      origin = 'Mumbai Central (MMCT)';
+      destination = 'New Delhi (NDLS)';
+      platform = 'PF 1';
+    } else if (num.includes('12002')) {
+      trainName = 'Bhopal Shatabdi Express';
+      origin = 'New Delhi (NDLS)';
+      destination = 'Rani Kamlapati (RKMP), Bhopal';
+      platform = 'PF 2';
+    } else if (num.includes('12626')) {
+      trainName = 'Kerala Superfast Express';
+      origin = 'New Delhi (NDLS)';
+      destination = 'Trivandrum Central (TVC)';
+      platform = 'PF 3';
+    } else if (num.includes('12260')) {
+      trainName = 'Sealdah Duronto Express';
+      origin = 'Bikaner Junction (BKN)';
+      destination = 'Sealdah (SDAH)';
+      platform = 'PF 4';
+    } else if (num) {
+      trainName = `Train #${num} Superfast Express`;
+      origin = 'Central Railway Station';
+      destination = 'Terminal Junction';
+    }
+
     return {
-      trainNumber: trainNumber || '20901',
-      trainName: trainNumber.includes('12951') ? 'Rajdhani Express' : 'Vande Bharat Express',
-      origin: 'Mumbai Central (MMCT)',
-      destination: 'Madgaon Junction (MAO), Goa',
+      trainNumber: num || '20901',
+      trainName,
+      origin,
+      destination,
       departureTime: new Date(Date.now() - 7200000).toISOString(),
       arrivalTime: new Date(Date.now() + 14400000).toISOString(),
-      platform: 'PF 3',
-      coach: 'C4',
-      seat: '72 (Window)',
-      status: 'On Time - Running 40 km/h near Ratnagiri',
+      platform,
+      coach: 'B2',
+      seat: '45 (Side Lower)',
+      status: 'On Time - Running smooth on main line',
       delayMinutes: 0
     };
   }

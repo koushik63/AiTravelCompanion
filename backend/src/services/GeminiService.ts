@@ -116,6 +116,43 @@ Return ONLY valid JSON matching this schema:
     };
   }
 
+  static async assistantChat(message: string, tripContext?: any) {
+    const ai = this.getClient();
+    if (ai) {
+      try {
+        const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+        const contextStr = tripContext ? `Active Trip Destination: ${tripContext.destination || 'Unspecified'}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}, Status: ${tripContext.status || 'UPCOMING'}.` : 'No active trip loaded.';
+        const prompt = `You are a helpful, friendly, and knowledgeable AI Travel Assistant.
+User Context: ${contextStr}
+User Question: "${message}"
+
+Give a helpful, natural, concise, and specific answer (1-3 short paragraphs). Do NOT return JSON markdown or code blocks.`;
+        const result = await model.generateContent(prompt);
+        const text = result.response.text().trim();
+        if (text) return { reply: text };
+      } catch (err) {
+        Logger.error('Gemini Assistant Chat Error', err, 'GeminiService');
+      }
+    }
+
+    // Dynamic contextual fallback if API key is not present or error occurred
+    const dest = tripContext?.destination || 'your destination';
+    const lowMsg = message.toLowerCase();
+    let reply = `I'm happy to help with your trip to ${dest}! `;
+    if (lowMsg.includes('food') || lowMsg.includes('eat') || lowMsg.includes('restaurant') || lowMsg.includes('dish') || lowMsg.includes('dine')) {
+      reply += `For authentic local dining in ${dest}, try visiting popular local markets and heritage bistros. Sampling regional specialties from highly rated family-run eateries is a great way to experience the local culture while staying within budget!`;
+    } else if (lowMsg.includes('budget') || lowMsg.includes('money') || lowMsg.includes('cost') || lowMsg.includes('cheap')) {
+      reply += `To manage your expenses in ${dest}, prioritize public or rideshare transit, use digital payments (like UPI), and set a daily threshold for dining vs sightseeing.`;
+    } else if (lowMsg.includes('pack') || lowMsg.includes('luggage') || lowMsg.includes('wear') || lowMsg.includes('clothes')) {
+      reply += `When packing for ${dest}, bring lightweight breathable clothing, comfortable walking sneakers, sunscreen (SPF 50+), a power bank, and any required travel documents.`;
+    } else if (lowMsg.includes('place') || lowMsg.includes('visit') || lowMsg.includes('see') || lowMsg.includes('attraction')) {
+      reply += `In ${dest}, start your mornings early to beat the crowds at iconic landmarks, explore cultural districts in the afternoon, and enjoy scenic sunset views or night markets in the evening!`;
+    } else {
+      reply += `Feel free to ask me about local attractions, dining recommendations, packing tips, budget management, or travel safety in ${dest}.`;
+    }
+    return { reply };
+  }
+
   static async suggestPlaces(destination: string, category: string) {
     return [
       { name: `Top Landmark in ${destination}`, category: 'Sightseeing', description: 'Famous tourist highlight with great photo opportunities.', cost: 500 },

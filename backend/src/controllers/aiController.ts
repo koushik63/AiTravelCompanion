@@ -83,15 +83,11 @@ export class AIController {
   static async assistantChat(req: AuthRequest, res: Response) {
     try {
       const { message, tripContext } = req.body;
-      const prompt = `User asks travel assistant: "${message}". Trip context: ${JSON.stringify(tripContext || {})}. Provide helpful, friendly, and practical travel advice in 2-3 concise paragraphs.`;
-      const reply = `I'd be happy to help with your trip to ${tripContext?.destination || 'your destination'}! ${
-        message.toLowerCase().includes('food') || message.toLowerCase().includes('restaurant')
-          ? 'I recommend trying local beachside bistros and seafood thalis. Check out Fisherman’s Wharf or Baga Street Cafes!'
-          : message.toLowerCase().includes('budget') || message.toLowerCase().includes('money')
-          ? 'Your spending is currently within limits. Using UPI or local transport apps like Ola/Uber saves up to 25%.'
-          : 'You can explore central forts in the morning to beat the heat, and visit evening markets for local handicrafts.'
-      }`;
-      return res.json({ reply });
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+      const response = await GeminiService.assistantChat(message, tripContext);
+      return res.json(response);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

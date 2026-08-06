@@ -113,10 +113,7 @@ const store = {
     isArchived: false,
     archivedAt: null
   })),
-  savedPlaces: [
-    { id: 'save_1', userId: 'usr_demo_1', name: 'Baga Beach Promenade', category: 'attraction', address: 'Calangute - Baga Rd, Goa', rating: 4.8, lat: 15.5553, lng: 73.7517, createdAt: new Date().toISOString() },
-    { id: 'save_2', userId: 'usr_demo_1', name: 'Fishermans Wharf Bistro', category: 'restaurant', address: 'Cavelossim, South Goa', rating: 4.9, lat: 15.1764, lng: 73.9458, createdAt: new Date().toISOString() }
-  ],
+  savedPlaces: [] as any[],
   itineraries: [...SEED_ITINERARIES],
   packingItems: [...SEED_PACKING_ITEMS],
   expenses: [...SEED_EXPENSES],

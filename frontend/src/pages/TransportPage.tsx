@@ -6,24 +6,29 @@ import { TrainCard } from '../components/live/TrainCard';
 import { FlightStatus, TrainStatus } from '../types';
 
 export const TransportPage: React.FC = () => {
-  const [flightNum, setFlightNum] = useState('6E 504');
-  const [trainNum, setTrainNum] = useState('20901');
+  const [flightNum, setFlightNum] = useState('');
+  const [trainNum, setTrainNum] = useState('');
   const [flight, setFlight] = useState<FlightStatus | null>(null);
   const [train, setTrain] = useState<TrainStatus | null>(null);
-
-  useEffect(() => {
-    TransportService.getFlightStatus(flightNum).then(setFlight).catch(() => {});
-    TransportService.getTrainStatus(trainNum).then(setTrain).catch(() => {});
-  }, []);
+  const [isFlightLoading, setIsFlightLoading] = useState(false);
+  const [isTrainLoading, setIsTrainLoading] = useState(false);
 
   const handleSearchFlight = (e: React.FormEvent) => {
     e.preventDefault();
-    TransportService.getFlightStatus(flightNum).then(setFlight);
+    if (!flightNum.trim()) return;
+    setIsFlightLoading(true);
+    TransportService.getFlightStatus(flightNum)
+      .then(setFlight)
+      .finally(() => setIsFlightLoading(false));
   };
 
   const handleSearchTrain = (e: React.FormEvent) => {
     e.preventDefault();
-    TransportService.getTrainStatus(trainNum).then(setTrain);
+    if (!trainNum.trim()) return;
+    setIsTrainLoading(true);
+    TransportService.getTrainStatus(trainNum)
+      .then(setTrain)
+      .finally(() => setIsTrainLoading(false));
   };
 
   return (
@@ -49,7 +54,16 @@ export const TransportPage: React.FC = () => {
             <button type="submit" className="glass-button text-xs py-2 px-4">Track Flight</button>
           </form>
 
-          {flight && <FlightCard flight={flight} />}
+          {isFlightLoading ? (
+            <div className="glass-panel p-8 text-center text-xs text-slate-400">Fetching live flight status...</div>
+          ) : flight ? (
+            <FlightCard flight={flight} />
+          ) : (
+            <div className="glass-panel p-8 text-center space-y-2">
+              <p className="text-xs font-semibold text-slate-300">Enter a Flight Number to track status</p>
+              <p className="text-[11px] text-slate-500">e.g. 6E 504 (IndiGo), AI 101 (Air India), UK 815 (Vistara), EK 500 (Emirates)</p>
+            </div>
+          )}
         </div>
 
         {/* Train Tracker Box */}
@@ -59,13 +73,22 @@ export const TransportPage: React.FC = () => {
               type="text"
               value={trainNum}
               onChange={(e) => setTrainNum(e.target.value)}
-              placeholder="Train Number (e.g. 20901 Vande Bharat)"
+              placeholder="Train Number (e.g. 20901, 12951)"
               className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
             />
             <button type="submit" className="glass-button-secondary text-xs py-2 px-4">Track Train</button>
           </form>
 
-          {train && <TrainCard train={train} />}
+          {isTrainLoading ? (
+            <div className="glass-panel p-8 text-center text-xs text-slate-400">Fetching live train status...</div>
+          ) : train ? (
+            <TrainCard train={train} />
+          ) : (
+            <div className="glass-panel p-8 text-center space-y-2">
+              <p className="text-xs font-semibold text-slate-300">Enter a Train Number to track status</p>
+              <p className="text-[11px] text-slate-500">e.g. 20901 (Vande Bharat), 12951 (Rajdhani), 12002 (Shatabdi)</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
