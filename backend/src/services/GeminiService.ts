@@ -7,9 +7,12 @@ import { WeatherService } from './WeatherService';
 
 export class GeminiService {
   private static getClient() {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey && apiKey.trim().length > 5 && !apiKey.startsWith('AQ.')) {
-      return new GoogleGenerativeAI(apiKey.trim());
+    let apiKey = (process.env.GEMINI_API_KEY || '').trim();
+    if (apiKey.startsWith('"') || apiKey.startsWith("'")) {
+      apiKey = apiKey.slice(1, -1).trim();
+    }
+    if (apiKey.length > 5) {
+      return new GoogleGenerativeAI(apiKey);
     }
     return null;
   }
@@ -103,10 +106,8 @@ export class GeminiService {
 
     const ai = this.getClient();
     if (ai) {
-      const startTime = Date.now();
-      try {
-        const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-        const prompt = `Act as an expert AI Travel Agent. Create a detailed structured JSON itinerary for ${input.destination} for ${input.durationDays || 3} days.
+      const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-pro'];
+      const prompt = `Act as an expert AI Travel Agent powered by Google Gemini. Create a detailed structured JSON itinerary for ${input.destination} for ${input.durationDays || 3} days.
 Travel Style: ${input.travelStyle || 'Balanced'}. Budget: ${input.budget || 50000} ${input.currency || 'INR'}.
 Interests: ${input.interests?.join(', ') || 'Sightseeing, Local Cuisine'}.
 
@@ -143,19 +144,25 @@ Return ONLY valid JSON matching this schema:
   "localTips": ["Use local transport apps", "Carry cash for local markets"],
   "safetyTips": ["Keep emergency contacts saved", "Stay hydrated"],
   "weatherConsiderations": "Sunny and pleasant",
-  "confidenceNotes": "Generated via Gemini AI Engine v1.5"
+  "confidenceNotes": "Generated via Google Gemini AI Engine"
 }`;
 
-        AILoggingService.logPrompt(prompt);
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
-        AILoggingService.logResponse('success', Date.now() - startTime);
-
-        const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-        AICacheService.set(cacheKey, parsed);
-        return parsed;
-      } catch (err) {
-        Logger.warn('Gemini AI API Call Failed, switching to Master Landmark Engine', 'GeminiService');
+      for (const modelName of modelsToTry) {
+        try {
+          const model = ai.getGenerativeModel({ model: modelName });
+          AILoggingService.logPrompt(prompt);
+          const result = await model.generateContent(prompt);
+          const text = result.response.text();
+          const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanText);
+          if (parsed && parsed.days && Array.isArray(parsed.days)) {
+            Logger.info(`Successfully generated itinerary via Gemini model ${modelName}`, 'GeminiService');
+            AICacheService.set(cacheKey, parsed);
+            return parsed;
+          }
+        } catch (err: any) {
+          Logger.warn(`Gemini AI itinerary attempt with model ${modelName} failed: ${err?.message || err}`, 'GeminiService');
+        }
       }
     }
 
@@ -185,15 +192,19 @@ Return ONLY valid JSON matching this schema:
   static async assistantChat(message: string, tripContext?: any, history?: string) {
     const ai = this.getClient();
     if (ai) {
-      const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
-      for (const modelName of modelsToTry) {
-        try {
-          const model = ai.getGenerativeModel({ model: modelName });
-          const contextStr = tripContext && tripContext.destination
-            ? `Active Trip Context: ${tripContext.destination}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}.`
-            : 'No active trip context.';
+      const modelsToTry = [
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-pro',
+        'gemini-pro'
+      ];
 
-          const prompt = `You are an expert AI Travel Assistant. Answer the user's specific question directly, accurately, and naturally.
+      const contextStr = tripContext && tripContext.destination
+        ? `Active Trip Context: ${tripContext.destination}, Travel Style: ${tripContext.travelStyle || 'Leisure'}, Budget: ${tripContext.budget || 'N/A'} ${tripContext.currency || ''}.`
+        : 'No active trip context.';
+
+      const systemPrompt = `You are an expert AI Travel Assistant powered directly by Google Gemini. Answer the user's question directly, accurately, comprehensively, and naturally.
 
 Conversation History:
 ${history || 'None'}
@@ -203,26 +214,32 @@ User Context: ${contextStr}
 User Question: "${message}"
 
 INSTRUCTIONS & CONSTRAINTS:
-1. Answer the exact question asked by the user. If they ask for a trip plan for N days, generate a complete N-day itinerary detailing every requested day (Day 1 through Day N) with real specific famous landmark names.
+1. Answer the exact question asked by the user. If the user asks for a trip plan for N days in any city, generate a complete N-day itinerary detailing every requested day (Day 1 through Day N) with real, specific famous landmark names, local dining spots, and morning/afternoon/evening activities.
 2. Keep the tone helpful, knowledgeable, and easy to read with Markdown formatting (emojis, bold headings, bullet points).
-3. Do NOT output raw JSON code blocks.`;
+3. Do NOT output raw JSON code blocks unless explicitly requested.`;
 
-          const result = await model.generateContent(prompt);
-          const text = result.response.text().trim();
-          if (text) return { reply: text };
-        } catch (err) {
-          Logger.warn(`Gemini model ${modelName} chat error, trying next`, 'GeminiService');
+      for (const modelName of modelsToTry) {
+        try {
+          const model = ai.getGenerativeModel({ model: modelName });
+          const result = await model.generateContent(systemPrompt);
+          const response = await result.response;
+          const text = response.text().trim();
+          if (text && text.length > 10) {
+            Logger.info(`Successfully generated AI Assistant reply using Gemini model ${modelName}`, 'GeminiService');
+            return { reply: text };
+          }
+        } catch (err: any) {
+          Logger.warn(`Gemini AI Assistant attempt with model ${modelName} failed: ${err?.message || err}`, 'GeminiService');
         }
       }
     }
 
-    // Universal Dynamic City Extraction Algorithm
+    // Universal Dynamic City Extraction Algorithm Fallback
     const lowMsg = message.toLowerCase().trim();
     const destContext = (tripContext?.destination && tripContext.destination !== 'Worldwide Travel') ? tripContext.destination : '';
 
     let targetPlace = '';
 
-    // Universal Stop Words Set
     const stopWords = new Set([
       'day', 'days', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14',
       'trip', 'plan', 'schedule', 'itinerary', 'tour', 'vacation', 'visit', 'in', 'at', 'to', 'for',
