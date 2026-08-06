@@ -11,6 +11,7 @@ import { ProgressBar } from '../components/ui/ProgressBar';
 import { WeatherInfo, FlightStatus, TrainStatus } from '../types';
 
 import { EmptyState } from '../components/ui/EmptyState';
+import { getDetailedDestinationItinerary } from '../utils/itineraryHelper';
 
 export const CurrentTripPage: React.FC = () => {
   const { trips, activeTrip } = useTravelStore();
@@ -129,6 +130,48 @@ export const CurrentTripPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {flight && <FlightCard flight={flight} />}
           {train && <TrainCard train={train} />}
+        </div>
+      </div>
+
+      {/* Live Itinerary Schedule */}
+      <div className="glass-panel p-6 space-y-6">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-amber-400" /> Active Live Itinerary Schedule
+            </h2>
+            <p className="text-xs text-slate-400">Detailed day-by-day checkpoints for {currentTrip.destination}</p>
+          </div>
+          <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">
+            Verified Live Plan
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {getDetailedDestinationItinerary(currentTrip.destination).map((d, idx) => (
+            <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <span className="font-extrabold text-xs text-amber-400">{d.day}</span>
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  Est. {d.cost}
+                </span>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
+                  <span className="text-[10px] font-bold text-amber-300 block uppercase">☀️ Morning</span>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">{d.morning}</p>
+                </div>
+                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
+                  <span className="text-[10px] font-bold text-sky-300 block uppercase">🌤️ Afternoon</span>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">{d.afternoon}</p>
+                </div>
+                <div className="p-2 rounded bg-slate-950/70 space-y-0.5">
+                  <span className="text-[10px] font-bold text-indigo-300 block uppercase">🌙 Evening</span>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">{d.evening}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
