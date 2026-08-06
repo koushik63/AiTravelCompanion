@@ -21,7 +21,58 @@ export class GeminiService {
   private static getCityLandmarks(destination: string, travelStyle: string = 'Leisure'): Array<{ summary: string; morning: string; afternoon: string; evening: string }> {
     const d = (destination || '').toLowerCase().trim();
 
-    // 0. Araku / Araku Valley
+    // 0. Chennai
+    if (d.includes('chennai') || d.includes('madras')) {
+      return [
+        { summary: 'Marina Beach Promenade, Kapaleeshwarar Temple & San Thome Basilica', morning: 'Visit 7th-century Dravidian Kapaleeshwarar Temple in historic Mylapore', afternoon: 'Tour neo-Gothic San Thome Basilica Cathedral built over St. Thomas tomb', evening: 'Sunset walk along 13km Marina Beach promenade & sample Murugan Idli Shop dinner' },
+        { summary: 'Fort St. George, Government Museum & Egmore Art Gallery', morning: 'Tour 1644 AD Fort St. George (first English fortress in India) & St. Mary’s Church', afternoon: 'Explore Bronze Gallery at Government Museum Egmore viewing Chola bronzes', evening: 'Shop for Kanchipuram Silk Sarees at T. Nagar & enjoy filter coffee at Saravana Bhavan' },
+        { summary: 'UNESCO Shore Temple & Mahabalipuram Monuments Excursion', morning: 'Day trip to Mahabalipuram: Explore 8th-century UNESCO Shore Temple by the ocean', afternoon: 'Photograph Arjuna’s Penance rock relief & balance at Krishna’s Butterball', evening: 'Fresh seafood dinner at Mahabalipuram Beach Resort before returning to Chennai' },
+        { summary: 'DakshinaChitra Living Heritage Museum & Besant Nagar Beach', morning: 'Guided walk through DakshinaChitra Heritage Village showcasing South Indian homes', afternoon: 'Visit Cholamandal Artists’ Village & Marundeeswarar Temple', evening: 'Sunset walk at Edward Elliot’s Beach (Besant Nagar Beach) & seafood dinner' }
+      ];
+    }
+
+    // 1. Bengaluru / Bangalore
+    if (d.includes('bengaluru') || d.includes('bangalore')) {
+      return [
+        { summary: 'Bangalore Palace, Tipu Sultan Palace & Lalbagh Glass House', morning: 'Tour Tudor-style Bangalore Royal Palace & Tipu Sultan’s Wooden Summer Palace', afternoon: 'Stroll 240-acre Lalbagh Botanical Gardens & historic 1889 Glass House', evening: 'Traditional South Indian Filter Coffee & Masala Dosa at MTR (Mavalli Tiffin Room)' },
+        { summary: 'Cubbon Park, Visvesvaraya Museum & Vidhana Soudha', morning: 'Walk green canopy paths of Cubbon Park & photograph Vidhana Soudha Neo-Dravidian Citadel', afternoon: 'Interactive science exhibits at Visvesvaraya Industrial & Technological Museum', evening: 'Shop along Commercial Street & MG Road, followed by craft beer at Indiranagar microbrewery' },
+        { summary: 'ISKCON Temple, Bull Temple & Basavanagudi Heritage Walk', morning: 'Visit magnificent hilltop ISKCON Temple Bangalore & Sri Big Bull Temple', afternoon: 'Explore Gandhi Bazaar spice shops & heritage South Indian lunch at Vidyarthi Bhavan', evening: 'Sunset view from Sankey Tank lake promenade' }
+      ];
+    }
+
+    // 2. Kolkata
+    if (d.includes('kolkata') || d.includes('calcutta')) {
+      return [
+        { summary: 'Victoria Memorial, St. Paul’s Cathedral & Howrah Bridge Sunset', morning: 'Explore white marble Victoria Memorial Hall & surrounding lush gardens', afternoon: 'Visit Indo-Gothic St. Paul’s Cathedral & Kolkata Academy of Fine Arts', evening: 'Sunset boat cruise on Hooghly River under iconic Howrah Bridge (Rabindra Setu)' },
+        { summary: 'Dakshineswar Kali Temple & Belur Math World Headquarters', morning: 'Visit sacred Dakshineswar Kali Temple on Hooghly River banks', afternoon: 'Ferry across river to Belur Math (Ramakrishna Mission World Headquarters)', evening: 'Authentic Bengali Fish Curry & Rasgulla dinner at 6 Ballygunge Place' },
+        { summary: 'Indian Museum, Park Street & Kumartuli Idol Village', morning: 'Tour Indian Museum (Asia’s oldest museum) & Asiatic Society', afternoon: 'Walk Kumartuli clay idol-makers alleyways & historic College Street book stalls', evening: 'Heritage Kolkata Tram Ride & legendary Kathi Rolls at Nizam’s in New Market' }
+      ];
+    }
+
+    // 3. Ahmedabad
+    if (d.includes('ahmedabad')) {
+      return [
+        { summary: 'Sabarmati Ashram, Riverfront Walk & Atal Bridge', morning: 'Visit Sabarmati Ashram (Mahatma Gandhi’s Hriday Kunj residence & museum)', afternoon: 'Walk Sabarmati Riverfront Promenade & photograph flower-shaped Atal Pedestrian Bridge', evening: 'Authentic Gujarati Thali dinner at Agashiye rooftop restaurant' },
+        { summary: 'Adalaj Stepwell, Hutheesing Jain Temple & UNESCO Heritage Walk', morning: 'Explore 5-story 1498 AD Adalaj Stepwell (Rudraabai Stepwell) intricate carvings', afternoon: 'Tour white marble Hutheesing Jain Temple & 15th-century UNESCO Jama Masjid', evening: 'Night food tasting walk at famous Manek Chowk food street' }
+      ];
+    }
+
+    // 4. Amritsar
+    if (d.includes('amritsar')) {
+      return [
+        { summary: 'Golden Temple (Harmandir Sahib) & Wagah Border Parade', morning: 'Visit revered Golden Temple (Harmandir Sahib) & Amrit Sarovar holy tank', afternoon: 'Walk Jallianwala Bagh memorial park & 1947 Partition Museum', evening: 'Witness India-Pakistan Wagah Border Beating Retreat ceremony & Amritsari Kulcha with Lassi' }
+      ];
+    }
+
+    // 5. Varanasi
+    if (d.includes('varanasi') || d.includes('kashi') || d.includes('banaras')) {
+      return [
+        { summary: 'Ganges Boat Sunrise Cruise, Kashi Vishwanath & Evening Aarti', morning: 'Sunrise boat cruise along sacred Ganges River Ghats viewing morning rituals', afternoon: 'Visit Kashi Vishwanath Temple Corridor & Annapurna Temple', evening: 'Grand Evening Ganga Aarti Ceremony at Dashashwamedh Ghat' },
+        { summary: 'Sarnath UNESCO Buddha Park & Banaras Silk Bazaars', morning: 'Excursion to Sarnath where Lord Buddha gave his first sermon & Dhamek Stupa', afternoon: 'Tour Sarnath Archeological Museum & Lion Capital of Ashoka', evening: 'Shop for authentic Banarasi Silk Sarees & taste famous Banarasi Paan' }
+      ];
+    }
+
+    // 6. Araku / Araku Valley
     if (d.includes('araku')) {
       return [
         { summary: 'Borra Caves & Katiki Waterfalls Exploration', morning: 'Explore 150 million-year-old Borra Limestone Caves & majestic stalactite formations', afternoon: 'Trek through bamboo forests to scenic Katiki Waterfalls & natural pool', evening: 'Campfire dinner trying famous authentic Araku Bamboo Chicken (Bongu Julu)' },
@@ -30,7 +81,7 @@ export class GeminiService {
       ];
     }
 
-    // 1. Vizag / Visakhapatnam
+    // 7. Vizag / Visakhapatnam
     if (d.includes('vizag') || d.includes('visakhapatnam')) {
       return [
         { summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park', morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach', afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach', evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner' },
@@ -39,7 +90,7 @@ export class GeminiService {
       ];
     }
 
-    // 2. Tirupati
+    // 8. Tirupati
     if (d.includes('tirupati') || d.includes('tirumala')) {
       return [
         { summary: 'Tirumala Venkateswara Swamy Temple & Srivari Padalu', morning: 'Darshan at sacred Lord Venkateswara Swamy Temple in Tirumala hills', afternoon: 'Visit Srivari Padalu, Silathoranam natural rock arch & Chakra Tirtham', evening: 'Traditional South Indian Prasadam thali & evening temple illuminations' },
@@ -47,7 +98,7 @@ export class GeminiService {
       ];
     }
 
-    // 3. Vijayawada / Amaravati
+    // 9. Vijayawada / Amaravati
     if (d.includes('vijayawada') || d.includes('amaravati')) {
       return [
         { summary: 'Kanakadurga Temple, Prakasam Barrage & Bhavani Island', morning: 'Visit sacred Kanakadurga Temple atop Indrakeeladri Hill overlooking Krishna River', afternoon: 'Walk scenic Prakasam Barrage & boat ride to Bhavani Island resort', evening: 'Water sports & riverside dinner at Bhavani Island' },
@@ -55,7 +106,7 @@ export class GeminiService {
       ];
     }
 
-    // 4. Coorg / Madikeri
+    // 10. Coorg / Madikeri
     if (d.includes('coorg') || d.includes('madikeri')) {
       return [
         { summary: 'Abbey Falls, Raja’s Seat & Madikeri Fort', morning: 'Walk through spice plantations to majestic Abbey Falls waterfalls', afternoon: 'Explore Madikeri Fort palace, museum & Omkareshwara Temple', evening: 'Sunset panorama view over misty Western Ghats valleys at Raja’s Seat' },
@@ -63,7 +114,7 @@ export class GeminiService {
       ];
     }
 
-    // 5. Wayanad
+    // 11. Wayanad
     if (d.includes('wayanad')) {
       return [
         { summary: 'Edakkal Caves Prehistoric Petroglyphs & Banasura Sagar Dam', morning: 'Trek to 7,000-year-old Neolithic Stone Age petroglyphs inside Edakkal Caves', afternoon: 'Speedboating & ziplining at Banasura Sagar Dam (largest earth dam in India)', evening: 'Sunset walk at Pookode Lake & spice shopping' },
@@ -71,7 +122,7 @@ export class GeminiService {
       ];
     }
 
-    // 6. Ooty / Kodaikanal
+    // 12. Ooty / Kodaikanal
     if (d.includes('ooty') || d.includes('kodaikanal')) {
       return [
         { summary: 'Ooty Nilgiri Mountain Toy Train & Botanical Gardens', morning: 'Ride UNESCO Nilgiri Mountain Railway Steam Toy Train from Coonoor to Ooty', afternoon: 'Stroll 55-acre Government Botanical Garden & Rose Garden', evening: 'Boating at Ooty Lake & Homemade Chocolate tasting on Commercial Road' },
@@ -79,7 +130,7 @@ export class GeminiService {
       ];
     }
 
-    // 7. Pune
+    // 13. Pune
     if (d.includes('pune')) {
       return [
         { summary: 'Shaniwar Wada Fort, Lal Mahal & Dagdusheth Ganpati Temple', morning: 'Explore historic 1730 AD Shaniwar Wada Peshwa Palace ramparts & Lal Mahal', afternoon: 'Visit revered Shreemant Dagdusheth Halwai Ganpati Temple & Tulshibaug shopping market', evening: 'Authentic Puneri Misal Pav & Mastani Mango drink tasting at Sujata Mastani' },
@@ -87,7 +138,7 @@ export class GeminiService {
       ];
     }
 
-    // 8. Hyderabad
+    // 14. Hyderabad
     if (d.includes('hyderabad') || d.includes('secunderabad')) {
       return [
         { summary: 'Charminar, Laad Bazaar Pearls & Chowmahalla Palace', morning: 'Climb 1591 AD Charminar & shop for bangles in Laad Bazaar', afternoon: 'Tour Nizams grand Chowmahalla Palace & vintage car collection', evening: 'Authentic Hyderabadi Dum Biryani dinner at Paradise or Hotel Shadab' },
@@ -95,7 +146,7 @@ export class GeminiService {
       ];
     }
 
-    // 9. Assam
+    // 15. Assam
     if (d.includes('assam') || d.includes('guwahati') || d.includes('kaziranga') || d.includes('majuli')) {
       return [
         { summary: 'Guwahati Kamakhya Temple & Brahmaputra Sunset Cruise', morning: 'Visit sacred 51 Shakti Peeth Kamakhya Temple atop Nilachal Hill in Guwahati', afternoon: 'Guided walk through Assam State Museum & Umananda Peacock Island Temple', evening: 'Sunset Alfresco Cruise on Brahmaputra River with traditional Assamese dinner' },
@@ -103,7 +154,7 @@ export class GeminiService {
       ];
     }
 
-    // 10. Kerala
+    // 16. Kerala
     if (d.includes('kerala') || d.includes('kochi') || d.includes('munnar') || d.includes('alleppey') || d.includes('kovalam')) {
       return [
         { summary: 'Fort Kochi Heritage Walk, St. Francis Church & Chinese Nets', morning: 'Explore historic Fort Kochi, Mattancherry Dutch Palace & Jewish Synagogue', afternoon: 'View iconic Chinese Fishing Nets & fresh seafood lunch by the Arabian Sea', evening: 'Traditional Kathakali Cultural Dance Performance with elaborate face makeup' },
@@ -111,7 +162,7 @@ export class GeminiService {
       ];
     }
 
-    // 11. Goa
+    // 17. Goa
     if (d.includes('goa') || d.includes('baga') || d.includes('panaji')) {
       return [
         { summary: 'North Goa Baga Beach Water Sports & Aguada Fort', morning: 'Parasailing & Jet Skiing at Baga Beach', afternoon: 'Explore 17th-century Portuguese Fort Aguada & Lighthouse', evening: 'Sunset cocktails at Vagator Cliff Lounge (Thalassa)' },
@@ -321,7 +372,7 @@ INSTRUCTIONS & CONSTRAINTS:
     if (nonStopTokens.length > 0) {
       targetPlace = nonStopTokens.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     } else {
-      targetPlace = destContext || 'Araku';
+      targetPlace = destContext || 'Chennai';
     }
 
     const dayTemplates = this.getCityLandmarks(targetPlace, tripContext?.travelStyle);
@@ -407,7 +458,7 @@ INSTRUCTIONS & CONSTRAINTS:
   }
 
   private static generateFallbackItinerary(input: any) {
-    const dest = (input.destination || 'Araku').trim();
+    const dest = (input.destination || 'Chennai').trim();
     const daysCount = Number(input.durationDays) || 4;
     const style = input.travelStyle || 'Leisure';
 
@@ -519,7 +570,7 @@ Return ONLY valid JSON matching this structure:
     if (destLower.includes('ladakh') || destLower.includes('leh') || destLower.includes('kashmir') || destLower.includes('manali') || destLower.includes('shimla') || destLower.includes('switzerland') || destLower.includes('iceland')) {
       clothingItems = ['Heavy Down Thermal Jacket', 'Woolen Thermals & Innerwear', 'Waterproof Trekking Boots', 'Fleece Gloves & Beanie Cap'];
       toiletries = ['Cold-Wind Moisturizing Cream', 'SPF 50+ Sunscreen Lotion', 'Heavy Lip Balm & First Aid'];
-    } else if (destLower.includes('goa') || destLower.includes('bali') || destLower.includes('maldives') || destLower.includes('phuket') || destLower.includes('kerala') || destLower.includes('assam') || destLower.includes('araku')) {
+    } else if (destLower.includes('goa') || destLower.includes('bali') || destLower.includes('maldives') || destLower.includes('phuket') || destLower.includes('kerala') || destLower.includes('assam') || destLower.includes('araku') || destLower.includes('chennai')) {
       clothingItems = ['UV-Protection Swimwear', 'Light Cotton Shirts & Linen Shorts', 'Flip-Flops & Beach Footwear'];
       toiletries = ['Water-Resistant SPF 50+ Sunscreen', 'After-Sun Aloe Vera Gel', 'Mosquito Repellent Lotion'];
     }

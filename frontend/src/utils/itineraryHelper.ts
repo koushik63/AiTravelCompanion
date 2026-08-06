@@ -19,159 +19,147 @@ interface TemplateItem {
 }
 
 const DESTINATION_TEMPLATES: Record<string, TemplateItem[]> = {
-  // 0. Araku / Araku Valley
-  araku: [
+  // 0. Chennai
+  chennai: [
     {
-      summary: 'Borra Caves & Katiki Waterfalls Exploration',
-      morning: 'Explore 150 million-year-old Borra Limestone Caves & majestic stalactite formations.',
-      afternoon: 'Trek through bamboo forests to scenic Katiki Waterfalls & natural pool.',
-      evening: 'Campfire dinner trying famous authentic Araku Bamboo Chicken (Bongu Julu).',
+      summary: 'Marina Beach Promenade, Kapaleeshwarar Temple & San Thome Basilica',
+      morning: 'Visit 7th-century Dravidian Kapaleeshwarar Temple in historic Mylapore.',
+      afternoon: 'Tour neo-Gothic San Thome Basilica Cathedral built over St. Thomas tomb.',
+      evening: 'Sunset walk along 13km Marina Beach promenade & sample Murugan Idli Shop dinner.',
       baseCostINR: 3200,
-      highlight: 'Borra Caves & Katiki Waterfalls'
+      highlight: 'Marina Beach & Kapaleeshwarar Temple'
     },
     {
-      summary: 'Araku Coffee Plantations, Tribal Museum & Dhimsa Dance',
-      morning: 'Guided coffee bean picking walk at organic Araku Valley Coffee Estates & Chaparai Cascades.',
-      afternoon: 'Tour Araku Tribal Museum showcasing indigenous heritage, crafts & lifestyle.',
-      evening: 'Watch live Dhimsa Tribal Folk Dance performance & sunset view from Galikonda Viewpoint.',
+      summary: 'Fort St. George, Government Museum & Egmore Art Gallery',
+      morning: 'Tour 1644 AD Fort St. George (first English fortress in India) & St. Mary’s Church.',
+      afternoon: 'Explore Bronze Gallery at Government Museum Egmore viewing Chola bronzes.',
+      evening: 'Shop for Kanchipuram Silk Sarees at T. Nagar & enjoy filter coffee at Saravana Bhavan.',
       baseCostINR: 3500,
-      highlight: 'Araku Coffee Estates & Tribal Museum'
+      highlight: 'Fort St. George & Government Museum'
     },
     {
-      summary: 'Padmapuram Gardens & Ananthagiri Hills Trek',
-      morning: 'Stroll Padmapuram Botanical Gardens & historic tree top hanging huts.',
-      afternoon: 'Visit Ananthagiri Waterfalls & scenic coffee plantation trail walk.',
-      evening: 'Sample freshly brewed organic Araku Filter Coffee & local forest honey before departure.',
-      baseCostINR: 3000,
-      highlight: 'Padmapuram Gardens & Ananthagiri Hills'
-    }
-  ],
-
-  // 1. Vizag / Visakhapatnam
-  vizag: [
-    {
-      summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park',
-      morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach.',
-      afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach.',
-      evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner.',
-      baseCostINR: 3200,
-      highlight: 'INS Kursura Submarine Museum & RK Beach'
+      summary: 'UNESCO Shore Temple & Mahabalipuram Monuments Excursion',
+      morning: 'Day trip to Mahabalipuram: Explore 8th-century UNESCO Shore Temple by the ocean.',
+      afternoon: 'Photograph Arjuna’s Penance rock relief & balance at Krishna’s Butterball.',
+      evening: 'Fresh seafood dinner at Mahabalipuram Beach Resort before returning to Chennai.',
+      baseCostINR: 4200,
+      highlight: 'UNESCO Shore Temple & Mahabalipuram'
     },
     {
-      summary: 'Kailasagiri Hilltop Ropeway & Rushikonda Blue Flag Beach',
-      morning: 'Ride Kailasagiri Ropeway to hilltop park viewing giant Lord Shiva & Parvati statues.',
-      afternoon: 'Water sports, speedboating & surf lessons at Rushikonda Blue Flag Beach.',
-      evening: 'Seafood grill dinner at Rushikonda Beach Resort.',
+      summary: 'DakshinaChitra Living Heritage Museum & Besant Nagar Beach',
+      morning: 'Guided walk through DakshinaChitra Heritage Village showcasing South Indian homes.',
+      afternoon: 'Visit Cholamandal Artists’ Village & Marundeeswarar Temple.',
+      evening: 'Sunset walk at Edward Elliot’s Beach (Besant Nagar Beach) & seafood dinner.',
       baseCostINR: 3800,
-      highlight: 'Kailasagiri Ropeway & Rushikonda Beach'
-    },
-    {
-      summary: 'Borra Caves & Araku Coffee Plantations Excursion',
-      morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels.',
-      afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls.',
-      evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee.',
-      baseCostINR: 4500,
-      highlight: 'Borra Caves & Araku Valley Coffee'
+      highlight: 'DakshinaChitra & Besant Nagar Beach'
     }
   ],
 
-  // 2. Tirupati
-  tirupati: [
+  // 1. Bengaluru / Bangalore
+  bengaluru: [
     {
-      summary: 'Tirumala Venkateswara Swamy Temple & Srivari Padalu',
-      morning: 'Darshan at sacred Lord Venkateswara Swamy Temple in Tirumala hills.',
-      afternoon: 'Visit Srivari Padalu, Silathoranam natural rock arch & Chakra Tirtham.',
-      evening: 'Traditional South Indian Prasadam thali & evening temple illuminations.',
-      baseCostINR: 2800,
-      highlight: 'Tirumala Temple & Silathoranam Arch'
+      summary: 'Bangalore Palace, Tipu Sultan Palace & Lalbagh Glass House',
+      morning: 'Tour Tudor-style Bangalore Royal Palace & Tipu Sultan’s Wooden Summer Palace.',
+      afternoon: 'Stroll 240-acre Lalbagh Botanical Gardens & historic 1889 Glass House.',
+      evening: 'Traditional South Indian Filter Coffee & Masala Dosa at MTR (Mavalli Tiffin Room).',
+      baseCostINR: 3500,
+      highlight: 'Bangalore Palace & Lalbagh Glass House'
     },
     {
-      summary: 'Sri Kalahasti Temple & Chandragiri Fort Excursion',
-      morning: 'Visit ancient Vayu Lingam Sri Kalahasteeswara Temple in Sri Kalahasti.',
-      afternoon: 'Tour 11th-century Vijayanagara Raja Mahal & Rani Mahal at Chandragiri Fort.',
-      evening: 'Sunset view from Kapila Theertham waterfall temple in Tirupati town.',
+      summary: 'Cubbon Park, Visvesvaraya Museum & Vidhana Soudha',
+      morning: 'Walk green canopy paths of Cubbon Park & photograph Vidhana Soudha Neo-Dravidian Citadel.',
+      afternoon: 'Interactive science exhibits at Visvesvaraya Industrial & Technological Museum.',
+      evening: 'Shop along Commercial Street & MG Road, followed by craft beer at Indiranagar microbrewery.',
+      baseCostINR: 3800,
+      highlight: 'Cubbon Park & Vidhana Soudha'
+    },
+    {
+      summary: 'ISKCON Temple, Bull Temple & Basavanagudi Heritage Walk',
+      morning: 'Visit magnificent hilltop ISKCON Temple Bangalore & Sri Big Bull Temple.',
+      afternoon: 'Explore Gandhi Bazaar spice shops & heritage South Indian lunch at Vidyarthi Bhavan.',
+      evening: 'Sunset view from Sankey Tank lake promenade.',
       baseCostINR: 3200,
-      highlight: 'Sri Kalahasti & Chandragiri Fort'
+      highlight: 'ISKCON Temple & Vidyarthi Bhavan'
     }
   ],
 
-  // 3. Vijayawada / Amaravati
-  vijayawada: [
+  // 2. Kolkata
+  kolkata: [
     {
-      summary: 'Kanakadurga Temple, Prakasam Barrage & Bhavani Island',
-      morning: 'Visit sacred Kanakadurga Temple atop Indrakeeladri Hill overlooking Krishna River.',
-      afternoon: 'Walk scenic Prakasam Barrage & boat ride to Bhavani Island resort.',
-      evening: 'Water sports & riverside dinner at Bhavani Island.',
-      baseCostINR: 3000,
-      highlight: 'Kanakadurga Temple & Bhavani Island'
+      summary: 'Victoria Memorial, St. Paul’s Cathedral & Howrah Bridge Sunset',
+      morning: 'Explore white marble Victoria Memorial Hall & surrounding lush gardens.',
+      afternoon: 'Visit Indo-Gothic St. Paul’s Cathedral & Kolkata Academy of Fine Arts.',
+      evening: 'Sunset boat cruise on Hooghly River under iconic Howrah Bridge (Rabindra Setu).',
+      baseCostINR: 3200,
+      highlight: 'Victoria Memorial & Howrah Bridge'
     },
     {
-      summary: 'Undavalli Caves & Amaravati Stupa Heritage',
-      morning: 'Explore 7th-century monolithic rock-cut Undavalli Caves & 5-story Anantasayana Vishnu statue.',
-      afternoon: 'Excursion to ancient Buddhist Maha Stupa & Dhyana Buddha Statue in Amaravati.',
-      evening: 'Traditional Andhra thali dinner featuring Gongura Pachadi.',
+      summary: 'Dakshineswar Kali Temple & Belur Math World Headquarters',
+      morning: 'Visit sacred Dakshineswar Kali Temple on Hooghly River banks.',
+      afternoon: 'Ferry across river to Belur Math (Ramakrishna Mission World Headquarters).',
+      evening: 'Authentic Bengali Fish Curry & Rasgulla dinner at 6 Ballygunge Place.',
+      baseCostINR: 3500,
+      highlight: 'Dakshineswar Temple & Belur Math'
+    },
+    {
+      summary: 'Indian Museum, Park Street & Kumartuli Idol Village',
+      morning: 'Tour Indian Museum (Asia’s oldest museum) & Asiatic Society.',
+      afternoon: 'Walk Kumartuli clay idol-makers alleyways & historic College Street book stalls.',
+      evening: 'Heritage Kolkata Tram Ride & legendary Kathi Rolls at Nizam’s in New Market.',
+      baseCostINR: 3000,
+      highlight: 'Indian Museum & Kumartuli Village'
+    }
+  ],
+
+  // 3. Ahmedabad
+  ahmedabad: [
+    {
+      summary: 'Sabarmati Ashram, Riverfront Walk & Atal Bridge',
+      morning: 'Visit Sabarmati Ashram (Mahatma Gandhi’s Hriday Kunj residence & museum).',
+      afternoon: 'Walk Sabarmati Riverfront Promenade & photograph flower-shaped Atal Pedestrian Bridge.',
+      evening: 'Authentic Gujarati Thali dinner at Agashiye rooftop restaurant.',
+      baseCostINR: 3200,
+      highlight: 'Sabarmati Ashram & Atal Bridge'
+    },
+    {
+      summary: 'Adalaj Stepwell, Hutheesing Jain Temple & UNESCO Heritage Walk',
+      morning: 'Explore 5-story 1498 AD Adalaj Stepwell (Rudraabai Stepwell) intricate carvings.',
+      afternoon: 'Tour white marble Hutheesing Jain Temple & 15th-century UNESCO Jama Masjid.',
+      evening: 'Night food tasting walk at famous Manek Chowk food street.',
+      baseCostINR: 3500,
+      highlight: 'Adalaj Stepwell & Manek Chowk'
+    }
+  ],
+
+  // 4. Chandigarh & Amritsar
+  amritsar: [
+    {
+      summary: 'Golden Temple (Harmandir Sahib) & Wagah Border Parade',
+      morning: 'Visit revered Golden Temple (Harmandir Sahib) & Amrit Sarovar holy tank.',
+      afternoon: 'Walk Jallianwala Bagh memorial park & 1947 Partition Museum.',
+      evening: 'Witness India-Pakistan Wagah Border Beating Retreat ceremony & Amritsari Kulcha with Lassi.',
       baseCostINR: 3400,
-      highlight: 'Undavalli Caves & Amaravati Stupa'
+      highlight: 'Golden Temple & Wagah Border'
     }
   ],
 
-  // 4. Coorg / Madikeri
-  coorg: [
+  // 5. Varanasi
+  varanasi: [
     {
-      summary: 'Abbey Falls, Raja’s Seat & Madikeri Fort',
-      morning: 'Walk through spice plantations to majestic Abbey Falls waterfalls.',
-      afternoon: 'Explore Madikeri Fort palace, museum & Omkareshwara Temple.',
-      evening: 'Sunset panorama view over misty Western Ghats valleys at Raja’s Seat.',
-      baseCostINR: 3600,
-      highlight: 'Abbey Falls & Raja’s Seat Sunset'
+      summary: 'Ganges Boat Sunrise Cruise, Kashi Vishwanath & Evening Aarti',
+      morning: 'Sunrise boat cruise along sacred Ganges River Ghats viewing morning rituals.',
+      afternoon: 'Visit Kashi Vishwanath Temple Corridor & Annapurna Temple.',
+      evening: 'Grand Evening Ganga Aarti Ceremony at Dashashwamedh Ghat.',
+      baseCostINR: 2800,
+      highlight: 'Ganges Sunrise Cruise & Ganga Aarti'
     },
     {
-      summary: 'Bhadra / Dubare Elephant Camp & Namdroling Monastery',
-      morning: 'Elephant bathing & feeding experience at Dubare Elephant Camp on Cauvery River.',
-      afternoon: 'Visit Golden Temple Namdroling Tibetan Monastery in Bylakuppe.',
-      evening: 'Campfire dinner tasting authentic Pandi Curry & Akki Roti in Coorg.',
-      baseCostINR: 4200,
-      highlight: 'Dubare Elephant Camp & Tibetan Golden Temple'
-    }
-  ],
-
-  // 5. Wayanad
-  wayanad: [
-    {
-      summary: 'Edakkal Caves Prehistoric Petroglyphs & Banasura Sagar Dam',
-      morning: 'Trek to 7,000-year-old Neolithic Stone Age petroglyphs inside Edakkal Caves.',
-      afternoon: 'Speedboating & ziplining at Banasura Sagar Dam (largest earth dam in India).',
-      evening: 'Sunset walk at Pookode Lake & spice shopping.',
-      baseCostINR: 3800,
-      highlight: 'Edakkal Caves & Banasura Sagar Dam'
-    },
-    {
-      summary: 'Chembra Peak Heart Lake & Meenmutty Waterfalls',
-      morning: 'Trek to famous natural Heart-Shaped Lake at Chembra Peak.',
-      afternoon: 'Guided walk through tea gardens to 300m 3-tiered Meenmutty Waterfalls.',
-      evening: 'Resort bonfire & authentic Kerala Malabar Biryani dinner.',
-      baseCostINR: 4200,
-      highlight: 'Chembra Peak Heart Lake & Meenmutty Falls'
-    }
-  ],
-
-  // 6. Ooty / Kodaikanal
-  ooty: [
-    {
-      summary: 'Ooty Nilgiri Mountain Toy Train & Botanical Gardens',
-      morning: 'Ride UNESCO Nilgiri Mountain Railway Steam Toy Train from Coonoor to Ooty.',
-      afternoon: 'Stroll 55-acre Government Botanical Garden & Rose Garden.',
-      evening: 'Boating at Ooty Lake & Homemade Chocolate tasting on Commercial Road.',
-      baseCostINR: 3800,
-      highlight: 'UNESCO Toy Train & Botanical Garden'
-    },
-    {
-      summary: 'Doddabetta Peak (8,652 ft) & Pykara Lake Waterfalls',
-      morning: 'Panoramic sunrise views over Nilgiri hills from Doddabetta Peak telescope house.',
-      afternoon: 'Speedboating on Pykara Lake & walk Pykara Waterfalls pine forests.',
-      evening: 'Cozy dinner at Earl’s Secret heritage restaurant in Ooty.',
-      baseCostINR: 4000,
-      highlight: 'Doddabetta Peak & Pykara Waterfalls'
+      summary: 'Sarnath UNESCO Buddha Park & Banaras Silk Bazaars',
+      morning: 'Excursion to Sarnath where Lord Buddha gave his first sermon & Dhamek Stupa.',
+      afternoon: 'Tour Sarnath Archeological Museum & Lion Capital of Ashoka.',
+      evening: 'Shop for authentic Banarasi Silk Sarees & taste famous Banarasi Paan.',
+      baseCostINR: 3200,
+      highlight: 'Sarnath Buddha Park & Banarasi Silk'
     }
   ]
 };
@@ -188,13 +176,19 @@ export function getDetailedDestinationItinerary(
   const daysNeeded = Math.max(1, durationDays || 3);
 
   let key = '';
-  if (dest.includes('araku')) key = 'araku';
+  if (dest.includes('chennai') || dest.includes('madras')) key = 'chennai';
+  else if (dest.includes('bengaluru') || dest.includes('bangalore')) key = 'bengaluru';
+  else if (dest.includes('kolkata') || dest.includes('calcutta')) key = 'kolkata';
+  else if (dest.includes('ahmedabad')) key = 'ahmedabad';
+  else if (dest.includes('amritsar')) key = 'amritsar';
+  else if (dest.includes('varanasi') || dest.includes('kashi') || dest.includes('banaras')) key = 'varanasi';
+  else if (dest.includes('araku')) key = 'araku';
   else if (dest.includes('vizag') || dest.includes('visakhapatnam')) key = 'vizag';
   else if (dest.includes('tirupati')) key = 'tirupati';
-  else if (dest.includes('vijayawada') || dest.includes('amaravati')) key = 'vijayawada';
-  else if (dest.includes('coorg') || dest.includes('madikeri')) key = 'coorg';
+  else if (dest.includes('vijayawada')) key = 'vijayawada';
+  else if (dest.includes('coorg')) key = 'coorg';
   else if (dest.includes('wayanad')) key = 'wayanad';
-  else if (dest.includes('ooty') || dest.includes('kodaikanal')) key = 'ooty';
+  else if (dest.includes('ooty')) key = 'ooty';
   else if (dest.includes('pune')) key = 'pune';
   else if (dest.includes('assam')) key = 'assam';
   else if (dest.includes('kerala')) key = 'kerala';
