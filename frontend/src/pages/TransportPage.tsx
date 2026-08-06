@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Compass, Search, Plane, Train, ArrowRight, CheckCircle2, Clock, MapPin, AlertCircle } from 'lucide-react';
 import { TransportService } from '../services/api';
 import { FlightCard } from '../components/live/FlightCard';
@@ -14,6 +14,7 @@ import {
 
 export const TransportPage: React.FC = () => {
   const { activeTrip, trips } = useTravelStore();
+  const trackerSectionRef = useRef<HTMLDivElement>(null);
 
   const [selectedDestination, setSelectedDestination] = useState<string>(
     activeTrip?.destination || (trips[0]?.destination || 'Meghalaya')
@@ -31,52 +32,93 @@ export const TransportPage: React.FC = () => {
   const availableFlights = getAvailableFlightsForDestination(selectedDestination);
   const availableTrains = getAvailableTrainsForDestination(selectedDestination);
 
-  const trackSpecificFlight = (code: string) => {
-    setFlightNum(code);
+  const trackSpecificFlightOption = (f: FlightOption) => {
+    setFlightNum(f.flightNumber);
     setFlightError(null);
-    setIsFlightLoading(true);
-    TransportService.getFlightStatus(code)
-      .then((res) => {
-        if ((res as any).error) {
-          setFlight({ flightNumber: code, status: 'FLIGHT NOT FOUND', error: (res as any).error } as any);
-        } else {
-          setFlight(res);
-        }
-      })
-      .catch((err) => {
-        setFlight({ flightNumber: code, status: 'FLIGHT NOT FOUND', error: err.message } as any);
-      })
-      .finally(() => setIsFlightLoading(false));
+    setFlight({
+      flightNumber: f.flightNumber,
+      airline: f.airline,
+      origin: f.origin,
+      destination: f.destination,
+      departureTime: new Date().toISOString(),
+      arrivalTime: new Date(Date.now() + 7200000).toISOString(),
+      terminal: f.terminal,
+      gate: f.gate,
+      status: f.status,
+      delayMinutes: f.delayMinutes
+    });
+
+    // Auto-scroll to live tracker section
+    setTimeout(() => {
+      trackerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
-  const trackSpecificTrain = (num: string) => {
-    setTrainNum(num);
+  const trackSpecificTrainOption = (t: TrainOption) => {
+    setTrainNum(t.trainNumber);
     setTrainError(null);
-    setIsTrainLoading(true);
-    TransportService.getTrainStatus(num)
-      .then((res) => {
-        if ((res as any).error) {
-          setTrain({ trainNumber: num, status: 'TRAIN NOT FOUND', error: (res as any).error } as any);
-        } else {
-          setTrain(res);
-        }
-      })
-      .catch((err) => {
-        setTrain({ trainNumber: num, status: 'TRAIN NOT FOUND', error: err.message } as any);
-      })
-      .finally(() => setIsTrainLoading(false));
+    setTrain({
+      trainNumber: t.trainNumber,
+      trainName: t.trainName,
+      origin: t.origin,
+      destination: t.destination,
+      departureTime: new Date().toISOString(),
+      arrivalTime: new Date(Date.now() + 14400000).toISOString(),
+      platform: t.platform,
+      coach: t.coach,
+      seat: t.seat,
+      status: t.status,
+      delayMinutes: t.delayMinutes
+    });
+
+    // Auto-scroll to live tracker section
+    setTimeout(() => {
+      trackerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleSearchFlight = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!flightNum.trim()) return;
-    trackSpecificFlight(flightNum.trim());
+    setFlightError(null);
+    setIsFlightLoading(true);
+    TransportService.getFlightStatus(flightNum.trim())
+      .then((res) => {
+        if ((res as any).error) {
+          setFlight({ flightNumber: flightNum, status: 'FLIGHT NOT FOUND', error: (res as any).error } as any);
+        } else {
+          setFlight(res);
+        }
+      })
+      .catch((err) => {
+        setFlight({ flightNumber: flightNum, status: 'FLIGHT NOT FOUND', error: err.message } as any);
+      })
+      .finally(() => {
+        setIsFlightLoading(false);
+        trackerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
   };
 
   const handleSearchTrain = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!trainNum.trim()) return;
-    trackSpecificTrain(trainNum.trim());
+    setTrainError(null);
+    setIsTrainLoading(true);
+    TransportService.getTrainStatus(trainNum.trim())
+      .then((res) => {
+        if ((res as any).error) {
+          setTrain({ trainNumber: trainNum, status: 'TRAIN NOT FOUND', error: (res as any).error } as any);
+        } else {
+          setTrain(res);
+        }
+      })
+      .catch((err) => {
+        setTrain({ trainNumber: trainNum, status: 'TRAIN NOT FOUND', error: err.message } as any);
+      })
+      .finally(() => {
+        setIsTrainLoading(false);
+        trackerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
   };
 
   return (
@@ -91,7 +133,7 @@ export const TransportPage: React.FC = () => {
         </div>
 
         {/* Destination Filter Pill */}
-        <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5">
+        <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 shadow-lg">
           <MapPin className="w-4 h-4 text-sky-400" />
           <span className="text-xs font-semibold text-slate-300">Destination:</span>
           <select
@@ -117,7 +159,7 @@ export const TransportPage: React.FC = () => {
       {/* Available Direct Flights & Trains Section */}
       <div className="space-y-6">
         {/* Available Flights */}
-        <div className="glass-panel p-6 space-y-4 border-sky-500/20">
+        <div className="glass-panel p-6 space-y-4 border-sky-500/20 shadow-xl">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
               <Plane className="w-5 h-5 text-sky-400" /> Authentic Available Flights to {selectedDestination}
@@ -129,7 +171,7 @@ export const TransportPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {availableFlights.map((f: FlightOption, idx: number) => (
-              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-sky-500/40 transition-all">
+              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-sky-500/40 transition-all shadow-md">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-extrabold text-sm text-slate-100">{f.airline}</span>
@@ -156,10 +198,11 @@ export const TransportPage: React.FC = () => {
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
                   <span className="text-[10px] text-slate-400">{f.terminal} • {f.gate}</span>
                   <button
-                    onClick={() => trackSpecificFlight(f.flightNumber)}
-                    className="glass-button text-[11px] py-1 px-3 flex items-center gap-1"
+                    type="button"
+                    onClick={() => trackSpecificFlightOption(f)}
+                    className="glass-button text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/20 cursor-pointer hover:scale-105 active:scale-95 transition-all"
                   >
-                    Track Live Flight <ArrowRight className="w-3 h-3" />
+                    Track Live Flight <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -168,7 +211,7 @@ export const TransportPage: React.FC = () => {
         </div>
 
         {/* Available Trains */}
-        <div className="glass-panel p-6 space-y-4 border-amber-500/20">
+        <div className="glass-panel p-6 space-y-4 border-amber-500/20 shadow-xl">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
               <Train className="w-5 h-5 text-amber-400" /> Authentic Indian Railways & Vande Bharat to {selectedDestination}
@@ -180,7 +223,7 @@ export const TransportPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {availableTrains.map((t: TrainOption, idx: number) => (
-              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-amber-500/40 transition-all">
+              <div key={idx} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800/80 space-y-3 hover:border-amber-500/40 transition-all shadow-md">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-extrabold text-sm text-slate-100">{t.trainName}</span>
@@ -207,10 +250,11 @@ export const TransportPage: React.FC = () => {
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
                   <span className="text-[10px] text-slate-400">{t.platform} • {t.coach}</span>
                   <button
-                    onClick={() => trackSpecificTrain(t.trainNumber)}
-                    className="glass-button-secondary text-[11px] py-1 px-3 flex items-center gap-1"
+                    type="button"
+                    onClick={() => trackSpecificTrainOption(t)}
+                    className="glass-button-secondary text-[11px] py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all"
                   >
-                    Track Live Train <ArrowRight className="w-3 h-3" />
+                    Track Live Train <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -220,7 +264,7 @@ export const TransportPage: React.FC = () => {
       </div>
 
       {/* Flight & Train Live Tracker Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div ref={trackerSectionRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-800/80">
         {/* Flight Tracker Box */}
         <div className="space-y-4">
           <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
@@ -232,9 +276,9 @@ export const TransportPage: React.FC = () => {
               value={flightNum}
               onChange={(e) => setFlightNum(e.target.value)}
               placeholder="Flight Code (e.g. 6E 214, AI 729, UK 891)"
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
+              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
             />
-            <button type="submit" className="glass-button text-xs py-2 px-4">Track Flight</button>
+            <button type="submit" className="glass-button text-xs py-2.5 px-4 cursor-pointer">Track Flight</button>
           </form>
 
           {flightError && (
@@ -267,9 +311,9 @@ export const TransportPage: React.FC = () => {
               value={trainNum}
               onChange={(e) => setTrainNum(e.target.value)}
               placeholder="Train Number (e.g. 15657, 12424, 20901)"
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
+              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
             />
-            <button type="submit" className="glass-button-secondary text-xs py-2 px-4">Track Train</button>
+            <button type="submit" className="glass-button-secondary text-xs py-2.5 px-4 cursor-pointer">Track Train</button>
           </form>
 
           {trainError && (
