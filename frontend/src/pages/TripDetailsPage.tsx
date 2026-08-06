@@ -1,41 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, ArrowLeft, Star, Edit, Trash2, CheckCircle2, Sparkles } from 'lucide-react';
+import { MapPin, Calendar, ArrowLeft, Star, Edit, Trash2, CheckCircle2, Sparkles, RefreshCw } from 'lucide-react';
 import { useTravelStore } from '../store/useTravelStore';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { formatDate } from '../utils/dateHelper';
 import { formatCurrency } from '../utils/currencyHelper';
 import { ProgressBar } from '../components/ui/ProgressBar';
-
-const DEST_MAP: Record<string, string> = {
-  goa: 'photo-1512343879784-a960bf40e7f2', ladakh: 'photo-1506905925346-21bda4d32df4',
-  ladhak: 'photo-1506905925346-21bda4d32df4', leh: 'photo-1506905925346-21bda4d32df4',
-  kerala: 'photo-1602216056096-3b40cc0c9944', rajasthan: 'photo-1524492412937-b28074a5d7da',
-  jaipur: 'photo-1524492412937-b28074a5d7da', mumbai: 'photo-1529253355930-ddbe423a2ac7',
-  delhi: 'photo-1597074866923-dc0589150358', agra: 'photo-1564507592333-c60657eea523',
-  kashmir: 'photo-1548013146-72479768bada', manali: 'photo-1626621341517-bbf3d9990a23',
-  varanasi: 'photo-1561361058-c24cecae35ca', paris: 'photo-1502602898657-3e91760cbb34',
-  london: 'photo-1513635269975-59663e0ac1ad', tokyo: 'photo-1540959733332-eab4deabeeaf',
-  dubai: 'photo-1512453979798-5ea266f8880c', bali: 'photo-1537996194471-e657df975ab4',
-  singapore: 'photo-1525625293386-3f8f99389edd', rome: 'photo-1552832230-c0197dd311b5',
-  maldives: 'photo-1573843981267-be1999ff37cd', bangkok: 'photo-1508009603885-50cf7c579365',
-  istanbul: 'photo-1524231757912-21f4fe3a7200', greece: 'photo-1555993539-1732b0258235',
-};
-const FALLBACKS = ['photo-1476514525535-07fb3b4ae5f1','photo-1500530855697-b586d89ba3ee','photo-1488085061387-422e29b40080','photo-1469474968028-56623f02e42e','photo-1519046904884-53103b34b206','photo-1503220317375-aaad61436b1b','photo-1551918120-9739cb430c6d','photo-1682685797406-97f364419b4a'];
-function getDestImage(dest: string, id: string) {
-  const low = (dest||'').toLowerCase();
-  for (const [k, v] of Object.entries(DEST_MAP)) if (low.includes(k)) return `https://images.unsplash.com/${v}?auto=format&fit=crop&q=80&w=1200`;
-  const idx = id.split('').reduce((a,c)=>a+c.charCodeAt(0),0) % FALLBACKS.length;
-  return `https://images.unsplash.com/${FALLBACKS[idx]}?auto=format&fit=crop&q=80&w=1200`;
-}
-
 import { getTripImage } from '../utils/imageHelper';
+import { getDetailedDestinationItinerary, DayItinerary } from '../utils/itineraryHelper';
+import { AIService } from '../services/api';
 
 export const TripDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trips, toggleFavoriteTrip, deleteTrip } = useTravelStore();
 
   const trip = trips.find((t) => t.id === id) || trips[0];
+  const [customItinerary, setCustomItinerary] = useState<DayItinerary[] | null>(null);
+  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
 
   if (!trip) {
     return (
@@ -46,7 +27,35 @@ export const TripDetailsPage: React.FC = () => {
     );
   }
 
+  const detailedItinerary = customItinerary || getDetailedDestinationItinerary(trip.destination);
   const budgetProgress = (trip.spent / (trip.budget || 1)) * 100;
+
+  const handleRegenerateWithAI = async () => {
+    setIsGeneratingAI(true);
+    try {
+      const res = await AIService.generateItinerary({
+        destination: trip.destination,
+        travelStyle: trip.travelType || 'Leisure',
+        budget: trip.budget || 50000,
+        durationDays: 3
+      });
+
+      if (res && res.days && Array.isArray(res.days)) {
+        const aiDays: DayItinerary[] = res.days.map((d: any) => ({
+          day: `Day ${d.dayNumber}: ${d.summary || 'Custom AI Schedule'}`,
+          morning: d.morning && d.morning[0] ? d.morning[0].title : `Explore morning highlights in ${trip.destination}`,
+          afternoon: d.afternoon && d.afternoon[0] ? d.afternoon[0].title : `Visit central attraction in ${trip.destination}`,
+          evening: d.evening && d.evening[0] ? d.evening[0].title : `Dine at famous local restaurant in ${trip.destination}`,
+          cost: `₹${Math.round((d.morning?.[0]?.cost || 800) + (d.afternoon?.[0]?.cost || 1200) + (d.evening?.[0]?.cost || 1500))}`
+        }));
+        setCustomItinerary(aiDays);
+      }
+    } catch (err) {
+      console.error('Failed to regenerate AI itinerary', err);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-12">
@@ -117,64 +126,55 @@ export const TripDetailsPage: React.FC = () => {
           </div>
 
           <div className="glass-panel p-6 space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div>
                 <h3 className="text-base font-bold text-slate-100">
                   Day-by-Day Itinerary Schedule
                 </h3>
-                <p className="text-[11px] text-slate-400">Curated multi-day travel plan for {trip.destination}</p>
+                <p className="text-[11px] text-slate-400">Detailed destination-specific itinerary for {trip.destination}</p>
               </div>
-              <span className="text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-400" /> AI Generated Itinerary
-              </span>
+
+              <button
+                onClick={handleRegenerateWithAI}
+                disabled={isGeneratingAI}
+                className="glass-button text-xs py-1.5 px-3.5 flex items-center gap-1.5 shadow-lg shadow-sky-500/15 disabled:opacity-50"
+              >
+                {isGeneratingAI ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" /> Generating AI Plan...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Regenerate AI Itinerary
+                  </>
+                )}
+              </button>
             </div>
 
-            {/* Generated Multi-day Plan */}
+            {/* Detailed Multi-day Plan */}
             <div className="space-y-6">
-              {[
-                {
-                  day: 'Day 1: Arrival & Landmark Exploration',
-                  morning: `Check-in to accommodation and enjoy morning coffee in central ${trip.destination}.`,
-                  afternoon: `Visit the top historical landmark and scenic waterfront in ${trip.destination}.`,
-                  evening: `Dine at a premier local restaurant and experience evening promenade views.`,
-                  cost: '₹3,500'
-                },
-                {
-                  day: 'Day 2: Local Culture & Food Tasting',
-                  morning: `Guided cultural walking tour and visit local handicraft markets in ${trip.destination}.`,
-                  afternoon: `Sample famous traditional dishes and street food specialties.`,
-                  evening: `Relaxing sunset lounge session with live ambient acoustic music.`,
-                  cost: '₹4,200'
-                },
-                {
-                  day: 'Day 3: Nature Adventure & Leisure',
-                  morning: `Morning excursion to nearby scenic nature spots and outdoor viewpoints.`,
-                  afternoon: `Leisurely lunch followed by shopping for authentic souvenirs.`,
-                  evening: `Farewell dinner celebration at top-rated rooftop lounge.`,
-                  cost: '₹5,000'
-                }
-              ].map((d, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+              {detailedItinerary.map((d, idx) => (
+                <div key={idx} className="p-4.5 rounded-xl bg-slate-900/80 border border-slate-800/80 space-y-3 shadow-lg">
+                  <div className="flex items-center justify-between border-b border-slate-800/60 pb-2.5">
                     <span className="font-extrabold text-xs text-amber-400 flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-sky-400" /> {d.day}
                     </span>
-                    <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
                       Est. {d.cost}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
-                      <span className="text-[10px] font-bold text-amber-300 block uppercase">☀️ Morning</span>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-amber-300 block uppercase tracking-wider">☀️ Morning</span>
                       <p className="text-slate-300 text-[11px] leading-relaxed">{d.morning}</p>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
-                      <span className="text-[10px] font-bold text-sky-300 block uppercase">🌤️ Afternoon</span>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-sky-300 block uppercase tracking-wider">🌤️ Afternoon</span>
                       <p className="text-slate-300 text-[11px] leading-relaxed">{d.afternoon}</p>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/60 space-y-1">
-                      <span className="text-[10px] font-bold text-indigo-300 block uppercase">🌙 Evening</span>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 space-y-1">
+                      <span className="text-[10px] font-bold text-indigo-300 block uppercase tracking-wider">🌙 Evening</span>
                       <p className="text-slate-300 text-[11px] leading-relaxed">{d.evening}</p>
                     </div>
                   </div>
