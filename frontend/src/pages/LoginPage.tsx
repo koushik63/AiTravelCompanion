@@ -31,9 +31,17 @@ export const LoginPage: React.FC = () => {
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      const authEmail = email.trim() || 'konkipudikoushik1@gmail.com';
+      let authEmail = email.trim();
+      if (!authEmail) {
+        const input = window.prompt('Enter your Google Account Email:', '');
+        if (!input || !input.trim()) {
+          setIsLoading(false);
+          return;
+        }
+        authEmail = input.trim();
+      }
       const authName = authEmail.split('@')[0].replace(/[._\d]+/g, ' ').trim()
-        .split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Koushik Konkipudi';
+        .split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Google User';
       await googleLogin(authEmail, authName);
       navigate('/dashboard');
     } catch (err: any) {

@@ -28,7 +28,9 @@ export const HotelContactModal: React.FC<HotelContactModalProps> = ({
 
   const phoneNum = hotel.phone || '+91 40 6629 8585';
   const emailAddr = hotel.email || `concierge@${hotel.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
-  const website = hotel.websiteUrl || hotel.googleMapsUrl;
+  const website = hotel.websiteUrl && hotel.websiteUrl.startsWith('http')
+    ? hotel.websiteUrl
+    : `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(hotel.name + ' ' + hotel.destination)}`;
 
   const fullContactSummary = `🏨 ${hotel.name}\n📍 Address: ${hotel.address}\n📞 Phone: ${phoneNum}\n📧 Email: ${emailAddr}\n🌐 Website: ${website}`;
 
