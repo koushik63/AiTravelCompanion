@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased selection:bg-sky-500 selection:text-white min-h-screen;
+  }
+}
+
+/* Glassmorphism card utilities */
+.glass-panel {
+  @apply bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 shadow-2xl rounded-2xl;
+}
+
+.glass-panel-hover {
+  @apply glass-panel transition-all duration-300 hover:border-sky-500/50 hover:shadow-sky-500/10 hover:-translate-y-0.5;
+}
+
+.glass-button {
+  @apply bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium px-4 py-2.5 rounded-xl shadow-lg shadow-sky-500/25 transition-all duration-200 active:scale-[0.98];
+}
+
+.glass-button-secondary {
+  @apply bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 border border-slate-700/80 px-4 py-2.5 rounded-xl transition-all duration-200 active:scale-[0.98];
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}
