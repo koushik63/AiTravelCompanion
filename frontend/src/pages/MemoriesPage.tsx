@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, Plus, Share2, Download, Sparkles, MapPin, Upload, Link, X, Image as ImageIcon } from 'lucide-react';
+import { Camera, Plus, Sparkles, MapPin, Upload, Link, X, Image as ImageIcon } from 'lucide-react';
 import { MemoryService } from '../services/api';
 import { useTravelStore } from '../store/useTravelStore';
 import { useUIStore } from '../store/useUIStore';
@@ -170,12 +170,6 @@ export const MemoriesPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => setShowShareModal(true)} className="glass-button-secondary text-xs py-2.5 px-4 flex items-center gap-1.5 cursor-pointer">
-            <Share2 className="w-4 h-4 text-sky-400" /> Share Trip
-          </button>
-          <button onClick={() => setShowExportModal(true)} className="glass-button-secondary text-xs py-2.5 px-4 flex items-center gap-1.5 cursor-pointer">
-            <Download className="w-4 h-4 text-emerald-400" /> Export PDF
-          </button>
           <button onClick={() => setShowAddModal(true)} className="glass-button text-xs py-2.5 px-5 flex items-center gap-1.5 shadow-xl shadow-sky-500/20 cursor-pointer">
             <Plus className="w-4 h-4" /> Add Memory
           </button>
