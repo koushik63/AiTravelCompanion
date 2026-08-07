@@ -1,5 +1,6 @@
 import { Logger } from '../utils/logger';
 import axios from 'axios';
+import { LocationResolverService } from './LocationResolverService';
 
 export interface HotelItem {
   id: string;
@@ -196,7 +197,7 @@ const DESTINATION_HOTELS: Record<string, HotelItem[]> = {
 
 export class HotelService {
   static async searchHotels(destination: string, filterCategory?: string): Promise<HotelItem[]> {
-    const query = (destination || 'Goa').toLowerCase().trim();
+    const query = (destination || 'Delhi').toLowerCase().trim();
 
     // 1. Fetch Real-Time Places from Google Maps API
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -350,8 +351,8 @@ export class HotelService {
           email: `reservations.${destName.toLowerCase()}@marriott.com`,
           websiteUrl: `https://www.marriott.com`,
           distanceFromCenterKm: 2.4,
-          lat: 15.305,
-          lng: 74.135
+          lat: LocationResolverService.resolveAirport(destName).latitude || 28.6139,
+          lng: LocationResolverService.resolveAirport(destName).longitude || 77.2090
         },
         {
           id: `dyn_h4_${Date.now()}`,
@@ -371,8 +372,8 @@ export class HotelService {
           email: `stay@backpackershostels.com`,
           websiteUrl: `https://www.zostel.com`,
           distanceFromCenterKm: 0.5,
-          lat: 15.295,
-          lng: 74.120
+          lat: LocationResolverService.resolveAirport(destName).latitude || 28.6139,
+          lng: LocationResolverService.resolveAirport(destName).longitude || 77.2090
         }
       ];
     }

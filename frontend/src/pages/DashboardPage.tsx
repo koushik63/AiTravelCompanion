@@ -23,7 +23,9 @@ export const DashboardPage: React.FC = () => {
   let activeProgressPercent = 14;
   let activeProgressSublabel = 'Day 1 of 7 • 6 Days Remaining';
 
-  if (activeTrip) {
+  const isCurrentTripActive = Boolean(activeTrip && activeTrip.status === 'ACTIVE');
+
+  if (isCurrentTripActive && activeTrip) {
     const now = new Date();
     const startDate = activeTrip.startDate ? new Date(activeTrip.startDate) : now;
     const endDate = activeTrip.endDate ? new Date(activeTrip.endDate) : new Date(now.getTime() + 7 * 86400000);
@@ -76,7 +78,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Active Trip Banner */}
-      {activeTrip && (
+      {isCurrentTripActive && activeTrip && (
         <div className="glass-panel p-6 border-sky-500/40 space-y-4 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>

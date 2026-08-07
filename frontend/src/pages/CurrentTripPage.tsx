@@ -11,15 +11,18 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { getDetailedDestinationItinerary, DayItinerary } from '../utils/itineraryHelper';
 
 export const CurrentTripPage: React.FC = () => {
-  const { trips, activeTrip } = useTravelStore();
-  const liveTrips = trips.filter((t) => !t.isArchived);
+  const { trips, activeTrip, setActiveTrip } = useTravelStore();
+  const liveTrips = trips.filter((t) => t.status === 'ACTIVE' && !t.isArchived);
+  const upcomingTrips = trips.filter((t) => t.status === 'UPCOMING' && !t.isArchived);
 
-  const [selectedTripId, setSelectedTripId] = useState<string>(activeTrip?.id || (liveTrips[0]?.id || ''));
+  const [selectedTripId, setSelectedTripId] = useState<string>(
+    activeTrip && activeTrip.status === 'ACTIVE' ? activeTrip.id : (liveTrips[0]?.id || '')
+  );
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
   const [customItinerary, setCustomItinerary] = useState<DayItinerary[] | null>(null);
   const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
 
-  const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || activeTrip || liveTrips[0];
+  const currentTrip = liveTrips.find((t) => t.id === selectedTripId) || (activeTrip && activeTrip.status === 'ACTIVE' ? activeTrip : liveTrips[0]);
 
   useEffect(() => {
     if (currentTrip?.destination) {
@@ -40,8 +43,34 @@ export const CurrentTripPage: React.FC = () => {
 
         <EmptyState
           title="No Active Trip Running"
-          description="You currently have no trip set as active. Plan a new trip or select an active trip from your Trips page to enable Live Mode navigation!"
+          description="You currently have no trip set to Live Mode. Select an upcoming trip below to launch Live Mode navigation!"
         />
+
+        {upcomingTrips.length > 0 && (
+          <div className="glass-panel p-6 space-y-4 border-sky-500/30">
+            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-amber-400" /> Launch Live Mode for an Upcoming Trip
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {upcomingTrips.map((trip) => (
+                <div key={trip.id} className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between gap-3">
+                  <div>
+                    <h3 className="font-bold text-sm text-slate-100">{trip.title}</h3>
+                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                      <MapPin className="w-3.5 h-3.5 text-sky-400" /> {trip.destination}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTrip(trip.id)}
+                    className="glass-button text-xs py-2 px-4 w-full flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-sky-500/20"
+                  >
+                    <Compass className="w-4 h-4 text-emerald-400" /> Start Live Trip Mode
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

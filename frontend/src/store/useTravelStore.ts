@@ -45,7 +45,7 @@ export const useTravelStore = create<TravelState>((set, get) => ({
     set({ isLoading: true });
     try {
       const trips = await TripService.getTrips();
-      const active = trips.find((t) => t.status === 'ACTIVE') || trips[0] || null;
+      const active = trips.find((t) => t.status === 'ACTIVE') || null;
       set({ trips, activeTrip: active, isLoading: false });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
@@ -151,6 +151,9 @@ export const useTravelStore = create<TravelState>((set, get) => ({
   },
 
   setActiveTrip: async (id) => {
+    try {
+      await TripService.updateTrip(id, { status: 'ACTIVE' });
+    } catch (e) {}
     set((state) => {
       const updatedTrips = state.trips.map((t) =>
         t.id === id ? { ...t, status: 'ACTIVE' as const } : { ...t, status: t.status === 'ACTIVE' ? ('UPCOMING' as const) : t.status }

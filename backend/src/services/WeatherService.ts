@@ -4,12 +4,12 @@ import { Logger } from '../utils/logger';
 export class WeatherService {
   static async getCurrentWeather(city: string) {
     const apiKey = process.env.OPENWEATHER_API_KEY;
-    const dest = city ? city.split(',')[0].trim() : 'Goa';
+    const dest = city ? city.split(',')[0].trim() : 'Delhi';
 
-    let baseTemp = 29;
-    let baseHumidity = 62;
-    let baseCondition = 'Sunny';
-    let baseDescription = 'Clear skies with pleasant coastal breeze';
+    let baseTemp = 28;
+    let baseHumidity = 55;
+    let baseCondition = 'Clear Sky';
+    let baseDescription = `Clear pleasant weather in ${dest}`;
 
     if (apiKey) {
       try {

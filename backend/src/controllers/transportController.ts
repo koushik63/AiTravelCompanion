@@ -20,10 +20,27 @@ export class TransportController {
       const origin = (req.query.origin as string) || 'DEL';
       const destination = (req.query.destination as string) || 'BOM';
       const outboundDate = (req.query.outboundDate as string) || '';
+
+      console.log(`[TransportController] Received searchFlights request: origin=${origin}, destination=${destination}, date=${outboundDate}`);
       const flights = await FlightService.searchFlightsSerpApi(origin, destination, outboundDate);
-      return res.json(flights);
+
+      const payload = {
+        success: true,
+        flights,
+        count: flights.length
+      };
+
+      console.log('[TransportController Final JSON sent to frontend]:');
+      console.log(JSON.stringify(payload, null, 2));
+
+      return res.json(payload);
     } catch (err: any) {
-      return res.status(500).json({ error: err.message });
+      console.error('[TransportController searchFlights Error]:', err.message);
+      return res.status(400).json({
+        success: false,
+        error: err.message || 'Flight search failed',
+        flights: []
+      });
     }
   }
 

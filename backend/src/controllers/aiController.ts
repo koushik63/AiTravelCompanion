@@ -6,18 +6,22 @@ import { AuthRequest } from '../middleware/authMiddleware';
 export class AIController {
   static async generateItinerary(req: AuthRequest, res: Response) {
     try {
+      console.log(`[AIController.generateItinerary] Received request for destination: "${req.body?.destination}"`);
       const result = await GeminiService.generateItinerary(req.body);
       return res.json(result);
     } catch (err: any) {
+      console.error('[AIController.generateItinerary Error]:', err.message);
       return res.status(500).json({ error: err.message });
     }
   }
 
   static async regenerateItinerary(req: AuthRequest, res: Response) {
     try {
+      console.log(`[AIController.regenerateItinerary] Force regenerate for destination: "${req.body?.destination}"`);
       const result = await GeminiService.generateItinerary({ ...req.body, forceRegenerate: true });
       return res.json(result);
     } catch (err: any) {
+      console.error('[AIController.regenerateItinerary Error]:', err.message);
       return res.status(500).json({ error: err.message });
     }
   }

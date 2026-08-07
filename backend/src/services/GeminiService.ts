@@ -4,6 +4,9 @@ import { AICacheService } from './AICacheService';
 import { AILoggingService } from './AILoggingService';
 import { validateDestination } from '../utils/destinationValidator';
 import { WeatherService } from './WeatherService';
+import { HotelService } from './HotelService';
+import { FlightService } from './FlightService';
+import { LocationResolverService } from './LocationResolverService';
 
 export class GeminiService {
   private static getClient() {
@@ -21,35 +24,58 @@ export class GeminiService {
   private static getCityLandmarks(destination: string, travelStyle: string = 'Leisure'): Array<{ summary: string; morning: string; afternoon: string; evening: string }> {
     const d = (destination || '').toLowerCase().trim();
 
-    // 0. Chennai
+    // 0. Delhi / New Delhi
+    if (d.includes('delhi') || d.includes('new delhi')) {
+      return [
+        { summary: 'Red Fort, Jama Masjid & Chandni Chowk Street Food', morning: 'Explore Mughal 1648 AD UNESCO Red Fort (Lal Qila) & Diwan-i-Am', afternoon: 'Visit India’s largest Mosque Jama Masjid & rickshaw ride through Chandni Chowk', evening: 'Sunset walk at India Gate & Karim’s or Al Jawahar Mughlai dinner in Old Delhi' },
+        { summary: 'Qutub Minar, Humayun’s Tomb & Lotus Temple', morning: 'Tour 73m UNESCO Qutub Minar victory tower & 1570 AD Humayun’s Tomb', afternoon: 'Visit Bahá’í Lotus Temple & serene Lodhi Gardens', evening: 'Boutique shopping & dinner at Hauz Khas Village rooftop overlooking the lake' },
+        { summary: 'Akshardham Temple, Raj Ghat & Rashtrapati Bhavan', morning: 'Marvel at Swaminarayan Akshardham Temple complex & cultural boat ride', afternoon: 'Pay homage at Raj Ghat (Mahatma Gandhi Memorial) & National Gallery of Modern Art', evening: 'Photograph illuminated Rashtrapati Bhavan & India Gate lawn promenade' }
+      ];
+    }
+
+    // 1. Mumbai
+    if (d.includes('mumbai') || d.includes('bombay')) {
+      return [
+        { summary: 'Gateway of India, Taj Mahal Palace & Marine Drive Sunset', morning: 'Photograph iconic Gateway of India & luxury Taj Mahal Palace Hotel promenade', afternoon: 'Explore UNESCO Chhatrapati Shivaji Maharaj Terminus (CSMT) & Prince of Wales Museum', evening: 'Sunset walk along Marine Drive Queen’s Necklace & Pav Bhaji at Juhu Beach' },
+        { summary: 'Elephanta Caves UNESCO Excursion & Colaba Causeway', morning: 'Ferry across Mumbai Harbor to 5th-century UNESCO Elephanta Rock-Cut Caves', afternoon: 'Shop vintage art & handicrafts at Colaba Causeway market', evening: 'Seafood feast at Trishna or Mahesh Lunch Home in Kala Ghoda art district' },
+        { summary: 'Bandra Fort, Mount Mary Church & Worli Sea Link', morning: 'Tour Bandra Fort ramparts, Mount Mary Church & Bollywood celebrity houses', afternoon: 'Walk Carter Road promenade & Pali Hill artisan cafes', evening: 'Drive across 5.6km Bandra-Worli Sea Link & skyline dinner in Lower Parel' }
+      ];
+    }
+
+    // 2. Jaipur
+    if (d.includes('jaipur')) {
+      return [
+        { summary: 'Amber Fort Elephant Ridge, Jal Mahal & Hawa Mahal', morning: 'Ascend UNESCO Amber Fort hilltop palace on elephant/jeep & Sheesh Mahal mirror hall', afternoon: 'Photograph water palace Jal Mahal in Man Sagar Lake & iconic pink Hawa Mahal', evening: 'Rajasthani Thali dinner & folk puppet dance at Chokhi Dhani ethnic village' },
+        { summary: 'City Palace, Jantar Mantar Observatory & Johari Bazaar', morning: 'Tour royal Jaipur City Palace museum & Chandra Mahal courtyards', afternoon: 'Explore 1734 AD UNESCO Jantar Mantar astronomical observatory', evening: 'Shop Jaipur pink city bazaars (Johari & Bapu Bazaars) for Kundan jewelry & block prints' }
+      ];
+    }
+
+    // 3. Chennai
     if (d.includes('chennai') || d.includes('madras')) {
       return [
         { summary: 'Marina Beach Promenade, Kapaleeshwarar Temple & San Thome Basilica', morning: 'Visit 7th-century Dravidian Kapaleeshwarar Temple in historic Mylapore', afternoon: 'Tour neo-Gothic San Thome Basilica Cathedral built over St. Thomas tomb', evening: 'Sunset walk along 13km Marina Beach promenade & sample Murugan Idli Shop dinner' },
         { summary: 'Fort St. George, Government Museum & Egmore Art Gallery', morning: 'Tour 1644 AD Fort St. George (first English fortress in India) & St. Mary’s Church', afternoon: 'Explore Bronze Gallery at Government Museum Egmore viewing Chola bronzes', evening: 'Shop for Kanchipuram Silk Sarees at T. Nagar & enjoy filter coffee at Saravana Bhavan' },
-        { summary: 'UNESCO Shore Temple & Mahabalipuram Monuments Excursion', morning: 'Day trip to Mahabalipuram: Explore 8th-century UNESCO Shore Temple by the ocean', afternoon: 'Photograph Arjuna’s Penance rock relief & balance at Krishna’s Butterball', evening: 'Fresh seafood dinner at Mahabalipuram Beach Resort before returning to Chennai' },
-        { summary: 'DakshinaChitra Living Heritage Museum & Besant Nagar Beach', morning: 'Guided walk through DakshinaChitra Heritage Village showcasing South Indian homes', afternoon: 'Visit Cholamandal Artists’ Village & Marundeeswarar Temple', evening: 'Sunset walk at Edward Elliot’s Beach (Besant Nagar Beach) & seafood dinner' }
+        { summary: 'UNESCO Shore Temple & Mahabalipuram Monuments Excursion', morning: 'Day trip to Mahabalipuram: Explore 8th-century UNESCO Shore Temple by the ocean', afternoon: 'Photograph Arjuna’s Penance rock relief & balance at Krishna’s Butterball', evening: 'Fresh seafood dinner at Mahabalipuram Beach Resort before returning to Chennai' }
       ];
     }
 
-    // 1. Bengaluru / Bangalore
+    // 4. Bengaluru / Bangalore
     if (d.includes('bengaluru') || d.includes('bangalore')) {
       return [
         { summary: 'Bangalore Palace, Tipu Sultan Palace & Lalbagh Glass House', morning: 'Tour Tudor-style Bangalore Royal Palace & Tipu Sultan’s Wooden Summer Palace', afternoon: 'Stroll 240-acre Lalbagh Botanical Gardens & historic 1889 Glass House', evening: 'Traditional South Indian Filter Coffee & Masala Dosa at MTR (Mavalli Tiffin Room)' },
-        { summary: 'Cubbon Park, Visvesvaraya Museum & Vidhana Soudha', morning: 'Walk green canopy paths of Cubbon Park & photograph Vidhana Soudha Neo-Dravidian Citadel', afternoon: 'Interactive science exhibits at Visvesvaraya Industrial & Technological Museum', evening: 'Shop along Commercial Street & MG Road, followed by craft beer at Indiranagar microbrewery' },
-        { summary: 'ISKCON Temple, Bull Temple & Basavanagudi Heritage Walk', morning: 'Visit magnificent hilltop ISKCON Temple Bangalore & Sri Big Bull Temple', afternoon: 'Explore Gandhi Bazaar spice shops & heritage South Indian lunch at Vidyarthi Bhavan', evening: 'Sunset view from Sankey Tank lake promenade' }
+        { summary: 'Cubbon Park, Visvesvaraya Museum & Vidhana Soudha', morning: 'Walk green canopy paths of Cubbon Park & photograph Vidhana Soudha Neo-Dravidian Citadel', afternoon: 'Interactive science exhibits at Visvesvaraya Industrial & Technological Museum', evening: 'Shop along Commercial Street & MG Road, followed by craft beer at Indiranagar microbrewery' }
       ];
     }
 
-    // 2. Kolkata
+    // 5. Kolkata
     if (d.includes('kolkata') || d.includes('calcutta')) {
       return [
         { summary: 'Victoria Memorial, St. Paul’s Cathedral & Howrah Bridge Sunset', morning: 'Explore white marble Victoria Memorial Hall & surrounding lush gardens', afternoon: 'Visit Indo-Gothic St. Paul’s Cathedral & Kolkata Academy of Fine Arts', evening: 'Sunset boat cruise on Hooghly River under iconic Howrah Bridge (Rabindra Setu)' },
-        { summary: 'Dakshineswar Kali Temple & Belur Math World Headquarters', morning: 'Visit sacred Dakshineswar Kali Temple on Hooghly River banks', afternoon: 'Ferry across river to Belur Math (Ramakrishna Mission World Headquarters)', evening: 'Authentic Bengali Fish Curry & Rasgulla dinner at 6 Ballygunge Place' },
-        { summary: 'Indian Museum, Park Street & Kumartuli Idol Village', morning: 'Tour Indian Museum (Asia’s oldest museum) & Asiatic Society', afternoon: 'Walk Kumartuli clay idol-makers alleyways & historic College Street book stalls', evening: 'Heritage Kolkata Tram Ride & legendary Kathi Rolls at Nizam’s in New Market' }
+        { summary: 'Dakshineswar Kali Temple & Belur Math World Headquarters', morning: 'Visit sacred Dakshineswar Kali Temple on Hooghly River banks', afternoon: 'Ferry across river to Belur Math (Ramakrishna Mission World Headquarters)', evening: 'Authentic Bengali Fish Curry & Rasgulla dinner at 6 Ballygunge Place' }
       ];
     }
 
-    // 3. Ahmedabad
+    // 6. Ahmedabad
     if (d.includes('ahmedabad')) {
       return [
         { summary: 'Sabarmati Ashram, Riverfront Walk & Atal Bridge', morning: 'Visit Sabarmati Ashram (Mahatma Gandhi’s Hriday Kunj residence & museum)', afternoon: 'Walk Sabarmati Riverfront Promenade & photograph flower-shaped Atal Pedestrian Bridge', evening: 'Authentic Gujarati Thali dinner at Agashiye rooftop restaurant' },
@@ -57,80 +83,29 @@ export class GeminiService {
       ];
     }
 
-    // 4. Amritsar
-    if (d.includes('amritsar')) {
-      return [
-        { summary: 'Golden Temple (Harmandir Sahib) & Wagah Border Parade', morning: 'Visit revered Golden Temple (Harmandir Sahib) & Amrit Sarovar holy tank', afternoon: 'Walk Jallianwala Bagh memorial park & 1947 Partition Museum', evening: 'Witness India-Pakistan Wagah Border Beating Retreat ceremony & Amritsari Kulcha with Lassi' }
-      ];
-    }
-
-    // 5. Varanasi
+    // 7. Varanasi
     if (d.includes('varanasi') || d.includes('kashi') || d.includes('banaras')) {
       return [
-        { summary: 'Ganges Boat Sunrise Cruise, Kashi Vishwanath & Evening Aarti', morning: 'Sunrise boat cruise along sacred Ganges River Ghats viewing morning rituals', afternoon: 'Visit Kashi Vishwanath Temple Corridor & Annapurna Temple', evening: 'Grand Evening Ganga Aarti Ceremony at Dashashwamedh Ghat' },
-        { summary: 'Sarnath UNESCO Buddha Park & Banaras Silk Bazaars', morning: 'Excursion to Sarnath where Lord Buddha gave his first sermon & Dhamek Stupa', afternoon: 'Tour Sarnath Archeological Museum & Lion Capital of Ashoka', evening: 'Shop for authentic Banarasi Silk Sarees & taste famous Banarasi Paan' }
+        { summary: 'Ganges Boat Sunrise Cruise, Kashi Vishwanath & Evening Aarti', morning: 'Sunrise boat cruise along sacred Ganges River Ghats viewing morning rituals', afternoon: 'Visit Kashi Vishwanath Temple Corridor & Annapurna Temple', evening: 'Grand Evening Ganga Aarti Ceremony at Dashashwamedh Ghat' }
       ];
     }
 
-    // 6. Araku / Araku Valley
+    // 8. Araku / Araku Valley
     if (d.includes('araku')) {
       return [
         { summary: 'Borra Caves & Katiki Waterfalls Exploration', morning: 'Explore 150 million-year-old Borra Limestone Caves & majestic stalactite formations', afternoon: 'Trek through bamboo forests to scenic Katiki Waterfalls & natural pool', evening: 'Campfire dinner trying famous authentic Araku Bamboo Chicken (Bongu Julu)' },
-        { summary: 'Araku Coffee Plantations, Tribal Museum & Dhimsa Dance', morning: 'Guided coffee bean picking walk at organic Araku Valley Coffee Estates & Chaparai Cascades', afternoon: 'Tour Araku Tribal Museum showcasing indigenous heritage, crafts & lifestyle', evening: 'Watch live Dhimsa Tribal Folk Dance performance & sunset view from Galikonda Viewpoint' },
-        { summary: 'Padmapuram Gardens & Ananthagiri Hills Trek', morning: 'Stroll Padmapuram Botanical Gardens & historic tree top hanging huts', afternoon: 'Visit Ananthagiri Waterfalls & scenic coffee plantation trail walk', evening: 'Sample freshly brewed organic Araku Filter Coffee & local forest honey before departure' }
+        { summary: 'Araku Coffee Plantations, Tribal Museum & Dhimsa Dance', morning: 'Guided coffee bean picking walk at organic Araku Valley Coffee Estates', afternoon: 'Tour Araku Tribal Museum showcasing indigenous heritage & crafts', evening: 'Watch live Dhimsa Tribal Folk Dance performance at Galikonda Viewpoint' }
       ];
     }
 
-    // 7. Vizag / Visakhapatnam
+    // 9. Vizag / Visakhapatnam
     if (d.includes('vizag') || d.includes('visakhapatnam')) {
       return [
-        { summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park', morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach', afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach', evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner' },
-        { summary: 'Kailasagiri Hilltop Ropeway & Rushikonda Blue Flag Beach', morning: 'Ride Kailasagiri Ropeway to hilltop park viewing giant Lord Shiva & Parvati statues', afternoon: 'Water sports, speedboating & surf lessons at Rushikonda Blue Flag Beach', evening: 'Seafood grill dinner at Rushikonda Beach Resort' },
-        { summary: 'Borra Caves & Araku Coffee Plantations Excursion', morning: 'Scenic Vizag to Araku Vistadome train ride through 58 tunnels', afternoon: 'Explore 150 million-year-old Borra Limestone Caves & Katiki Waterfalls', evening: 'Visit Araku Tribal Museum & taste organic Araku Valley Filter Coffee' }
+        { summary: 'INS Kursura Submarine Museum, RK Beach & Tenneti Park', morning: 'Tour historic INS Kursura Submarine Museum & TU 142 Aircraft Museum on RK Beach', afternoon: 'Explore Victory at Sea Memorial & enjoy fresh coconut water at Ramakrishna Beach', evening: 'Sunset walk at Tenneti Park cliff overlook & seaside seafood dinner' }
       ];
     }
 
-    // 8. Tirupati
-    if (d.includes('tirupati') || d.includes('tirumala')) {
-      return [
-        { summary: 'Tirumala Venkateswara Swamy Temple & Srivari Padalu', morning: 'Darshan at sacred Lord Venkateswara Swamy Temple in Tirumala hills', afternoon: 'Visit Srivari Padalu, Silathoranam natural rock arch & Chakra Tirtham', evening: 'Traditional South Indian Prasadam thali & evening temple illuminations' },
-        { summary: 'Sri Kalahasti Temple & Chandragiri Fort Excursion', morning: 'Visit ancient Vayu Lingam Sri Kalahasteeswara Temple in Sri Kalahasti', afternoon: 'Tour 11th-century Vijayanagara Raja Mahal & Rani Mahal at Chandragiri Fort', evening: 'Sunset view from Kapila Theertham waterfall temple in Tirupati town' }
-      ];
-    }
-
-    // 9. Vijayawada / Amaravati
-    if (d.includes('vijayawada') || d.includes('amaravati')) {
-      return [
-        { summary: 'Kanakadurga Temple, Prakasam Barrage & Bhavani Island', morning: 'Visit sacred Kanakadurga Temple atop Indrakeeladri Hill overlooking Krishna River', afternoon: 'Walk scenic Prakasam Barrage & boat ride to Bhavani Island resort', evening: 'Water sports & riverside dinner at Bhavani Island' },
-        { summary: 'Undavalli Caves & Amaravati Stupa Heritage', morning: 'Explore 7th-century monolithic rock-cut Undavalli Caves & 5-story Anantasayana Vishnu statue', afternoon: 'Excursion to ancient Buddhist Maha Stupa & Dhyana Buddha Statue in Amaravati', evening: 'Traditional Andhra thali dinner featuring Gongura Pachadi' }
-      ];
-    }
-
-    // 10. Coorg / Madikeri
-    if (d.includes('coorg') || d.includes('madikeri')) {
-      return [
-        { summary: 'Abbey Falls, Raja’s Seat & Madikeri Fort', morning: 'Walk through spice plantations to majestic Abbey Falls waterfalls', afternoon: 'Explore Madikeri Fort palace, museum & Omkareshwara Temple', evening: 'Sunset panorama view over misty Western Ghats valleys at Raja’s Seat' },
-        { summary: 'Dubare Elephant Camp & Namdroling Tibetan Golden Temple', morning: 'Elephant bathing & feeding experience at Dubare Elephant Camp on Cauvery River', afternoon: 'Visit Golden Temple Namdroling Tibetan Monastery in Bylakuppe', evening: 'Campfire dinner tasting authentic Pandi Curry & Akki Roti in Coorg' }
-      ];
-    }
-
-    // 11. Wayanad
-    if (d.includes('wayanad')) {
-      return [
-        { summary: 'Edakkal Caves Prehistoric Petroglyphs & Banasura Sagar Dam', morning: 'Trek to 7,000-year-old Neolithic Stone Age petroglyphs inside Edakkal Caves', afternoon: 'Speedboating & ziplining at Banasura Sagar Dam (largest earth dam in India)', evening: 'Sunset walk at Pookode Lake & spice shopping' },
-        { summary: 'Chembra Peak Heart Lake & Meenmutty Waterfalls', morning: 'Trek to famous natural Heart-Shaped Lake at Chembra Peak', afternoon: 'Guided walk through tea gardens to 300m 3-tiered Meenmutty Waterfalls', evening: 'Resort bonfire & authentic Kerala Malabar Biryani dinner' }
-      ];
-    }
-
-    // 12. Ooty / Kodaikanal
-    if (d.includes('ooty') || d.includes('kodaikanal')) {
-      return [
-        { summary: 'Ooty Nilgiri Mountain Toy Train & Botanical Gardens', morning: 'Ride UNESCO Nilgiri Mountain Railway Steam Toy Train from Coonoor to Ooty', afternoon: 'Stroll 55-acre Government Botanical Garden & Rose Garden', evening: 'Boating at Ooty Lake & Homemade Chocolate tasting on Commercial Road' },
-        { summary: 'Doddabetta Peak (8,652 ft) & Pykara Lake Waterfalls', morning: 'Panoramic sunrise views over Nilgiri hills from Doddabetta Peak telescope house', afternoon: 'Speedboating on Pykara Lake & walk Pykara Waterfalls pine forests', evening: 'Cozy dinner at Earl’s Secret heritage restaurant in Ooty' }
-      ];
-    }
-
-    // 13. Pune
+    // 10. Pune
     if (d.includes('pune')) {
       return [
         { summary: 'Shaniwar Wada Fort, Lal Mahal & Dagdusheth Ganpati Temple', morning: 'Explore historic 1730 AD Shaniwar Wada Peshwa Palace ramparts & Lal Mahal', afternoon: 'Visit revered Shreemant Dagdusheth Halwai Ganpati Temple & Tulshibaug shopping market', evening: 'Authentic Puneri Misal Pav & Mastani Mango drink tasting at Sujata Mastani' },
@@ -138,7 +113,7 @@ export class GeminiService {
       ];
     }
 
-    // 14. Hyderabad
+    // 11. Hyderabad
     if (d.includes('hyderabad') || d.includes('secunderabad')) {
       return [
         { summary: 'Charminar, Laad Bazaar Pearls & Chowmahalla Palace', morning: 'Climb 1591 AD Charminar & shop for bangles in Laad Bazaar', afternoon: 'Tour Nizams grand Chowmahalla Palace & vintage car collection', evening: 'Authentic Hyderabadi Dum Biryani dinner at Paradise or Hotel Shadab' },
@@ -146,23 +121,7 @@ export class GeminiService {
       ];
     }
 
-    // 15. Assam
-    if (d.includes('assam') || d.includes('guwahati') || d.includes('kaziranga') || d.includes('majuli')) {
-      return [
-        { summary: 'Guwahati Kamakhya Temple & Brahmaputra Sunset Cruise', morning: 'Visit sacred 51 Shakti Peeth Kamakhya Temple atop Nilachal Hill in Guwahati', afternoon: 'Guided walk through Assam State Museum & Umananda Peacock Island Temple', evening: 'Sunset Alfresco Cruise on Brahmaputra River with traditional Assamese dinner' },
-        { summary: 'Kaziranga National Park Rhinoceros Elephant & Jeep Safari', morning: 'Early 5:30 AM Elephant Safari in Kaziranga Central Range viewing One-Horned Rhinoceros', afternoon: 'Jeep Safari through Western Range & visit Kaziranga National Orchid Park', evening: 'Traditional Assamese Thali dinner featuring Masor Tenga & local bamboo shoot dishes' }
-      ];
-    }
-
-    // 16. Kerala
-    if (d.includes('kerala') || d.includes('kochi') || d.includes('munnar') || d.includes('alleppey') || d.includes('kovalam')) {
-      return [
-        { summary: 'Fort Kochi Heritage Walk, St. Francis Church & Chinese Nets', morning: 'Explore historic Fort Kochi, Mattancherry Dutch Palace & Jewish Synagogue', afternoon: 'View iconic Chinese Fishing Nets & fresh seafood lunch by the Arabian Sea', evening: 'Traditional Kathakali Cultural Dance Performance with elaborate face makeup' },
-        { summary: 'Munnar Rolling Tea Estates & Cheeyappara Waterfalls', morning: 'Drive through misty Western Ghats stopping at Cheeyappara & Valara Waterfalls', afternoon: 'Guided walk through Tata Tea Plantations & visit Munnar Tea Museum', evening: 'Campfire dinner overlooking lush Tea Valley in Munnar hill station' }
-      ];
-    }
-
-    // 17. Goa
+    // 12. Goa
     if (d.includes('goa') || d.includes('baga') || d.includes('panaji')) {
       return [
         { summary: 'North Goa Baga Beach Water Sports & Aguada Fort', morning: 'Parasailing & Jet Skiing at Baga Beach', afternoon: 'Explore 17th-century Portuguese Fort Aguada & Lighthouse', evening: 'Sunset cocktails at Vagator Cliff Lounge (Thalassa)' },
@@ -170,38 +129,18 @@ export class GeminiService {
       ];
     }
 
+    // 13. Dubai
+    if (d.includes('dubai') || d.includes('uae')) {
+      return [
+        { summary: 'Burj Khalifa At the Top, Dubai Mall & Fountain Show', morning: 'Ascend 828m Burj Khalifa 124th floor observation deck', afternoon: 'Shop Dubai Mall & visit Dubai Aquarium & Underwater Zoo', evening: 'Watch Dubai Fountain Show & dinner overlooking Souk Al Bahar' },
+        { summary: 'Desert Safari Dune Bashing & BBQ Bedouin Camp', morning: 'Tour Museum of the Future & Dubai Frame architectural icon', afternoon: '4x4 Desert Safari dune bashing & camel riding in Lahbab dunes', evening: 'BBQ buffet dinner under desert stars with Tanoura & Belly Dance show' }
+      ];
+    }
+
     // Intelligent Nature / Hill / Beach vs Historic City Classifier
     const cleanPlace = (destination || 'Destination').trim();
     const capPlace = cleanPlace.charAt(0).toUpperCase() + cleanPlace.slice(1);
     
-    const isNatureHill =
-      d.includes('valley') ||
-      d.includes('hill') ||
-      d.includes('beach') ||
-      d.includes('island') ||
-      d.includes('mountain') ||
-      d.includes('caves') ||
-      d.includes('waterfall') ||
-      d.includes('lake') ||
-      d.includes('resort') ||
-      d.includes('forest') ||
-      d.includes('sanctuary') ||
-      d.includes('araku') ||
-      d.includes('coorg') ||
-      d.includes('wayanad') ||
-      d.includes('chikmagalur') ||
-      d.includes('ooty') ||
-      d.includes('kodaikanal') ||
-      d.includes('munnar');
-
-    if (isNatureHill) {
-      return [
-        { summary: `Valley Lookout & Scenic Waterfall Trek in ${capPlace}`, morning: `Morning nature trail hike to scenic mountain waterfalls & lush valley lookouts in ${capPlace}`, afternoon: `Visit organic coffee & spice plantations, local botanical gardens & eco-parks in ${capPlace}`, evening: `Sunset viewpoint walk over ${capPlace} hills followed by authentic local bonfire dinner` },
-        { summary: `Tribal Heritage, Local Crafts & Specialty Tasting in ${capPlace}`, morning: `Guided tour of local tribal heritage museum, ancient cave formations & village walks in ${capPlace}`, afternoon: `Explore artisan handicraft bazaars & sample authentic local regional delicacies in ${capPlace}`, evening: `Peaceful lakeside stroll & organic tea/coffee tasting session in ${capPlace}` },
-        { summary: `Panoramic High-Altitude Summit & Nature Reserve Excursion in ${capPlace}`, morning: `Early morning drive to highest summit peak in ${capPlace} for panoramic sunrise views`, afternoon: `Wildlife nature sanctuary jeep safari & forest trail trekking`, evening: `Farewell candlelit resort dinner & starry night relaxation in ${capPlace}` }
-      ];
-    }
-
     return [
       { summary: `${capPlace} Heritage Circuit & Landmark Exploration`, morning: `Morning guided walk through ${capPlace}'s historic architectural monuments & central heritage square`, afternoon: `Visit ${capPlace}'s renowned local heritage gallery, artisan craft bazaars & cultural exhibits`, evening: `Sunset viewpoint walk followed by authentic regional dinner specialties in ${capPlace}` },
       { summary: `${capPlace} Nature Trails & Panoramic Excursion`, morning: `Scenic morning excursion to nearby hillside lookout, nature reserve & botanical paths surrounding ${capPlace}`, afternoon: `Sample signature local regional delicacies & street food specialties at top-rated ${capPlace} bistros`, evening: `Waterfront promenade stroll & evening cultural music session in ${capPlace}` },
@@ -210,60 +149,116 @@ export class GeminiService {
   }
 
   static async generateItinerary(input: any) {
-    const validation = validateDestination(input.destination);
+    const destName = (input.destination || '').trim();
+    const validation = validateDestination(destName);
     if (!validation.isValid) {
-      throw new Error(validation.errorMessage || `The place '${input.destination}' does not exist.`);
+      throw new Error(validation.errorMessage || `The place '${destName}' does not exist.`);
     }
 
-    const cacheKey = `itinerary_${input.destination}_${input.durationDays || 3}_${input.travelStyle || 'Balanced'}`;
+    const durationDays = Number(input.durationDays) || 3;
+    const travelStyle = input.travelStyle || 'Balanced';
+    const budget = Number(input.budget) || 50000;
+    const interestsStr = (input.interests || []).join('_');
+
+    // STEP 1 & 7: Trace User Input & Construct Disambiguated Cache Key
+    const cacheKey = `itinerary_${destName.toLowerCase().replace(/\s+/g, '_')}_${durationDays}_${travelStyle.toLowerCase()}_${budget}_${interestsStr}`;
+    
+    console.log(`[Destination Pipeline Tracing]
+Frontend Input Destination: ${input.destination}
+Validated Destination: ${destName}
+Cache Key: ${cacheKey}`);
+
     const cached = AICacheService.get(cacheKey);
     if (cached && !input.forceRegenerate) {
-      Logger.info(`Returning cached AI itinerary for ${input.destination}`, 'GeminiService');
+      Logger.info(`Returning cached AI itinerary for ${destName}`, 'GeminiService');
+      console.log(`[AICache Hit] Returning cached itinerary for ${destName}`);
       return cached;
+    }
+
+    // STEP 4 & 5: Live API Context Retrieval (Weather, Hotels, Flights)
+    let liveWeatherInfo = 'Sunny 28°C';
+    let liveHotelsInfo: string[] = [];
+    let liveFlightsInfo: string[] = [];
+
+    try {
+      const wx = await WeatherService.getCurrentWeather(destName);
+      liveWeatherInfo = `${wx.temp}°C ${wx.condition} (${wx.description})`;
+      console.log(`[Live Weather API Result for ${destName}]: ${liveWeatherInfo}`);
+    } catch (err: any) {
+      console.warn(`[Weather API Warning for ${destName}]: ${err.message}`);
+    }
+
+    try {
+      const hotels = await HotelService.searchHotels(destName);
+      liveHotelsInfo = hotels.slice(0, 3).map((h) => `${h.name} (${h.pricePerNight} INR/night)`);
+      console.log(`[Live Hotels API Result for ${destName}]:`, liveHotelsInfo);
+    } catch (err: any) {
+      console.warn(`[Hotels API Warning for ${destName}]: ${err.message}`);
+    }
+
+    try {
+      const origAirport = LocationResolverService.resolveAirport(input.origin || 'Delhi');
+      const destAirport = LocationResolverService.resolveAirport(destName);
+      if (origAirport.airportCode !== destAirport.airportCode) {
+        const flights = await FlightService.searchFlightsSerpApi(origAirport.airportCode, destAirport.airportCode);
+        liveFlightsInfo = flights.slice(0, 3).map((f: any) => `${f.airline} ${f.flightNumber} (${f.departureTime} - ${f.arrivalTime}, ${f.price})`);
+      }
+      console.log(`[Live Flights API Result for ${destName}]:`, liveFlightsInfo);
+    } catch (err: any) {
+      console.warn(`[Flights API Warning for ${destName}]: ${err.message}`);
     }
 
     const ai = this.getClient();
     if (ai) {
       const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-pro'];
-      const prompt = `Act as an expert AI Travel Agent. Create a detailed structured JSON itinerary for ${input.destination} for ${input.durationDays || 3} days.
-Travel Style: ${input.travelStyle || 'Balanced'}. Budget: ${input.budget || 50000} ${input.currency || 'INR'}.
+      
+      // STEP 2 & 6: Construct Dynamic Destination-Specific Gemini Prompt
+      const prompt = `Act as an expert AI Travel Specialist. Create a detailed structured JSON itinerary for ${destName} for ${durationDays} days.
+Travel Style: ${travelStyle}. Budget: ${budget} ${input.currency || 'INR'}.
 Interests: ${input.interests?.join(', ') || 'Sightseeing, Local Cuisine'}.
 
-CRITICAL REQUIREMENT: Every single day MUST have completely distinct, unique, non-repeating morning, afternoon, and evening activities, specific to famous landmarks and culture in ${input.destination}. Do NOT repeat activity names across days.
+REAL-TIME DESTINATION CONTEXT FOR ${destName.toUpperCase()}:
+- Live Weather: ${liveWeatherInfo}
+- Verified Top Hotels: ${liveHotelsInfo.length > 0 ? liveHotelsInfo.join(', ') : 'Luxury & Boutique Hotels in ' + destName}
+- Live Transport Options: ${liveFlightsInfo.length > 0 ? liveFlightsInfo.join(', ') : 'Direct flights & express rail connecting to ' + destName}
+
+CRITICAL REQUIREMENT: Every single day MUST have completely distinct, unique, non-repeating morning, afternoon, and evening activities, specifically visiting authentic famous landmarks, cultural spots, and regional dining in ${destName}. Never output generic placeholders or repeat activities.
 
 Return ONLY valid JSON matching this schema:
 {
-  "tripTitle": "String title",
-  "destination": "${input.destination}",
-  "summary": "Detailed summary",
-  "estimatedTotalCost": ${input.budget || 50000},
+  "tripTitle": "AI Expedition to ${destName}",
+  "destination": "${destName}",
+  "summary": "Detailed summary of ${durationDays}-day journey in ${destName}",
+  "estimatedTotalCost": ${budget},
   "currency": "${input.currency || 'INR'}",
   "days": [
     {
       "dayNumber": 1,
       "date": "2026-08-10",
-      "summary": "Day 1 Highlights Summary",
+      "summary": "Day 1 Highlights Summary in ${destName}",
       "morning": [
-        { "id": "m1", "time": "09:00 AM", "title": "Unique Morning Landmark Visit", "category": "Sightseeing", "cost": 500, "isCompleted": false }
+        { "id": "m1", "time": "09:00 AM", "title": "Famous Landmark Visit in ${destName}", "category": "Sightseeing", "cost": 500, "isCompleted": false }
       ],
       "afternoon": [
-        { "id": "a1", "time": "01:00 PM", "title": "Famous Local Lunch Spot", "category": "Food", "cost": 800, "isCompleted": false }
+        { "id": "a1", "time": "01:00 PM", "title": "Authentic Regional Dining in ${destName}", "category": "Food", "cost": 800, "isCompleted": false }
       ],
       "evening": [
-        { "id": "e1", "time": "06:00 PM", "title": "Sunset & Evening Culture", "category": "Leisure", "cost": 1200, "isCompleted": false }
+        { "id": "e1", "time": "06:00 PM", "title": "Sunset Viewpoint & Cultural Evening in ${destName}", "category": "Leisure", "cost": 1200, "isCompleted": false }
       ],
       "dailyEstimatedCost": 2500
     }
   ],
-  "recommendedAttractions": [{ "name": "Attraction 1", "category": "Sightseeing", "description": "Desc", "cost": 500 }],
-  "recommendedRestaurants": [{ "name": "Bistro", "cuisine": "Local", "priceRange": "Moderate", "location": "${input.destination}" }],
-  "recommendedHotels": [{ "name": "Grand Hotel", "style": "Boutique", "pricePerNight": 4000 }],
+  "recommendedAttractions": [{ "name": "Famous Attraction in ${destName}", "category": "Sightseeing", "description": "Desc", "cost": 500 }],
+  "recommendedRestaurants": [{ "name": "Famous Bistro", "cuisine": "Local Regional", "priceRange": "Moderate", "location": "${destName}" }],
+  "recommendedHotels": [{ "name": "Grand Hotel ${destName}", "style": "Boutique", "pricePerNight": 4000 }],
   "packingList": ["Sunscreen", "Comfortable Shoes", "Camera", "Travel Adapter"],
-  "localTips": ["Use local transport apps", "Carry cash for local markets"],
+  "localTips": ["Use local transit in ${destName}", "Carry cash for traditional bazaars"],
   "safetyTips": ["Keep emergency contacts saved", "Stay hydrated"],
-  "weatherConsiderations": "Sunny and pleasant",
+  "weatherConsiderations": "${liveWeatherInfo}",
   "confidenceNotes": "Generated via Google Gemini AI Engine"
 }`;
+
+      console.log(`[Gemini Full Prompt Sent to AI]:\n${prompt}`);
 
       for (const modelName of modelsToTry) {
         try {
@@ -274,12 +269,12 @@ Return ONLY valid JSON matching this schema:
           const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
           const parsed = JSON.parse(cleanText);
           if (parsed && parsed.days && Array.isArray(parsed.days)) {
-            Logger.info(`Successfully generated itinerary via Gemini model ${modelName}`, 'GeminiService');
+            Logger.info(`Successfully generated itinerary for ${destName} via Gemini model ${modelName}`, 'GeminiService');
             AICacheService.set(cacheKey, parsed);
             return parsed;
           }
         } catch (err: any) {
-          Logger.warn(`Gemini AI itinerary attempt with model ${modelName} failed: ${err?.message || err}`, 'GeminiService');
+          Logger.warn(`Gemini AI itinerary attempt for ${destName} with model ${modelName} failed: ${err?.message || err}`, 'GeminiService');
         }
       }
     }
@@ -300,9 +295,9 @@ Return ONLY valid JSON matching this schema:
         transport: Math.round(budget * 0.15)
       },
       tips: [
-        'Book Vande Bharat / Express train tickets 3 weeks prior for 30% savings.',
-        'Opt for local thalis and street food hubs for authentic & affordable dining.',
-        'Use UPI digital payments across India for quick receipt tracking.'
+        `Book express transport tickets to ${destination} 3 weeks prior for 30% savings.`,
+        `Opt for authentic regional thalis & popular local hubs in ${destination} for great dining.`,
+        'Use UPI digital payments across India for instant receipt tracking.'
       ]
     };
   }
@@ -398,24 +393,18 @@ INSTRUCTIONS & CONSTRAINTS:
             `• **Condition:** ${wx.condition} — ${wx.description}\n` +
             `• **Humidity:** ${wx.humidity}% | **Wind Speed:** ${wx.windSpeed} km/h\n` +
             `• **Rain Probability:** ${wx.rainProbability}%\n` +
-            `• **Sun Schedule:** Sunrise ${wx.sunrise} | Sunset ${wx.sunset}\n` +
-            `• **5-Day Climate Outlook:** ${outlookStr}\n` +
-            `• **Sightseeing Advice:** ${wx.advisory}`
+            `• **5-Day Outlook:** ${outlookStr}\n\n` +
+            `💡 **Weather Advisory:** ${wx.advisory}`
         };
-      } catch (err) {
-        return {
-          reply: `☀️ **Weather & Climate Report for ${targetPlace}:**\n\n` +
-            `• **Current Climate:** Pleasant travel climate around 26°C–31°C with clear skies.\n` +
-            `• **Recommended Apparel:** Wear lightweight linen outfits, sun hat, and comfortable walking shoes.\n` +
-            `• **Best Sightseeing Window:** Early morning (07:30 AM – 10:30 AM) and golden hour sunset.`
-        };
+      } catch (err: any) {
+        return { reply: `🌤️ Weather forecast for **${targetPlace}** is pleasant with average temperatures around 28°C.` };
       }
     }
 
-    // 2. Itinerary / Trip Plan Request (UNIVERSAL EXACT TARGET PLACE & NON-REPEATING DAYS)
-    let reqDays = 5;
-    const numMatch = message.match(/\b(\d{1,2})\s*(?:day|days|d)\b/i);
-    if (numMatch && numMatch[1]) {
+    // 2. Default Itinerary Query
+    let reqDays = 3;
+    const numMatch = lowMsg.match(/\b(\d{1,2})\s*(day|days|d)\b/);
+    if (numMatch) {
       reqDays = Math.min(14, Math.max(1, parseInt(numMatch[1], 10)));
     } else if (tripContext?.durationDays) {
       reqDays = Number(tripContext.durationDays) || 5;
@@ -439,10 +428,11 @@ INSTRUCTIONS & CONSTRAINTS:
   }
 
   static async suggestPlaces(destination: string, category: string) {
+    const destObj = LocationResolverService.resolveAirport(destination);
     return [
-      { name: `Top Landmark in ${destination}`, category: 'Sightseeing', description: 'Famous tourist highlight with great photo opportunities.', cost: 500 },
-      { name: `Famous Bistro in ${destination}`, category: 'Food', description: 'Popular local restaurant serving regional specialties.', cost: 1200 },
-      { name: `Cultural Center in ${destination}`, category: 'Culture', description: 'Explore local heritage and traditional performances.', cost: 400 }
+      { name: `Top Landmark in ${destObj.city}`, category: 'Sightseeing', description: `Famous tourist highlight in ${destObj.city} with great photo opportunities.`, cost: 500 },
+      { name: `Famous Bistro in ${destObj.city}`, category: 'Food', description: `Popular local restaurant serving authentic ${destObj.city} specialties.`, cost: 1200 },
+      { name: `Cultural Heritage Center in ${destObj.city}`, category: 'Culture', description: `Explore traditional arts, crafts and heritage exhibits in ${destObj.city}.`, cost: 400 }
     ];
   }
 
@@ -450,7 +440,7 @@ INSTRUCTIONS & CONSTRAINTS:
     if (currentWeather.toLowerCase().includes('rain')) {
       return activities.map((act) => ({
         ...act,
-        title: act.title.includes('Beach') ? `Indoor Museum Visit in ${destination}` : act.title,
+        title: act.title.includes('Beach') ? `Indoor Museum & Gallery Visit in ${destination}` : act.title,
         description: 'Adjusted for rainy conditions: indoor covered activity recommended.'
       }));
     }
@@ -499,15 +489,15 @@ INSTRUCTIONS & CONSTRAINTS:
       currency: input.currency || 'INR',
       days,
       recommendedAttractions: [
-        { name: `Top Landmark in ${dest}`, category: 'Sightseeing', description: 'Iconic spot for sunset and photography.', cost: Math.round(approxDailyBudget * 0.2) },
-        { name: `Central Heritage Square`, category: 'Culture', description: 'Vibrant local plaza with rich history.', cost: Math.round(approxDailyBudget * 0.25) }
+        { name: `Famous Landmark in ${dest}`, category: 'Sightseeing', description: 'Iconic landmark spot for photography.', cost: Math.round(approxDailyBudget * 0.2) },
+        { name: `Central Heritage Plaza`, category: 'Culture', description: 'Vibrant local square rich in history.', cost: Math.round(approxDailyBudget * 0.25) }
       ],
       recommendedRestaurants: [
-        { name: `The Culinary Bistro`, cuisine: 'Authentic Local', priceRange: 'Moderate', location: dest },
-        { name: `Skyline Rooftop Grill`, cuisine: 'International', priceRange: 'Fine Dining', location: dest }
+        { name: `Authentic ${dest} Bistro`, cuisine: 'Local Regional', priceRange: 'Moderate', location: dest },
+        { name: `Skyline Grill ${dest}`, cuisine: 'International', priceRange: 'Fine Dining', location: dest }
       ],
       recommendedHotels: [
-        { name: `Grand Plaza Hotel ${dest}`, style: 'Boutique Luxury', pricePerNight: Math.round(budgetTotal * 0.15) }
+        { name: `Grand Hotel ${dest}`, style: 'Boutique Luxury', pricePerNight: Math.round(budgetTotal * 0.15) }
       ],
       packingList: [
         'SPF 50+ Sunscreen Lotion',
@@ -517,7 +507,7 @@ INSTRUCTIONS & CONSTRAINTS:
         'First Aid Kit'
       ],
       localTips: [
-        'Use local transport apps or transit passes for seamless navigation.',
+        `Use local transport apps in ${dest} for seamless navigation.`,
         'Early morning visits avoid long tourist queues at major landmarks.'
       ],
       safetyTips: [
