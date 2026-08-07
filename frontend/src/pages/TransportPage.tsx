@@ -6,7 +6,8 @@ import { TrainCard } from '../components/live/TrainCard';
 import { FlightStatus, TrainStatus } from '../types';
 import { useTravelStore } from '../store/useTravelStore';
 import { LocationAutocomplete } from '../components/common/LocationAutocomplete';
-import { resolveAirport, resolveRailwayStation, getAvailableFlightsForDestination, getAvailableTrainsForDestination, TrainOption } from '../utils/locationResolver';
+import { resolveAirport, resolveRailwayStation } from '../utils/locationResolver';
+import { getAvailableFlightsForDestination, getAvailableTrainsForDestination, TrainOption } from '../utils/transportDirectory';
 
 export const TransportPage: React.FC = () => {
   const { activeTrip, trips } = useTravelStore();
