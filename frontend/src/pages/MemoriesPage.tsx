@@ -3,6 +3,7 @@ import { Camera, Plus, Share2, Download, Sparkles, MapPin, Upload, Link, X, Imag
 import { MemoryService } from '../services/api';
 import { useTravelStore } from '../store/useTravelStore';
 import { useUIStore } from '../store/useUIStore';
+import { useAuth } from '../context/AuthContext';
 import { MemoryCard } from '../components/memories/MemoryCard';
 import { ShareModal } from '../components/memories/ShareModal';
 import { ExportModal } from '../components/memories/ExportModal';
@@ -11,6 +12,7 @@ import { Memory } from '../types';
 
 export const MemoriesPage: React.FC = () => {
   const { activeTrip } = useTravelStore();
+  const { user } = useAuth();
   const { addToast } = useUIStore();
   const [memories, setMemories] = useState<Memory[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -27,9 +29,11 @@ export const MemoriesPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const tripId = activeTrip?.id || '';
+  const memoryUserKey = user?.id || user?.email || 'demo_user';
+  const storageKey = `ai_travel_user_memories_${memoryUserKey}`;
 
   useEffect(() => {
-    const localStr = localStorage.getItem('ai_travel_user_memories');
+    const localStr = localStorage.getItem(storageKey);
     const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
 
     MemoryService.getMemories(tripId)
@@ -46,7 +50,7 @@ export const MemoriesPage: React.FC = () => {
       .catch(() => {
         setMemories(localMems);
       });
-  }, [tripId]);
+  }, [tripId, storageKey]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -99,10 +103,10 @@ export const MemoriesPage: React.FC = () => {
       });
 
       // Save to localStorage for instant 100% persistence
-      const localStr = localStorage.getItem('ai_travel_user_memories');
+      const localStr = localStorage.getItem(storageKey);
       const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
       const updatedLocal = [newMem, ...localMems.filter((m) => m.id !== newMem.id)];
-      localStorage.setItem('ai_travel_user_memories', JSON.stringify(updatedLocal));
+      localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
 
       setMemories((prev) => [newMem, ...prev.filter((m) => m.id !== newMem.id)]);
       resetForm();
@@ -119,9 +123,10 @@ export const MemoriesPage: React.FC = () => {
         location: location.trim() || 'Destination',
         createdAt: new Date().toISOString()
       };
-      const localStr = localStorage.getItem('ai_travel_user_memories');
+      const localStr = localStorage.getItem(storageKey);
       const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
       const updatedLocal = [fallbackMem, ...localMems];
+      localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
       setMemories((prev) => [fallbackMem, ...prev]);
       resetForm();
       setShowAddModal(false);
@@ -136,11 +141,11 @@ export const MemoriesPage: React.FC = () => {
 
     setMemories((prev) => prev.filter((m) => m.id !== id));
 
-    const localStr = localStorage.getItem('ai_travel_user_memories');
+    const localStr = localStorage.getItem(storageKey);
     if (localStr) {
       const localMems: Memory[] = JSON.parse(localStr);
-      const updatedLocal = localMems.filter((m) => m.id !== id);
-      localStorage.setItem('ai_travel_user_memories', JSON.stringify(updatedLocal));
+      const updated = localMems.filter((m) => m.id !== id);
+      localStorage.setItem(storageKey, JSON.stringify(updated));
     }
 
     if (lightboxIndex !== null) {

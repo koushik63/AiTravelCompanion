@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, Camera, Spar
 import { Trip, Memory } from '../../types';
 import { MemoryService } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface CalendarComponentProps {
   trips: Trip[];
@@ -16,6 +17,7 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({
   onTripClick
 }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('month');
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -31,8 +33,11 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
+  const memoryUserKey = user?.id || user?.email || 'demo_user';
+  const storageKey = `ai_travel_user_memories_${memoryUserKey}`;
+
   useEffect(() => {
-    const localStr = localStorage.getItem('ai_travel_user_memories');
+    const localStr = localStorage.getItem(storageKey);
     const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
 
     MemoryService.getMemories('')
@@ -45,7 +50,7 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({
       .catch(() => {
         setMemories(localMems);
       });
-  }, []);
+  }, [storageKey]);
 
   const handlePrev = () => {
     setCurrentDate(new Date(year, month - 1, 1));

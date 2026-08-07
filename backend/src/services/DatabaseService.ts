@@ -479,17 +479,21 @@ export class DatabaseService {
   }
 
   // Memories
-  static async getMemories(tripId?: string) {
-    if (tripId && tripId.trim() !== '') {
-      const filtered = store.memories.filter((m) => m.tripId === tripId);
-      if (filtered.length > 0) return filtered;
+  static async getMemories(tripId?: string, userId?: string) {
+    let list = store.memories;
+    if (userId) {
+      list = list.filter((m) => !m.userId || m.userId === userId);
     }
-    return store.memories;
+    if (tripId && tripId.trim() !== '') {
+      list = list.filter((m) => m.tripId === tripId);
+    }
+    return list;
   }
 
   static async addMemory(memoryData: any) {
     const newMemory = {
       id: `mem_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      userId: memoryData.userId || 'usr_demo_1',
       tripId: memoryData.tripId || 'trip_3',
       imageUrl: memoryData.imageUrl,
       caption: memoryData.caption,
