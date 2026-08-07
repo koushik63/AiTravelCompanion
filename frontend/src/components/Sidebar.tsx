@@ -15,7 +15,6 @@ import {
   Camera,
   Settings,
   Shield,
-  Bookmark,
   ShieldAlert,
   Building2,
   X
@@ -37,7 +36,6 @@ export const Sidebar: React.FC = () => {
     { name: 'Notification Center', path: '/notifications', icon: Bell },
     { name: 'Transport Hub', path: '/transport', icon: Compass },
     { name: 'Nearby Explorer', path: '/nearby', icon: MapPin },
-    { name: 'Saved Places', path: '/saved-places', icon: Bookmark },
     { name: 'Emergency Support', path: '/emergency', icon: ShieldAlert },
     { name: 'Upcoming Trips', path: '/upcoming', icon: Compass },
     { name: 'Journey History', path: '/history', icon: History },
