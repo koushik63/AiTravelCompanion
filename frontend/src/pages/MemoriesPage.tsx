@@ -109,6 +109,7 @@ export const MemoriesPage: React.FC = () => {
       localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
 
       setMemories((prev) => [newMem, ...prev.filter((m) => m.id !== newMem.id)]);
+      window.dispatchEvent(new Event('memories-updated'));
       resetForm();
       setShowAddModal(false);
       addToast({ type: 'success', message: 'Memory created & saved to calendar!' });
@@ -128,6 +129,7 @@ export const MemoriesPage: React.FC = () => {
       const updatedLocal = [fallbackMem, ...localMems];
       localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
       setMemories((prev) => [fallbackMem, ...prev]);
+      window.dispatchEvent(new Event('memories-updated'));
       resetForm();
       setShowAddModal(false);
       addToast({ type: 'success', message: 'Memory created & saved locally!' });
@@ -147,6 +149,8 @@ export const MemoriesPage: React.FC = () => {
       const updated = localMems.filter((m) => m.id !== id);
       localStorage.setItem(storageKey, JSON.stringify(updated));
     }
+
+    window.dispatchEvent(new Event('memories-updated'));
 
     if (lightboxIndex !== null) {
       setLightboxIndex(null);

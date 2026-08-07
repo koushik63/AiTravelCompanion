@@ -37,19 +37,31 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const storageKey = `ai_travel_user_memories_${memoryUserKey}`;
 
   useEffect(() => {
-    const localStr = localStorage.getItem(storageKey);
-    const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
+    const loadMemories = () => {
+      const localStr = localStorage.getItem(storageKey);
+      const localMems: Memory[] = localStr ? JSON.parse(localStr) : [];
 
-    MemoryService.getMemories('')
-      .then((serverMems) => {
-        const combinedMap = new Map<string, Memory>();
-        (serverMems || []).forEach((m: Memory) => combinedMap.set(m.id, m));
-        localMems.forEach((m: Memory) => combinedMap.set(m.id, m));
-        setMemories(Array.from(combinedMap.values()));
-      })
-      .catch(() => {
-        setMemories(localMems);
-      });
+      MemoryService.getMemories('')
+        .then((serverMems) => {
+          const combinedMap = new Map<string, Memory>();
+          (serverMems || []).forEach((m: Memory) => combinedMap.set(m.id, m));
+          // Only merge local fallback memories if offline-created (mem_local_)
+          localMems.filter((m) => m.id.startsWith('mem_local_')).forEach((m: Memory) => combinedMap.set(m.id, m));
+          setMemories(Array.from(combinedMap.values()));
+        })
+        .catch(() => {
+          setMemories(localMems);
+        });
+    };
+
+    loadMemories();
+
+    window.addEventListener('memories-updated', loadMemories);
+    window.addEventListener('storage', loadMemories);
+    return () => {
+      window.removeEventListener('memories-updated', loadMemories);
+      window.removeEventListener('storage', loadMemories);
+    };
   }, [storageKey]);
 
   const handlePrev = () => {
