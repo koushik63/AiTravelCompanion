@@ -247,7 +247,9 @@ Date: ${travelDate}
           <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs p-4 rounded-xl flex items-center gap-3 animate-in fade-in duration-200">
             <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
             <div className="space-y-0.5">
-              <span className="font-bold block text-rose-200">Invalid Route Combination</span>
+              <span className="font-bold block text-rose-200">
+                {validationError.toLowerCase().includes('route') ? 'Invalid Route Combination' : 'Transport Search Notice'}
+              </span>
               <p>{validationError}</p>
             </div>
           </div>

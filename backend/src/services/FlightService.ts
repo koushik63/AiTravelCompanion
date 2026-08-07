@@ -37,8 +37,8 @@ export class FlightService {
       throw new Error(`Invalid Search: Origin airport (${origObj.airportCode}) and Destination airport (${destObj.airportCode}) cannot be identical.`);
     }
 
-    const serpApiKey = process.env.SERPAPI_API_KEY || process.env.SERP_API_KEY;
-    const maskedKey = serpApiKey ? `****************${serpApiKey.slice(-4)}` : 'MISSING';
+    const serpApiKey = process.env.SERPAPI_API_KEY || process.env.SERP_API_KEY || '8e446db9d5ce5607a45c6fe7842533b72c68795bd5f50b6d22c2bb32cc4a3698';
+    const maskedKey = `****************${serpApiKey.slice(-4)}`;
 
     const requestParams = {
       engine: 'google_flights',
