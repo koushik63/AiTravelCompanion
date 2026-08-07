@@ -200,8 +200,10 @@ Cache Key: ${cacheKey}`);
       const origAirport = LocationResolverService.resolveAirport(input.origin || 'Delhi');
       const destAirport = LocationResolverService.resolveAirport(destName);
       if (origAirport.airportCode !== destAirport.airportCode) {
-        const flights = await FlightService.searchFlightsSerpApi(origAirport.airportCode, destAirport.airportCode);
-        liveFlightsInfo = flights.slice(0, 3).map((f: any) => `${f.airline} ${f.flightNumber} (${f.departureTime} - ${f.arrivalTime}, ${f.price})`);
+        const res = await FlightService.searchFlightsSerpApi(origAirport.airportCode, destAirport.airportCode);
+        if (res.flights && res.flights.length > 0) {
+          liveFlightsInfo = res.flights.slice(0, 3).map((f: any) => `${f.airline} ${f.flightNumber} (${f.departureTime} - ${f.arrivalTime}, ${f.price})`);
+        }
       }
       console.log(`[Live Flights API Result for ${destName}]:`, liveFlightsInfo);
     } catch (err: any) {

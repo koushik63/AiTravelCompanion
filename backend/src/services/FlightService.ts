@@ -21,8 +21,8 @@ export interface FlightStatusResult {
 }
 
 export class FlightService {
-  // Pure SerpApi Google Flights Live API Search Engine (Zero Fake/Fallback Data)
-  static async searchFlightsSerpApi(originRaw: string, destinationRaw: string, outboundDate?: string): Promise<any[]> {
+  // Pure SerpApi Google Flights Live API Search Engine
+  static async searchFlightsSerpApi(originRaw: string, destinationRaw: string, outboundDate?: string): Promise<{ flights: any[]; error?: string }> {
     const origObj = LocationResolverService.resolveAirport(originRaw);
     const destObj = LocationResolverService.resolveAirport(destinationRaw);
 
@@ -33,54 +33,72 @@ export class FlightService {
       validDate = future.toISOString().split('T')[0];
     }
 
-    const logPrefix = `[FlightSearch Request Validation]\nOrigin City: ${origObj.city}\nOrigin Airport: ${origObj.airportName}\nOrigin IATA: ${origObj.airportCode}\nDestination City: ${destObj.city}\nDestination Airport: ${destObj.airportName}\nDestination IATA: ${destObj.airportCode}\nDate: ${validDate}`;
-    Logger.info(logPrefix, 'FlightService');
-    console.log(logPrefix);
-
     if (origObj.airportCode === destObj.airportCode || origObj.city.toLowerCase() === destObj.city.toLowerCase()) {
       throw new Error(`Invalid Search: Origin airport (${origObj.airportCode}) and Destination airport (${destObj.airportCode}) cannot be identical.`);
     }
 
     const serpApiKey = process.env.SERPAPI_API_KEY || process.env.SERP_API_KEY;
+    const maskedKey = serpApiKey ? `****************${serpApiKey.slice(-4)}` : 'MISSING';
+
+    const requestParams = {
+      engine: 'google_flights',
+      departure_id: origObj.airportCode,
+      arrival_id: destObj.airportCode,
+      outbound_date: validDate,
+      type: 2, // One way flight search
+      currency: 'INR',
+      hl: 'en',
+      api_key: maskedKey
+    };
+
+    console.log('\n========================================');
+    console.log('[SerpAPI Outgoing Request Details]:');
+    console.log(`URL: https://serpapi.com/search.json?engine=google_flights&departure_id=${origObj.airportCode}&arrival_id=${destObj.airportCode}&outbound_date=${validDate}&type=2&currency=INR&hl=en&api_key=${maskedKey}`);
+    console.log('[Logged Request Parameters]:', JSON.stringify(requestParams, null, 2));
+
     if (!serpApiKey) {
-      Logger.error('SERPAPI_API_KEY is missing in backend environment variables.', new Error('Missing API Key'), 'FlightService');
-      return [];
+      const errMsg = 'SERPAPI_API_KEY is missing in backend environment variables.';
+      Logger.error(errMsg, new Error('Missing API Key'), 'FlightService');
+      return { flights: [], error: errMsg };
     }
 
     try {
       const url = 'https://serpapi.com/search.json';
-      const params = {
-        engine: 'google_flights',
-        departure_id: origObj.airportCode,
-        arrival_id: destObj.airportCode,
-        outbound_date: validDate,
-        type: 2, // One way flight search
-        currency: 'INR',
-        hl: 'en',
+      const actualParams = {
+        ...requestParams,
         api_key: serpApiKey
       };
 
-      console.log(`[SerpAPI Outgoing Request URL] ${url}`);
-      console.log(`[SerpAPI Request Parameters]`, JSON.stringify(params, null, 2));
+      const res = await axios.get(url, { params: actualParams });
 
-      const res = await axios.get(url, { params });
-
-      // STEP 4: Print complete raw SerpAPI response
+      console.log(`[SerpAPI HTTP Status Code]: ${res.status}`);
       console.log('[SerpAPI Raw JSON Response]:');
       console.log(JSON.stringify(res.data, null, 2));
 
-      // STEP 5: Map ONLY live SerpAPI response items
+      if (res.data?.error) {
+        console.error(`[SerpAPI Error Payload]: ${res.data.error}`);
+        return { flights: [], error: `SerpAPI Error: ${res.data.error}` };
+      }
+
+      // STEP 5 & 6: Map ONLY live SerpAPI response items
       const rawFlightsList: any[] = [];
+      let bestCount = 0;
+      let otherCount = 0;
+
       if (res.data?.best_flights && Array.isArray(res.data.best_flights)) {
+        bestCount = res.data.best_flights.length;
         rawFlightsList.push(...res.data.best_flights);
       }
       if (res.data?.other_flights && Array.isArray(res.data.other_flights)) {
+        otherCount = res.data.other_flights.length;
         rawFlightsList.push(...res.data.other_flights);
       }
 
+      console.log(`[Parser Reading Fields]: best_flights (${bestCount}), other_flights (${otherCount}), Total Raw: ${rawFlightsList.length}`);
+
       if (rawFlightsList.length === 0) {
         console.log(`[FlightSearch] SerpAPI returned 0 flights for route ${origObj.airportCode} ➔ ${destObj.airportCode}`);
-        return [];
+        return { flights: [], error: `No live flights scheduled for route ${origObj.airportCode} ➔ ${destObj.airportCode} on ${validDate}.` };
       }
 
       const mappedFlights = rawFlightsList.map((f: any, idx: number) => {
@@ -128,20 +146,19 @@ export class FlightService {
           status: 'AVAILABLE',
           aircraft: firstSegment.airplane || 'Commercial Jet',
           terminal: firstSegment.departure_airport?.terminal || 'T1',
-          bookingUrl: f.booking_token
-            ? `https://www.google.com/travel/flights?q=flights+from+${origObj.airportCode}+to+${destObj.airportCode}`
-            : `https://www.google.com/travel/flights?q=flights+from+${origObj.airportCode}+to+${destObj.airportCode}`
+          bookingUrl: `https://www.google.com/travel/flights?q=flights+from+${origObj.airportCode}+to+${destObj.airportCode}`
         };
       });
 
-      console.log('[FlightSearch Mapped Response Payload]:');
-      console.log(JSON.stringify(mappedFlights, null, 2));
+      console.log('[FlightSearch Mapped Response Payload (Sample First 2)]:');
+      console.log(JSON.stringify(mappedFlights.slice(0, 2), null, 2));
 
-      return mappedFlights;
+      return { flights: mappedFlights };
     } catch (err: any) {
-      Logger.error('SerpApi Google Flights API Request Error', err, 'FlightService');
-      console.error('[SerpAPI Flight Search Error Details]:', err.response?.data || err.message);
-      return [];
+      const errDetails = err.response?.data?.error || err.response?.data || err.message;
+      const status = err.response?.status || 500;
+      console.error(`[SerpAPI Flight Search Exception - HTTP ${status}]:`, errDetails);
+      return { flights: [], error: `SerpAPI Exception (HTTP ${status}): ${typeof errDetails === 'string' ? errDetails : JSON.stringify(errDetails)}` };
     }
   }
 

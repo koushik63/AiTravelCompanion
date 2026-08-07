@@ -73,12 +73,18 @@ Date: ${travelDate}
     setIsSerpLoading(true);
     TransportService.searchFlights(resolvedOriginAirport?.airportCode || selectedOrigin, resolvedDestAirport?.airportCode || selectedDestination, travelDate)
       .then((res) => {
-        const flightsArray = Array.isArray(res) ? res : (res?.flights || []);
-        console.log('[Frontend Rendered Live Flights from Backend]:', flightsArray);
-        setLiveSerpFlights(flightsArray);
+        if (res?.error) {
+          setValidationError(res.error);
+          setLiveSerpFlights([]);
+        } else {
+          const flightsArray = Array.isArray(res) ? res : (res?.flights || []);
+          console.log('[Frontend Rendered Live Flights from Backend]:', flightsArray);
+          setLiveSerpFlights(flightsArray);
+        }
       })
       .catch((err) => {
         console.error('[TransportSearch API Error]', err);
+        setValidationError(`API Exception: ${err.message}`);
         setLiveSerpFlights([]);
       })
       .finally(() => setIsSerpLoading(false));

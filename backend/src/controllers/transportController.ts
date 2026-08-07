@@ -22,12 +22,13 @@ export class TransportController {
       const outboundDate = (req.query.outboundDate as string) || '';
 
       console.log(`[TransportController] Received searchFlights request: origin=${origin}, destination=${destination}, date=${outboundDate}`);
-      const flights = await FlightService.searchFlightsSerpApi(origin, destination, outboundDate);
+      const result = await FlightService.searchFlightsSerpApi(origin, destination, outboundDate);
 
       const payload = {
-        success: true,
-        flights,
-        count: flights.length
+        success: !result.error,
+        flights: result.flights,
+        count: result.flights.length,
+        error: result.error || null
       };
 
       console.log('[TransportController Final JSON sent to frontend]:');
